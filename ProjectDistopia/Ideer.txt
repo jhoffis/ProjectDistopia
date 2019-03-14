@@ -1,33 +1,44 @@
-Distopian world set in the future. Lag bare for � kunne spille med venner :)
+Distopian world set in the future. Lag bare for å kunne spille med venner 🙂
+
+
 
 You can choose between 5 factions:
 
+	Mennesker:
 	Freedom fighters:
 		Basically americans.
 		- Need oil and food.
 		Summon disipline of freedom
+		Archrival: Nazi Gaia.
 	Punks:
 		Rock and roll people! Like in Mad Max.
 		- Need gasoline and oil.
 		- Gain Nitro boost
-	Cool Gaia:
-		Animals, but with shades.
-		- Need blood and food.
-		- Summon the power of the Kraken and gain access to dinosaurs.
-	Odinschildren:
-		- Summon the power of Odin
+		Archrival: AI
 	Aristocrats:
 		17-18th century stuff. Classical music.
 		- Need gold and food.
-	Holy Order:
-		Deus vult. You know the rest.
-		- Need forgiven sins and food.
-		-Summon power of God
+		Archrival: Revolutionary Jotner
+
+	Korsførere?
+	
+	Fiender av menneskeheten:
+	Jotner:
+		
+	Nazi Gaia:
+		Animals, but nazis AND with shades
+		- Summon the power of the Kraken and gain access to dinosaur
+		
+		lagde et dyr i labratorie en sabeltann. Plutsslig så stod han der og kunne tenke og snakke. Det farlige er at de kunne nå kommunisere imellom seg.
 	0100000101001001:
 		Bip bop. Robots who gain conscience. Robots start out not able to fight nor fought. You have to gain conscience by unlocking stuff.
 		If the robots gain conscience then they are very dangerous! Strongest nation, with the weakest start.
 		- Need energy (power, oil, gasoline)
 
-Ganske fast paced turn based spill med tiles. Men tenker � ha h�rer som en blanding mellom eu4 og civ p� et eller annet slag.
+Ganske fast paced turn based spill med tiles. Men tenker å ha hærer som en blanding mellom eu4 og civ på et eller annet slag.
 
 Countdown to a apokalypse, ragnarok, rise of AI.
+Armageddon.
+Everyone has a great leader who if killed lose the game. The name of this great leader is also the name of the player
+
+
