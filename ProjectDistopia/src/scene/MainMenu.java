@@ -53,28 +53,32 @@ public class MainMenu extends LobbyScene{
         	} while(name == null);
         	
         	System.out.println("Name recieved is " + name);
-        	String path = null;
+        	
+        	String dir = "./.battleOfAuthrohpia/";
+        	name = name + ".properties";
         	
         	if(Main.isWindows()) {
         		System.out.println("You have Windows");
-        		path = "%appdata%/.battleOfAuthrohpia/" + name + ".properties";
+        		dir = "%appdata%/.battleOfAuthrohpia/";
+        		
         		
         	} else if (Main.isUnix()) {
         		System.out.println("You have Unix of some sort");
-        		path = "$HOME/.battleOfAuthrohpia/" + name + ".properties";
+        		dir = "./$HOME/.battleOfAuthrohpia/";
         	} else {
         		System.out.println("I don't recognize your OS");
         		System.exit(-1);
         	}
         	
-        	boolean file = Main.PROPERTIES.initProperties(path);
-    		if(file == false) {
+        	boolean fileExists = Main.PROPERTIES.initProperties(dir, name);
+    		if(fileExists == false) {
     			//Finish creating.
     			System.out.println("Does not exists");
-    			
+    			Main.PROPERTIES.createProperties();
     		} else {
     			//already exists
     			System.out.println("Already exists");
+    			JOptionPane.showMessageDialog(null, "You already have that user!");
     		}
     	
         	

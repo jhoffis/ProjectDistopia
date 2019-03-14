@@ -23,9 +23,10 @@ You can choose between 5 factions:
 	Korsførere?
 	
 	Fiender av menneskeheten:
-	Jotner:
+	Joutnia:
+	Jotner
 		
-	Nazi Gaia:
+	High Order of the Gazelles:
 		Animals, but nazis AND with shades
 		- Summon the power of the Kraken and gain access to dinosaur
 		

@@ -1,24 +1,33 @@
 package handlers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Scanner;
 
 public class Properties {
 
 	private File file;
+	private Scanner scanner;
 	
 	public Properties() {
-		file = null;
+		this(null, null);
+	}
+
+	public Properties(File file, Scanner scanner) {
+		this.file = file;
+		this.scanner = scanner;
 	}
 	
-	
-
 	public boolean appendToProperties() {
 		return false;
 	}
 
-	public boolean initProperties(String path) {
-		file = new File(path);
+	public boolean initProperties(String dir, String e) {
+		System.out.println(new File(dir).mkdir());
+		file = new File(dir + e);
 		return file.isFile();
 	}
 
@@ -26,16 +35,25 @@ public class Properties {
 		if (file != null) {
 			try {
 				file.createNewFile();
+				scanner = new Scanner(file);
+				addAllPropertiesTypesInFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			addAllPropertiesTypesInFile();
+			
 			return true;
 		}
 		return false;
 	}
 	
-	private void addAllPropertiesTypesInFile() {
-		
+	
+	/**
+	 * name
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
+	 */
+	private void addAllPropertiesTypesInFile() throws FileNotFoundException, UnsupportedEncodingException {
+		PrintWriter pw = new PrintWriter(file, "UTF-8");
+		pw.write("NAME=;");
 	}
 }

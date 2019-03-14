@@ -10,7 +10,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		OS = System.getProperty("os.name").toLowerCase();
-		PROPERTIES = null;
+		PROPERTIES = new Properties();
 
 		LobbyFrame lf = new LobbyFrame();
 		lf.openWindow(args, 600, 500, "Battle of Authrohpia");
@@ -20,7 +20,6 @@ public class Main {
 	public static boolean isWindows() {
 
 		return (OS.indexOf("win") >= 0);
-
 	}
 
 	public static boolean isUnix() {
