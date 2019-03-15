@@ -4,120 +4,63 @@ import javax.swing.JOptionPane;
 
 import adt.LobbyScene;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import startup.Main;
 import window.LobbyFrame;
 
-public class MainMenu extends LobbyScene{
+public class MainMenu extends LobbyScene {
 
 	private Button createUser;
 	private Button hostGame;
 	private Button joinGame;
 	private Button options;
 	private Button exit;
-	
-	
-	public MainMenu(Parent root) {
-		this(root, Color.AQUA);
-	}
-	
-	public MainMenu(Parent root, Paint fill) {
-		super(root, fill);
-		
-        createUser = new Button("Create a user");
-        hostGame = new Button("Host");
-        joinGame = new Button("Join");
-        options = new Button("Options");
-        exit = new Button("Exit Game");
-        
-        super.numBtn = LobbyFrame.HEIGHT / (5 + 2); 
-        
-        
-        createUser.setOnAction((ActionEvent e) -> {
-        	String name = null;
-        	
-        	do {
-        		name = JOptionPane.showInputDialog("What is your username?\n"
-        				+ "2-12 chars, only alphanumeric");
-        		if(name == null) {
-        			return;
-        		}
-        		else if(!(name.matches("^[a-zA-Z0-9æøåÆØÅ]+$") && name.length() >= 2 && name.length() <= 12)) {
-        			name = null;
-        		}
-        	} while(name == null);
-        	
-        	System.out.println("Name recieved is " + name);
-        	
-        	String dir = "./.battleOfAuthrohpia/";
-        	name = name + ".properties";
-        	
-        	if(Main.isWindows()) {
-        		System.out.println("You have Windows");
-        		dir = "%appdata%/.battleOfAuthrohpia/";
-        		
-        		
-        	} else if (Main.isUnix()) {
-        		System.out.println("You have Unix of some sort");
-        		dir = "./$HOME/.battleOfAuthrohpia/";
-        	} else {
-        		System.out.println("I don't recognize your OS");
-        		System.exit(-1);
-        	}
-        	
-        	boolean fileExists = Main.PROPERTIES.initProperties(dir, name);
-    		if(fileExists == false) {
-    			//Finish creating.
-    			System.out.println("Does not exists");
-    			Main.PROPERTIES.createProperties();
-    		} else {
-    			//already exists
-    			System.out.println("Already exists");
-    			JOptionPane.showMessageDialog(null, "You already have that user!");
-    		}
-    	
-        	
-        });
-        options.setOnAction(new EventHandler<ActionEvent>() {
-        	
-            @Override
-            public void handle(ActionEvent event) {
 
-            	LobbyFrame.setScene("Options");
-            }
-        });
-        exit.setOnAction((ActionEvent e) -> System.exit(0));
-        
-        createUser.setTranslateY(numBtn * 1);
-        hostGame.setTranslateY(numBtn * 2);
-        joinGame.setTranslateY(numBtn * 3);
-        options.setLayoutY(numBtn * 4);
-        exit.setLayoutY(numBtn * 5);
-        
-        createUser.setTranslateX(mid);
-        hostGame.setTranslateX(mid);
-        joinGame.setTranslateX(mid);
-        options.setLayoutX(mid);
-        exit.setLayoutX(mid);
-        
-        createUser.setPrefSize(btnWidth, btnHeight);
-        hostGame.setPrefSize(btnWidth, btnHeight);
-        joinGame.setPrefSize(btnWidth, btnHeight);
-        options.setPrefSize(btnWidth, btnHeight);
-        exit.setPrefSize(btnWidth, btnHeight);
-        
-        LobbyFrame.add("MainMenu", createUser);
-        LobbyFrame.add("MainMenu", hostGame);
-        LobbyFrame.add("MainMenu", joinGame);
-        LobbyFrame.add("MainMenu", options);
-        LobbyFrame.add("MainMenu", exit);
+
+	public MainMenu(String pathname) {
+		super(pathname);
+
+		createUser = new Button("Create a user");
+		hostGame = new Button("Host");
+		joinGame = new Button("Join");
+		options = new Button("Options");
+		exit = new Button("Exit Game");
+
+		super.numBtn = LobbyFrame.HEIGHT / (5 + 2);
+
+		createUser.setOnAction((ActionEvent e) -> LobbyFrame.setScene("User"));
+		hostGame.setOnAction((ActionEvent e) -> LobbyFrame.setScene("HostSetup"));
+		joinGame.setOnAction((ActionEvent e) -> LobbyFrame.setScene("JoinSetup"));
+		options.setOnAction((ActionEvent e) -> LobbyFrame.setScene("Options"));
+		exit.setOnAction((ActionEvent e) -> Main.exit());
+
+		createUser.setTranslateY(numBtn * 1);
+		hostGame.setTranslateY(numBtn * 2);
+		joinGame.setTranslateY(numBtn * 3);
+		options.setLayoutY(numBtn * 4);
+		exit.setLayoutY(numBtn * 5);
+
+		createUser.setTranslateX(mid);
+		hostGame.setTranslateX(mid);
+		joinGame.setTranslateX(mid);
+		options.setLayoutX(mid);
+		exit.setLayoutX(mid);
+
+		createUser.setPrefSize(btnWidth, btnHeight);
+		hostGame.setPrefSize(btnWidth, btnHeight);
+		joinGame.setPrefSize(btnWidth, btnHeight);
+		options.setPrefSize(btnWidth, btnHeight);
+		exit.setPrefSize(btnWidth, btnHeight);
+
+		add(createUser);
+		add(hostGame);
+		add(joinGame);
+		add(options);
+		add(exit);
 	}
 
+	
 	public Button getCreateUser() {
 		return createUser;
 	}
@@ -164,6 +107,12 @@ public class MainMenu extends LobbyScene{
 
 	public void setBtnHeight(int btnHeight) {
 		this.btnHeight = btnHeight;
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

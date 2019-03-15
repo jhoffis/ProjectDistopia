@@ -1,6 +1,8 @@
 package startup;
 
-import handlers.Properties;
+import javax.swing.JOptionPane;
+
+import sort.Properties;
 import window.LobbyFrame;
 
 public class Main {
@@ -11,11 +13,29 @@ public class Main {
 	public static void main(String[] args) {
 		OS = System.getProperty("os.name").toLowerCase();
 		PROPERTIES = new Properties();
+		
+		String dir = "./.battleOfAuthrohpia/";
+		if (Main.isWindows()) {
+			System.out.println("You have Windows");
+			dir = "%appdata%/.battleOfAuthrohpia/";
+		} else if (Main.isUnix()) {
+			System.out.println("You have Unix of some sort");
+			dir = System.getProperty("user.home") + "/usr/.battleOfAuthrohpia/";
+		} else {
+			System.out.println("I don't know your OS");
+		}
+		PROPERTIES.initProperties(dir);
 
 		LobbyFrame lf = new LobbyFrame();
 		lf.openWindow(args, 600, 500, "Battle of Authrohpia");
 	}
 	
+	public static void exit() {
+		int val = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
+		if(val == 0) {
+			System.exit(0);
+		}
+	}
 	
 	public static boolean isWindows() {
 

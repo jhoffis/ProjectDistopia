@@ -5,17 +5,17 @@ Distopian world set in the future. Lag bare for å kunne spille med venner 🙂
 You can choose between 5 factions:
 
 	Mennesker:
-	Freedom fighters:
+	Republic of Wessland:
 		Basically americans.
 		- Need oil and food.
 		Summon disipline of freedom
 		Archrival: Nazi Gaia.
-	Punks:
+	The Iron Hills:
 		Rock and roll people! Like in Mad Max.
 		- Need gasoline and oil.
 		- Gain Nitro boost
 		Archrival: AI
-	Aristocrats:
+	Empire of Anglia:
 		17-18th century stuff. Classical music.
 		- Need gold and food.
 		Archrival: Revolutionary Jotner
@@ -23,10 +23,11 @@ You can choose between 5 factions:
 	Korsførere?
 	
 	Fiender av menneskeheten:
-	Joutnia:
+	Revolutionary Republic of Jotnatium:
 	Jotner
+	High class gentlemen, I mean gentlejotn.
 		
-	High Order of the Gazelles:
+	Gazellia:
 		Animals, but nazis AND with shades
 		- Summon the power of the Kraken and gain access to dinosaur
 		
