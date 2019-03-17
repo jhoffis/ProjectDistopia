@@ -2,7 +2,7 @@ package scene;
 
 import javax.swing.JOptionPane;
 
-import adt.LobbyScene;
+import adt.LobbySceneADT;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 import startup.Main;
 import window.LobbyFrame;
 
-public class UserSetup extends LobbyScene {
+public class UserSetup extends LobbySceneADT {
 
 	private Button mainMenu;
 	private Label usrLabel;
@@ -97,7 +97,7 @@ public class UserSetup extends LobbyScene {
 		if (!checkNoErrorsInUsername())
 			return false;
 
-		if (!Main.PROPERTIES.createProperties(newUsr.getText())) {
+		if (!Main.USER_PROPERTIES.createProperties(newUsr.getText())) {
 			// already exists
 			errLabel.setText("You already have a user named " + newUsr.getText() + "!");
 			return false;

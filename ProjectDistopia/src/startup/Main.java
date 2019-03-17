@@ -2,17 +2,26 @@ package startup;
 
 import javax.swing.JOptionPane;
 
-import sort.Properties;
+import network.client.Client;
+import network.server.Server;
+import sort.SettingsProperties;
+import sort.UserProperties;
 import window.LobbyFrame;
 
 public class Main {
 
 	private static String OS;
-	public static Properties PROPERTIES;
+	public static UserProperties USER_PROPERTIES;
+	public static SettingsProperties SETTINGS_PROPERTIES;
+	public static Server SERVER; 
+	public static Client CLIENT;
 
 	public static void main(String[] args) {
 		OS = System.getProperty("os.name").toLowerCase();
-		PROPERTIES = new Properties();
+		USER_PROPERTIES = new UserProperties();
+		SETTINGS_PROPERTIES = new SettingsProperties();
+		SERVER = null;
+		CLIENT = null;
 		
 		String dir = "./.battleOfAuthrohpia/";
 		if (Main.isWindows()) {
@@ -24,19 +33,13 @@ public class Main {
 		} else {
 			System.out.println("I don't know your OS");
 		}
-		PROPERTIES.initProperties(dir);
+		USER_PROPERTIES.initProperties(dir, "users");
+		SETTINGS_PROPERTIES.initProperties(dir, "settings");
 
 		LobbyFrame lf = new LobbyFrame();
 		lf.openWindow(args, 600, 500, "Battle of Authrohpia");
 	}
-	
-	public static void exit() {
-		int val = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
-		if(val == 0) {
-			System.exit(0);
-		}
-	}
-	
+
 	public static boolean isWindows() {
 
 		return (OS.indexOf("win") >= 0);

@@ -1,6 +1,6 @@
 Distopian world set in the future. Lag bare for å kunne spille med venner 🙂
 
-
+Battle of Authradgard
 
 You can choose between 5 factions:
 
@@ -33,7 +33,7 @@ You can choose between 5 factions:
 		
 		lagde et dyr i labratorie en sabeltann. Plutsslig så stod han der og kunne tenke og snakke. Det farlige er at de kunne nå kommunisere imellom seg.
 	0100000101001001:
-		Bip bop. Robots who gain conscience. Robots start out not able to fight nor fought. You have to gain conscience by unlocking stuff.
+		Bip bop. Sxy sexrobots who gain conscience. Robots start out not able to fight nor fought. You have to gain conscience by unlocking stuff.
 		If the robots gain conscience then they are very dangerous! Strongest nation, with the weakest start.
 		- Need energy (power, oil, gasoline)
 

@@ -2,7 +2,9 @@ package window;
 
 import java.util.HashMap;
 
-import adt.LobbyScene;
+import javax.swing.JOptionPane;
+
+import adt.LobbySceneADT;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -19,11 +21,11 @@ public class LobbyFrame extends Application {
 	public static int WIDTH;
 	public static int HEIGHT;
 	public static Stage PRIMARY_STAGE;
-	public static LobbyScene LAST_SCENE;
-	public static LobbyScene CURRENT_SCENE;
+	public static LobbySceneADT LAST_SCENE;
+	public static LobbySceneADT CURRENT_SCENE;
 	public static String TITLE;
 
-	private static HashMap<String, LobbyScene> SCENES;
+	private static HashMap<String, LobbySceneADT> SCENES;
 	private static HashMap<String, Pane> PANES;
 
 	private String[] pathnames = { "LAST", "UPPER", "MAINMENU", "OPTIONS", "HOSTSETUP", "JOINSETUP", "LOBBY", "USER" };
@@ -31,7 +33,7 @@ public class LobbyFrame extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		PRIMARY_STAGE = primaryStage;
-		SCENES = new HashMap<String, LobbyScene>();
+		SCENES = new HashMap<String, LobbySceneADT>();
 		PANES = new HashMap<String, Pane>();
 
 		for (int i = 0; i < pathnames.length; i++) {
@@ -51,7 +53,20 @@ public class LobbyFrame extends Application {
 		setScene("MainMenu");
 		PRIMARY_STAGE.setTitle(TITLE);
 		PRIMARY_STAGE.setResizable(false);
+		PRIMARY_STAGE.setOnHidden(e -> shutdown());
 		PRIMARY_STAGE.show();
+	}
+
+	public static void shutdown() {
+		int val = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
+		if (val == 0) {
+			System.out.println("Shutdown");
+			if (Main.CLIENT != null)
+				Main.CLIENT.forceLeave();
+			if (Main.SERVER != null)
+				Main.SERVER.setRunning(false);
+			System.exit(0);
+		}
 	}
 
 	public static void add(Pane pane, Node e) {
@@ -67,12 +82,21 @@ public class LobbyFrame extends Application {
 	public static void add(String paneName, Node e) {
 		add(PANES.get(paneName), e);
 	}
+
+	public static void remove(String panename, Node e) {
+		try {
+			PANES.get(panename).getChildren().remove(e);
+		} catch (Exception ex) {
+			System.err.println("Could not REMOVE element");
+			ex.printStackTrace();
+		}
+	}
 	
 	public static void replacePane(String panename) {
 		PANES.replace(panename, new Pane());
 	}
-	
-	public static void setAndReplaceScene(LobbyScene scene) {
+
+	public static void setAndReplaceScene(LobbySceneADT scene) {
 		SCENES.replace(scene.getPanename(), scene);
 		setScene(scene.getPanename());
 	}
@@ -85,12 +109,12 @@ public class LobbyFrame extends Application {
 				throw new Exception();
 			}
 
-			LobbyScene scene = null;
+			LobbySceneADT scene = null;
 			if (sceneName.equals("LAST")) {
 				scene = LAST_SCENE;
 			} else if (sceneName.equals("UPPER")) {
 				if (CURRENT_SCENE.getPanename().equals(("MAINMENU"))) {
-					Main.exit();
+					shutdown();
 				} else {
 					scene = SCENES.get("MAINMENU");
 				}

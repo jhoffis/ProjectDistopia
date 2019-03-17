@@ -1,8 +1,10 @@
 package scene;
 
+import java.util.HashMap;
 import java.util.List;
 
-import adt.LobbyScene;
+import adt.LobbySceneADT;
+import elem.ConnectionConfig;
 import elem.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,10 +19,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import network.server.Server;
 import startup.Main;
 import window.LobbyFrame;
 
-public class LobbySetup extends LobbyScene {
+public class LobbySetup extends LobbySceneADT {
 
 	private boolean host;
 	private Button goBack;
@@ -31,11 +34,13 @@ public class LobbySetup extends LobbyScene {
 	private ComboBox<String> usrs;
 	private Button userSetup;
 	private EventHandler<MouseEvent> usrCreate;
+	private HashMap<String, String> usrsComplete;
 
 	public LobbySetup(String pathname, boolean host) {
 		super(pathname);
 
 		this.host = host;
+
 		Text scenetitle;
 		String txt;
 		if (host) {
@@ -68,9 +73,10 @@ public class LobbySetup extends LobbyScene {
 			if (e.getCode().equals(KeyCode.ENTER))
 				LobbyFrame.setScene("User");
 		});
-		request.setOnMouseClicked((MouseEvent e) -> joinServer());
-		request.setOnKeyPressed((KeyEvent e) -> {
-			if (e.getCode().equals(KeyCode.ENTER))
+		request.setOnMouseClicked((MouseEvent e) -> {
+			if(host)
+				hostServer();
+			else
 				joinServer();
 		});
 
@@ -107,7 +113,7 @@ public class LobbySetup extends LobbyScene {
 
 		usrs.getSelectionModel().clearSelection();
 		usrs.getItems().clear();
-		List<String> lines = Main.PROPERTIES.getLines();
+		List<String> lines = Main.USER_PROPERTIES.getLines();
 
 		if (Integer.valueOf(lines.get(0)) < 1) {
 			usrs.setPromptText("No users");
@@ -123,37 +129,55 @@ public class LobbySetup extends LobbyScene {
 	private String[] cleanLines(List<String> lines) {
 
 		String[] arr = new String[lines.size() - 1];
-
+		usrsComplete = new HashMap<String, String>();
+		
+		
 		for (int i = 0; i < arr.length; i++) {
-			arr[i] = lines.get(i + 1).split("=")[1];
+			arr[i] = lines.get(i + 1).split("=")[1].split("#")[0];
+			usrsComplete.put(arr[i], lines.get(i + 1).split("=")[1]);
 		}
 		return arr;
 	}
 
-	private void joinServer() {
-
+	private void hostServer() {
+		
 		if (!(txtInput.getText().matches("^[a-zA-Z0-9æøåÆØÅ. ]+$")) || txtInput.getText().length() < 1
 				|| txtInput.getText().length() > 15) {
 			return;
 		}
+		
+		Main.SERVER = new Server(txtInput.getText());
+		LobbyFrame.replacePane("LOBBY");
+		Lobby lobby = new Lobby("LOBBY");
+		lobby.setServer(Main.SERVER);
+		joinServer(ConnectionConfig.SERVER.valueAsString(), lobby);
+	}
+	
+	private void joinServer() {
+		if (!(txtInput.getText().matches("^[a-zA-Z0-9æøåÆØÅ. ]+$")) || txtInput.getText().length() < 1
+				|| txtInput.getText().length() > 15) {
+			return;
+		}
+		LobbyFrame.replacePane("LOBBY");
+		Lobby lobby = new Lobby("LOBBY");
+		joinServer(txtInput.getText(), lobby);
+	}
+	
+	private void joinServer(String ip, Lobby lobby) {
 
 		if (usrs.getValue() == null) {
 			return;
 		}
 
-		LobbyFrame.replacePane("LOBBY");
-
-		Lobby lobby = new Lobby("LOBBY");
-		lobby.setUser(new User(usrs.getValue()));
+		String newUserVal = usrsComplete.get(usrs.getValue());
+		User user = new User(newUserVal);
+		user.setHost(host ? 1 : 0);
+		lobby.setUser(user);
+		lobby.tryJoin(ip);
 
 		LobbyFrame.setAndReplaceScene(lobby);
 		System.out.println(((Lobby) LobbyFrame.CURRENT_SCENE).getUser().getName());
 
-		if (host) {
-			lobby.tryJoin("localhost");
-		} else {
-			lobby.tryJoin(txtInput.getText());
-		}
 
 	}
 

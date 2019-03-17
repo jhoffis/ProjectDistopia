@@ -2,14 +2,14 @@ package scene;
 
 import javax.swing.JOptionPane;
 
-import adt.LobbyScene;
+import adt.LobbySceneADT;
 import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import startup.Main;
 import window.LobbyFrame;
 
-public class MainMenu extends LobbyScene {
+public class MainMenu extends LobbySceneADT {
 
 	private Button createUser;
 	private Button hostGame;
@@ -33,7 +33,7 @@ public class MainMenu extends LobbyScene {
 		hostGame.setOnAction((ActionEvent e) -> LobbyFrame.setScene("HostSetup"));
 		joinGame.setOnAction((ActionEvent e) -> LobbyFrame.setScene("JoinSetup"));
 		options.setOnAction((ActionEvent e) -> LobbyFrame.setScene("Options"));
-		exit.setOnAction((ActionEvent e) -> Main.exit());
+		exit.setOnAction((ActionEvent e) -> LobbyFrame.shutdown());
 
 		createUser.setTranslateY(numBtn * 1);
 		hostGame.setTranslateY(numBtn * 2);

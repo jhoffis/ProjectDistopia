@@ -6,7 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import window.LobbyFrame;
 
-public abstract class LobbyScene extends Scene {
+public abstract class LobbySceneADT extends Scene {
 
 	protected int mid;
 	protected int btnWidth;
@@ -14,7 +14,7 @@ public abstract class LobbyScene extends Scene {
 	protected int numBtn;
 	protected String panename;
 
-	public LobbyScene(String panename) {
+	public LobbySceneADT(String panename) {
 		super(LobbyFrame.getPane(panename), LobbyFrame.WIDTH, LobbyFrame.HEIGHT);
 
 		btnWidth = (int) (LobbyFrame.WIDTH / 4f);
@@ -34,6 +34,10 @@ public abstract class LobbyScene extends Scene {
 
 	protected void add(Node e) {
 		LobbyFrame.add(panename, e);
+	}
+	
+	protected void rm(Node e) {
+		LobbyFrame.remove(panename, e);
 	}
 
 	public abstract void update();
