@@ -26,7 +26,7 @@ public class Client {
 	}
 
 	public void leave(int id) {
-		client.convert("LEAVE" + id);
+		client.convert("LEAVE#" + id);
 	}
 	/*
 	 * FIXME
@@ -52,7 +52,7 @@ public class Client {
 	}
 
 	public void forceLeave() {
-		client.convert("LEAVE" + user.getId());
+		client.convert("LEAVE#" + user.getId());
 	}
 
 }

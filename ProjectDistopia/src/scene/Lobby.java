@@ -5,6 +5,7 @@ import elem.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -26,6 +27,11 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private Label humans;
 	private Label aliens;
 	private Text scenetitle;
+	private ComboBox<String> faction;
+	private Button chooseFaction;
+	private String availFac = "";
+	private Button ready;
+	private Button start;
 
 	public Lobby(String pathname) {
 		super(pathname);
@@ -76,12 +82,21 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				deltatick--;
 				frames++;
 
-//				Platform.runLater(() -> loading.setText(client.sendStringRequest("U#" + user.getId())));
 				client.sendAck(user.getId());
+				if(Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
+					System.err.println("--STARTED--");
+				}
 				
-				Platform.runLater(() -> humans.setText("Humans:\n" + client.sendStringRequest("U#" + user.getId())));
-				
-				
+				Platform.runLater(() -> humans.setText("Humans:\n" + client.sendStringRequest("U")));
+
+				String availableFactionTemp = client.sendStringRequest("AVLFAC");
+				if (!availFac.equals(availableFactionTemp)) {
+					availFac = availableFactionTemp;
+					String[] listFac = availFac.split("#");
+					Platform.runLater(() -> faction.getItems().clear());
+					Platform.runLater(() -> faction.getItems().addAll(listFac));
+				}
+
 			}
 
 			if (System.currentTimeMillis() - timer > 1000) {
@@ -121,23 +136,57 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private void initLook() {
 
 		rm(loading);
-		
+
 		humans = new Label();
 		aliens = new Label();
+		ready = new Button("Ready");
+		faction = new ComboBox<String>();
+		chooseFaction = new Button("Lock in");
+
+		if(user.getHost() == 1) {
+			start = new Button("Start Game!");
+			start.setOnAction((ActionEvent e) -> {
+				client.sendStringRequest("START#" + user.getId());
+			});
+			start.setTranslateX(mid);
+			start.setTranslateY(300);
+			add(start);
+		}
+		
+		faction.setPromptText("Choose faction");
+
+		chooseFaction.setOnAction((ActionEvent e) -> {
+			if (faction != null)
+				client.sendStringRequest("CHSFAC#" + faction.getValue() + "#" + user.getId());
+		});
+		
+		ready.setOnAction((ActionEvent e) -> {
+			client.sendStringRequest("READY#" + user.getId());
+		});
 
 		String txt;
+
 		scenetitle = new Text(client.sendStringRequest("TITLE"));
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		
+
+		chooseFaction.setTranslateX(mid + 220);
+		faction.setTranslateX(mid - 80);
 		scenetitle.setTranslateX(mid);
 		humans.setTranslateX(mid - 80);
 		aliens.setTranslateX(mid + 80);
-		
+		ready.setTranslateX(mid - 80);
+
+		chooseFaction.setTranslateY(100);
+		faction.setTranslateY(100);
 		scenetitle.setTranslateY(50);
 		humans.setTranslateY(140);
 		aliens.setTranslateY(140);
-		
+		ready.setTranslateY(300);
+
+		add(ready);
+		add(chooseFaction);
 		add(scenetitle);
+		add(faction);
 		add(humans);
 		add(aliens);
 	}

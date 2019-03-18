@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Random;
 
 import adt.PropertiesADT;
 import elem.User;
@@ -61,7 +62,7 @@ public class UserProperties implements PropertiesADT {
 				return false;
 			pos = userPositionFinder.findNearestLine(lines, val, 1);
 
-			String line = "NAME=" + new User(val, -1, -1).toString();
+			String line = "NAME=" + new User(val, -1, -1, new Random().nextInt(100000)).toString();
 
 			if (pos == lines.size()) {
 				lines.add(line);
@@ -83,10 +84,11 @@ public class UserProperties implements PropertiesADT {
 		String name = user[0];
 		int id = Integer.valueOf(user[1]);
 		int host = Integer.valueOf(user[2]);
-		return setUserID(name, id, host);
+		int finalid = Integer.valueOf(user[3]);
+		return setUserID(name, id, host, finalid);
 	}
 
-	public User setUserID(String name, int id, int host) {
+	public User setUserID(String name, int id, int host, int finalid) {
 		User user = null;
 
 		try {
@@ -95,7 +97,7 @@ public class UserProperties implements PropertiesADT {
 
 			if (pos == -1)
 				return null;
-			user = new User(name, id, host);
+			user = new User(name, id, host, finalid);
 			lines.set(pos, "NAME=" + user.toString());
 
 			Files.write(file.toPath(), lines, StandardCharsets.UTF_8);

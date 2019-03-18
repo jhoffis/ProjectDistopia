@@ -11,7 +11,7 @@ You can choose between 5 factions:
 		Summon disipline of freedom
 		Archrival: Nazi Gaia.
 	The Iron Hills:
-		Rock and roll people! Like in Mad Max.
+		Rock and roll people! Like in Mad Max. Rammstein.
 		- Need gasoline and oil.
 		- Gain Nitro boost
 		Archrival: AI
@@ -42,5 +42,7 @@ Ganske fast paced turn based spill med tiles. Men tenker å ha hærer som en bla
 Countdown to a apokalypse, ragnarok, rise of AI.
 Armageddon.
 Everyone has a great leader who if killed lose the game. The name of this great leader is also the name of the player
+
+Every User has to have a final ID that is used instead of how its done now when checking if you were already a member of the game. Because the temp id used now will change after playing a different match.
 
 

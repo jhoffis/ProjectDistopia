@@ -84,9 +84,9 @@ public class SocketThread extends Thread{
 		switch (input[0]) {
 
 		case "JOIN":
-			return info.join(input[1], Integer.valueOf(input[2]), Integer.valueOf(input[3]));
+			return info.join(input[1], Integer.valueOf(input[2]), Integer.valueOf(input[3]), Integer.valueOf(input[4]));
 		case "LEAVE":
-			return info.leave(Integer.valueOf(input[1]));
+			return info.leaveLobby(Integer.valueOf(input[1]));
 		case "U":
 			return info.updateLobby();
 		case "ACK":
@@ -94,6 +94,19 @@ public class SocketThread extends Thread{
 			break;
 		case "TITLE":
 			return info.getTitle();
+		case "AVLFAC":
+			return info.availableFactions();
+		case "CHSFAC":
+			info.chooseFaction(input[1], Integer.valueOf(input[2]));
+			break;
+		case "READY":
+			info.ready(Integer.valueOf(input[1]));
+			break;
+		case "START":
+			info.start(Integer.valueOf(input[1]));
+			break;
+		case "STARTED":
+			return String.valueOf(info.isStarted());
 		};
 
 		return null;
