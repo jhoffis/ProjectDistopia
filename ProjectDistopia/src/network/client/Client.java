@@ -6,7 +6,7 @@ import elem.User;
 public class Client {
 
 	private TCPClient client;
-	private User user;
+	
 
 	public Client(String ip) {
 		int port = ConnectionConfig.PORT.valueAsInteger();
@@ -42,17 +42,4 @@ public class Client {
 	public void setClient(TCPClient client) {
 		this.client = client;
 	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public void forceLeave() {
-		client.convert("LEAVE#" + user.getId());
-	}
-
 }

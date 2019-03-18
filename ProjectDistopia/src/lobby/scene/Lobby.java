@@ -1,4 +1,4 @@
-package scene;
+package lobby.scene;
 
 import adt.LobbySceneADT;
 import elem.User;
@@ -83,8 +83,14 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				frames++;
 
 				client.sendAck(user.getId());
+				
+				//START GAME AND RUN LOOP SOMEWHERE ELSE
 				if(Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
 					System.err.println("--STARTED--");
+					Platform.runLater(() -> Main.openGameFrame());
+					Platform.runLater(() -> LobbyFrame.forceShutdownLobby());
+					running = false;
+					break;
 				}
 				
 				Platform.runLater(() -> humans.setText("Humans:\n" + client.sendStringRequest("U")));
@@ -119,8 +125,8 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		System.out.println("Trying to join a server with " + ip);
 
 		Main.CLIENT = new Client(ip);
+		Main.USER = user;
 		client = Main.CLIENT;
-		client.setUser(user);
 
 		String newUserVal = client.sendStringRequest("JOIN#" + user.toString());
 		if (!newUserVal.equals(user.toString()))

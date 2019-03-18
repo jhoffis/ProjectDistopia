@@ -1,4 +1,4 @@
-package scene;
+package lobby.scene;
 
 import java.util.HashMap;
 import java.util.List;

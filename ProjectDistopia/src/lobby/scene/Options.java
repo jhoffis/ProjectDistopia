@@ -1,4 +1,4 @@
-package scene;
+package lobby.scene;
 
 import adt.LobbySceneADT;
 import javafx.beans.value.ChangeListener;

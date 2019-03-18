@@ -9,11 +9,11 @@ import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import scene.Lobby;
-import scene.LobbySetup;
-import scene.MainMenu;
-import scene.Options;
-import scene.UserSetup;
+import lobby.scene.Lobby;
+import lobby.scene.LobbySetup;
+import lobby.scene.MainMenu;
+import lobby.scene.Options;
+import lobby.scene.UserSetup;
 import startup.Main;
 
 public class LobbyFrame extends Application {
@@ -56,13 +56,18 @@ public class LobbyFrame extends Application {
 		PRIMARY_STAGE.setOnHidden(e -> shutdown());
 		PRIMARY_STAGE.show();
 	}
+	
+	public static void forceShutdownLobby() {
+		PRIMARY_STAGE.setOnHidden(null);
+		PRIMARY_STAGE.close();
+	}
 
 	public static void shutdown() {
 		int val = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
 		if (val == 0) {
 			System.out.println("Shutdown");
 			if (Main.CLIENT != null)
-				Main.CLIENT.forceLeave();
+				Main.CLIENT.leave(Main.USER.getId());
 			if (Main.SERVER != null)
 				Main.SERVER.setRunning(false);
 			System.exit(0);

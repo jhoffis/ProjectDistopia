@@ -1,4 +1,4 @@
-package scene;
+package lobby.scene;
 
 import javax.swing.JOptionPane;
 
