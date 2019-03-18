@@ -1,6 +1,7 @@
 package startup;
 
 import elem.User;
+import game.handlers.GameHandler;
 import network.client.Client;
 import network.server.Server;
 import sort.SettingsProperties;
@@ -18,6 +19,8 @@ public class Main {
 	public static Server SERVER; 
 	public static Client CLIENT;
 	public static User USER;
+	public static int WIDTH;
+	public static int HEIGHT;
 	
 	
 
@@ -29,11 +32,13 @@ public class Main {
 		CLIENT = null;
 		USER = null;
 		NAME = "Battle of Authradgard";
+		WIDTH = 600;
+		HEIGHT = 500;
 		
 		String dir = "./.battleOfAuthradgard/";
 		if (Main.isWindows()) {
 			System.out.println("You have Windows");
-			dir = "%appdata%/.battleOfAuthradgard/";
+			dir = System.getenv("APPDATA") + "/.battleOfAuthradgard/";
 		} else if (Main.isUnix()) {
 			System.out.println("You have Unix of some sort");
 			dir = System.getProperty("user.home") + "/usr/.battleOfAuthradgard/";
@@ -44,7 +49,7 @@ public class Main {
 		SETTINGS_PROPERTIES.initProperties(dir, "settings");
 
 		LobbyFrame lf = new LobbyFrame();
-		lf.openWindow(args, 600, 500, NAME);
+		lf.openWindow(args, WIDTH, HEIGHT, NAME);
 	}
 
 	public static boolean isWindows() {
@@ -59,9 +64,9 @@ public class Main {
 	
 	public static void openGameFrame() {
 		
-		
-		GAME_FRAME = new GameFrame(600, 500, NAME);
-		
+		GameHandler gm = new GameHandler();
+		GAME_FRAME = new GameFrame(WIDTH, HEIGHT, NAME, gm);
+		new Thread(gm).start();
 	}
 	
 	public static void closeGameFrame() {
