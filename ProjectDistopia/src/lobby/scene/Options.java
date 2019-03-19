@@ -1,6 +1,7 @@
 package lobby.scene;
 
 import adt.LobbySceneADT;
+import audio.MediaAudio;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -26,7 +27,7 @@ public class Options extends LobbySceneADT {
 
 	public Options(String pathname) {
 		super(pathname);
-		
+
 		String sliderText = "Volumemixer: ";
 		long sliderValue = Main.SETTINGS_PROPERTIES.getVolumeFromFile();
 		slider = new Slider();
@@ -36,15 +37,15 @@ public class Options extends LobbySceneADT {
 		allmusic = new CheckBox("Use all music");
 		nomusic = new CheckBox("No music");
 		nosfx = new CheckBox("No soundeffects");
-		
+
 		fullscreen.setSelected(Main.SETTINGS_PROPERTIES.getFullscreen());
 		allmusic.setSelected(Main.SETTINGS_PROPERTIES.getAllMusic());
 		nomusic.setSelected(Main.SETTINGS_PROPERTIES.getNoMusic());
 		nosfx.setSelected(Main.SETTINGS_PROPERTIES.getNoSFX());
-		
+
 		Text scenetitle = new Text("Options");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		
+
 		slider.setMin(0);
 		slider.setMax(100);
 		slider.setValue(sliderValue);
@@ -54,20 +55,34 @@ public class Options extends LobbySceneADT {
 		slider.setMinorTickCount(5);
 		slider.setBlockIncrement(10);
 
-		goBack.setOnAction((ActionEvent e) -> LobbyFrame.setScene("MainMenu"));
-		fullscreen.setOnAction((ActionEvent e) -> Main.SETTINGS_PROPERTIES.setFullscreen(fullscreen.isSelected()));
-		allmusic.setOnAction((ActionEvent e) -> Main.SETTINGS_PROPERTIES.setAllMusic(allmusic.isSelected()));
-		nomusic.setOnAction((ActionEvent e) -> Main.SETTINGS_PROPERTIES.setNoMusic(nomusic.isSelected()));
-		nosfx.setOnAction((ActionEvent e) -> Main.SETTINGS_PROPERTIES.setNoSFX(nosfx.isSelected()));
+		goBack.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("MainMenu");
+			new MediaAudio("/sfx/btn").play();
+		});
+		fullscreen.setOnAction((ActionEvent e) -> {
+			Main.SETTINGS_PROPERTIES.setFullscreen(fullscreen.isSelected());
+			new MediaAudio("/sfx/btn").play();
+		});
+		allmusic.setOnAction((ActionEvent e) -> {
+			Main.SETTINGS_PROPERTIES.setAllMusic(allmusic.isSelected());
+			new MediaAudio("/sfx/btn").play();
+		});
+		nomusic.setOnAction((ActionEvent e) -> {
+			Main.SETTINGS_PROPERTIES.setNoMusic(nomusic.isSelected());
+			new MediaAudio("/sfx/btn").play();
+		});
+		nosfx.setOnAction((ActionEvent e) -> {
+			Main.SETTINGS_PROPERTIES.setNoSFX(nosfx.isSelected());
+			new MediaAudio("/sfx/btn").play();
+		});
 		slider.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> ov,
-	                Number oldVal, Number newVal) {
+			public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newVal) {
 				long l = Math.round((double) newVal);
 				sliderLabel.setText(sliderText + l);
 				Main.SETTINGS_PROPERTIES.setVolume(l);
 			}
 		});
-		
+
 		sliderLabel.setTranslateX(mid + 63);
 		slider.setTranslateX(mid + 60);
 		scenetitle.setTranslateX(mid);
@@ -75,7 +90,7 @@ public class Options extends LobbySceneADT {
 		allmusic.setTranslateX(100);
 		nomusic.setTranslateX(100);
 		nosfx.setTranslateX(100);
-		
+
 		scenetitle.setTranslateY(50);
 		fullscreen.setTranslateY(100);
 		allmusic.setTranslateY(140);
@@ -83,7 +98,7 @@ public class Options extends LobbySceneADT {
 		slider.setTranslateY(160);
 		nomusic.setTranslateY(160);
 		nosfx.setTranslateY(180);
-		
+
 		add(goBack);
 		add(scenetitle);
 		add(fullscreen);
@@ -96,7 +111,7 @@ public class Options extends LobbySceneADT {
 
 	@Override
 	public void update() {
-		
+
 	}
 
 }

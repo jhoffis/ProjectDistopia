@@ -3,6 +3,7 @@ package lobby.scene;
 import javax.swing.JOptionPane;
 
 import adt.LobbySceneADT;
+import audio.MediaAudio;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,11 +37,18 @@ public class UserSetup extends LobbySceneADT {
 		append = new Button("Append");
 		appendAndRet = new Button("Append and return");
 
-		mainMenu.setOnAction((ActionEvent e) -> LobbyFrame.setScene("MainMenu"));
-		append.setOnAction((ActionEvent e) -> addUser());
+		mainMenu.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("MainMenu");
+			new MediaAudio("/sfx/btn").play();
+		});
+		append.setOnAction((ActionEvent e) -> {
+			addUser();
+			new MediaAudio("/sfx/btn").play();
+		});
 		appendAndRet.setOnAction((ActionEvent e) -> {
 			if (addUser())
 				LobbyFrame.setScene("Last");
+			new MediaAudio("/sfx/btn").play();
 		});
 		newUsr.setOnKeyPressed((KeyEvent e) -> checkNoErrorsInUsername());
 

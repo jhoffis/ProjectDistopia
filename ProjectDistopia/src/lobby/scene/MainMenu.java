@@ -3,6 +3,7 @@ package lobby.scene;
 import javax.swing.JOptionPane;
 
 import adt.LobbySceneADT;
+import audio.MediaAudio;
 import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -17,7 +18,6 @@ public class MainMenu extends LobbySceneADT {
 	private Button options;
 	private Button exit;
 
-
 	public MainMenu(String pathname) {
 		super(pathname);
 
@@ -29,11 +29,26 @@ public class MainMenu extends LobbySceneADT {
 
 		super.numBtn = LobbyFrame.HEIGHT / (5 + 2);
 
-		createUser.setOnAction((ActionEvent e) -> LobbyFrame.setScene("User"));
-		hostGame.setOnAction((ActionEvent e) -> LobbyFrame.setScene("HostSetup"));
-		joinGame.setOnAction((ActionEvent e) -> LobbyFrame.setScene("JoinSetup"));
-		options.setOnAction((ActionEvent e) -> LobbyFrame.setScene("Options"));
-		exit.setOnAction((ActionEvent e) -> LobbyFrame.shutdown());
+		createUser.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("User");
+			new MediaAudio("/sfx/btn").play();
+		});
+		hostGame.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("HostSetup");
+			new MediaAudio("/sfx/btn").play();
+		});
+		joinGame.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("JoinSetup");
+			new MediaAudio("/sfx/btn").play();
+		});
+		options.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("Options");
+			new MediaAudio("/sfx/btn").play();
+		});
+		exit.setOnAction((ActionEvent e) -> {
+			LobbyFrame.shutdown();
+			new MediaAudio("/sfx/btn").play();
+		});
 
 		createUser.setTranslateY(numBtn * 1);
 		hostGame.setTranslateY(numBtn * 2);
@@ -60,7 +75,6 @@ public class MainMenu extends LobbySceneADT {
 		add(exit);
 	}
 
-	
 	public Button getCreateUser() {
 		return createUser;
 	}
@@ -111,8 +125,7 @@ public class MainMenu extends LobbySceneADT {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 }

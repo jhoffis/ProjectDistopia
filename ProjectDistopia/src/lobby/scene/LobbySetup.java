@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import adt.LobbySceneADT;
+import audio.MediaAudio;
 import elem.ConnectionConfig;
 import elem.User;
 import javafx.event.ActionEvent;
@@ -65,6 +66,7 @@ public class LobbySetup extends LobbySceneADT {
 			public void handle(MouseEvent event) {
 				// code used for retrieving x,y values
 				LobbyFrame.setScene("User");
+				new MediaAudio("/sfx/btn").play();
 			}
 		};
 		goBack.setOnAction((ActionEvent e) -> LobbyFrame.setScene("MainMenu"));
@@ -72,12 +74,14 @@ public class LobbySetup extends LobbySceneADT {
 		userSetup.setOnKeyPressed((KeyEvent e) -> {
 			if (e.getCode().equals(KeyCode.ENTER))
 				LobbyFrame.setScene("User");
+			new MediaAudio("/sfx/btn").play();
 		});
 		request.setOnMouseClicked((MouseEvent e) -> {
 			if(host)
 				hostServer();
 			else
 				joinServer();
+			new MediaAudio("/sfx/btn").play();
 		});
 
 		update();

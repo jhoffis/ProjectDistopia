@@ -5,12 +5,17 @@ import audio.MediaAudio;
 import elem.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -38,9 +43,13 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			"Theilron Hills" };
 	private boolean[] facChosen;
 	private ImageView[] facPics;
+	private Color txtColor = new Color(244.0 / 255.0, 240.0 / 255.0, 224.0 / 255.0, 1.0);
+	private Color bckColor = new Color(44.0 / 255.0, 44.0 / 255.0, 44.0 / 255.0, 1.0);
 
 	public Lobby(String pathname) {
 		super(pathname);
+		
+		
 
 		goBack = new Button("Return");
 		facChosen = new boolean[facNames.length];
@@ -71,6 +80,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	}
 
 	public void leaveLobby() {
+		new MediaAudio("/sfx/btn").play();
 		running = false;
 		client.leave(user.getId());
 
@@ -78,6 +88,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			server.setRunning(false);
 
 		LobbyFrame.setScene("MainMenu");
+		
 	}
 
 	@Override
@@ -211,8 +222,13 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			int clicked = i;
 			facPics[i] = new ImageView();
 			facPics[i].setImage(facImgs[i * 2]);
-			alienBox.getChildren().add(new Label("\n" + facNames[i]));
+			Label label = new Label("\n" + facNames[i]);
+			label.setTextFill(txtColor);
+			alienBox.getChildren().add(label);
 			alienBox.getChildren().add(facPics[i]);
+			facPics[i].setOnMouseEntered((MouseEvent e) -> {
+				new MediaAudio("/sfx/hover").play();
+				/* Get big */});
 			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
 				changeFac(clicked);
 			});
@@ -224,13 +240,16 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			facPics[i] = new ImageView();
 			facPics[i].setImage(facImgs[i * 2]);
 			facPics[i].setOnMouseEntered((MouseEvent e) -> {
+				new MediaAudio("/sfx/hover").play();
 				/* Get big */});
 			facPics[i].setOnMouseExited((MouseEvent e) -> {
 				/* Get small */});
 			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
 				changeFac(clicked);
 			});
-			humanBox.getChildren().add(new Label("\n" + facNames[i]));
+			Label label = new Label("\n" + facNames[i]);
+			label.setTextFill(txtColor);
+			humanBox.getChildren().add(label);
 			humanBox.getChildren().add(facPics[i]);
 		}
 
@@ -238,6 +257,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			start = new Button("Start Game!");
 			start.setOnAction((ActionEvent e) -> {
 				client.sendStringRequest("START#" + user.getId());
+				new MediaAudio("/sfx/btn").play();
 			});
 			start.setTranslateX(mid + 120);
 			start.setTranslateY(300);
@@ -246,12 +266,16 @@ public class Lobby extends LobbySceneADT implements Runnable {
 
 		ready.setOnAction((ActionEvent e) -> {
 			client.sendStringRequest("READY#" + user.getId());
+			new MediaAudio("/sfx/btn").play();
 		});
 
 		String txt;
 
-		scenetitle = new Text(client.sendStringRequest("TITLE"));
-		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		scenetitle = new Text(client.sendStringRequest("TITLE").toUpperCase());
+		scenetitle.setFont(Font.font("Georgia", FontWeight.NORMAL, 24));
+		scenetitle.setFill(txtColor);
+		players.setTextFill(txtColor);
+		LobbyFrame.getPane(panename).setBackground(new Background(new BackgroundFill(bckColor, CornerRadii.EMPTY, Insets.EMPTY)));
 
 		alienBox.setTranslateX(Main.WIDTH - 144);
 		humanBox.setTranslateX(16);
@@ -268,6 +292,10 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		goBack.setTranslateY(300);
 		ready.setTranslateY(300);
 
+//		alienBox.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+//		humanBox.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+		
+		
 		add(alienBox);
 		add(humanBox);
 		add(ready);
@@ -278,7 +306,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private void changeFac(int clicked) {
 		if (!facChosen[clicked]) {
 			client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
-			new MediaAudio("/sfx/" + facNames[clicked] + "lobbybtn");
+			new MediaAudio("/sfx/" + facNames[clicked] + "/lobbybtn").play();
 		}
 	}
 

@@ -4,10 +4,15 @@ import java.util.HashMap;
 
 import adt.LobbySceneADT;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lobby.scene.Lobby;
 import lobby.scene.LobbySetup;
@@ -37,7 +42,9 @@ public class LobbyFrame extends Application {
 		PANES = new HashMap<String, Pane>();
 
 		for (int i = 0; i < pathnames.length; i++) {
-			PANES.put(pathnames[i], new Pane());
+			Pane pane = new Pane();
+			pane.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+			PANES.put(pathnames[i], pane);
 		}
 		// FAKE:
 		SCENES.put(pathnames[0], new MainMenu(pathnames[0]));
@@ -59,6 +66,7 @@ public class LobbyFrame extends Application {
 	        // execute own shutdown procedure
 	        shutdown();
 		});
+		
 		PRIMARY_STAGE.show();
 	}
 	
