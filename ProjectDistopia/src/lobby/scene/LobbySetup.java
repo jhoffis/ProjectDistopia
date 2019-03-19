@@ -146,7 +146,7 @@ public class LobbySetup extends LobbySceneADT {
 	private void hostServer() {
 		
 		if (!(txtInput.getText().matches("^[a-zA-Z0-9æøåÆØÅ. ]+$")) || txtInput.getText().length() < 1
-				|| txtInput.getText().length() > 15) {
+				|| txtInput.getText().length() > 15 || usrs.getValue() == null) {
 			return;
 		}
 		
