@@ -20,12 +20,12 @@ public class ServerInfo {
 		r = new Random();
 		faction = new HashMap<String, Integer>();
 
-		faction.put("Republic of Wessland", 0);
-		faction.put("Revolutionary Republic of Jotnatium", 1);
-		faction.put("The Iron Hills", 2);
-		faction.put("Empire of Anglia", 3);
-		faction.put("Gazellia", 4);
-		faction.put("Aiazom", 5);
+		faction.put("Aiazom", 0);
+		faction.put("Gazellia", 1);
+		faction.put("Jotnatium", 2);
+		faction.put("Republic of Wessland", 3);
+		faction.put("Empire of Anglia", 4);
+		faction.put("Theilron Hills", 5);
 	}
 
 	public void ready(Integer id) {
@@ -99,12 +99,11 @@ public class ServerInfo {
 	public String availableFactions() {
 		String res = "";
 
-		String[] arr = faction.keySet().toArray(new String[0]);
+		int[] arr = new int[faction.size()];
 
 		for (Entry<Integer, User> entry : users.entrySet()) {
 			if (faction.containsKey(entry.getValue().getFaction())) {
-				arr[faction.get(entry.getValue().getFaction())] = " --Taken--";
-
+				arr[faction.get(entry.getValue().getFaction())] = 1;
 			}
 		}
 

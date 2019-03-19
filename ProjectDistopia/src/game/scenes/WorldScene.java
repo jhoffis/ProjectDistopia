@@ -4,15 +4,18 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import adt.GameSceneADT;
+import elem.Camera;
 import game.scenes.world.World;
 import startup.Main;
 
 public class WorldScene implements GameSceneADT{
 
 	private World world;
+	private Camera cam;
 	
 	public WorldScene() {
 		world = new World(16, 16);
+		cam = new Camera();
 	}
 	
 	@Override

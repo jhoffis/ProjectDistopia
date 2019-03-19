@@ -45,4 +45,5 @@ Everyone has a great leader who if killed lose the game. The name of this great 
 
 Every User has to have a final ID that is used instead of how its done now when checking if you were already a member of the game. Because the temp id used now will change after playing a different match.
 
+If the amount of people is oddetall then it is free-for-all else team.
 

@@ -7,6 +7,10 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -24,25 +28,38 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private Client client;
 	private boolean running;
 
-	private Label humans;
-	private Label aliens;
+	private Label players;
 	private Text scenetitle;
-	private ComboBox<String> faction;
-	private Button chooseFaction;
 	private String availFac = "";
 	private Button ready;
 	private Button start;
+	private Image[] facImgs;
+	private String[] facNames = { "Aiazom", "Gazellia", "Jotnatium", "Republic of Wessland", "Empire of Anglia",
+			"Theilron Hills" };
+	private boolean[] facChosen;
+	private ImageView[] facPics;
 
 	public Lobby(String pathname) {
 		super(pathname);
 
 		goBack = new Button("Return");
+		facChosen = new boolean[facNames.length];
 
 		goBack.setOnAction((ActionEvent e) -> leaveLobby());
 		String str = "Loading...";
 		loading = new Label(str);
 		loading.setTranslateX(mid);
 		loading.setTranslateY(mid);
+
+		facImgs = new Image[12];
+
+		int n = 0;
+		for (int i = 0; i < facNames.length; i++) {
+			facImgs[n] = new Image("pic/fac/" + facNames[i] + "NotSel.png");
+			n++;
+			facImgs[n] = new Image("pic/fac/" + facNames[i] + "IsSel.png");
+			n++;
+		}
 
 		add(loading);
 		add(goBack);
@@ -67,7 +84,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	public void run() {
 
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 2.0;
+		double amountOfTicks = 20.0;
 		double ns = 1000000000 / amountOfTicks;
 		double deltatick = 0;
 		double deltarender = 0;
@@ -83,24 +100,64 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				frames++;
 
 				client.sendAck(user.getId());
-				
-				//START GAME AND RUN LOOP SOMEWHERE ELSE
-				if(Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
+
+				// START GAME AND RUN LOOP SOMEWHERE ELSE
+				if (Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
 					System.err.println("--STARTED--");
 					Platform.runLater(() -> Main.openGameFrame());
 					Platform.runLater(() -> LobbyFrame.forceShutdownLobby());
 					running = false;
 					break;
 				}
-				
-				Platform.runLater(() -> humans.setText("Humans:\n" + client.sendStringRequest("U")));
+
+				Platform.runLater(() -> {
+
+					String utxt = "Players:\n";
+					String[] uinput = client.sendStringRequest("U").split("#");
+
+					for (int i = 0; i < uinput.length; i++) {
+						switch (i % 4) {
+						case 0:
+							utxt += uinput[i] + ", ";
+							break;
+						case 1:
+							if (uinput[i].equals("")) {
+								utxt += "No faction, ";
+							} else {
+								utxt += uinput[i] + ", ";
+							}
+							break;
+						case 2:
+							if (uinput[i].equals("1")) {
+								utxt += "Host, ";
+							}
+							break;
+						case 3:
+							if (uinput[i].equals("1")) {
+								utxt += "Ready";
+							} else {
+								utxt += "Not ready";
+							}
+
+							utxt += "\n";
+						}
+					}
+
+					players.setText(utxt);
+				});
 
 				String availableFactionTemp = client.sendStringRequest("AVLFAC");
 				if (!availFac.equals(availableFactionTemp)) {
 					availFac = availableFactionTemp;
 					String[] listFac = availFac.split("#");
-					Platform.runLater(() -> faction.getItems().clear());
-					Platform.runLater(() -> faction.getItems().addAll(listFac));
+
+					for (int i = 0; i < listFac.length; i++) {
+						boolean bool = Integer.valueOf(listFac[i]) == 1;
+						if (bool != facChosen[i]) {
+							facPics[i].setImage(facImgs[i * 2 + Integer.valueOf(listFac[i])]);
+							facChosen[i] = bool;
+						}
+					}
 				}
 
 			}
@@ -143,29 +200,52 @@ public class Lobby extends LobbySceneADT implements Runnable {
 
 		rm(loading);
 
-		humans = new Label();
-		aliens = new Label();
+		players = new Label();
 		ready = new Button("Ready");
-		faction = new ComboBox<String>();
-		chooseFaction = new Button("Lock in");
 
-		if(user.getHost() == 1) {
+		facPics = new ImageView[6];
+		VBox humanBox = new VBox();
+		VBox alienBox = new VBox();
+
+		for (int i = 0; i < facPics.length / 2; i++) {
+			int clicked = i;
+			facPics[i] = new ImageView();
+			facPics[i].setImage(facImgs[i * 2]);
+			alienBox.getChildren().add(new Label("\n" + facNames[i]));
+			alienBox.getChildren().add(facPics[i]);
+			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
+				if (!facChosen[clicked])
+					client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
+			});
+
+		}
+
+		for (int i = facPics.length / 2; i < facPics.length; i++) {
+			int clicked = i;
+			facPics[i] = new ImageView();
+			facPics[i].setImage(facImgs[i * 2]);
+			facPics[i].setOnMouseEntered((MouseEvent e) -> {
+				/* Get big */});
+			facPics[i].setOnMouseExited((MouseEvent e) -> {
+				/* Get small */});
+			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
+				if (!facChosen[clicked])
+					client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
+			});
+			humanBox.getChildren().add(new Label("\n" + facNames[i]));
+			humanBox.getChildren().add(facPics[i]);
+		}
+
+		if (user.getHost() == 1) {
 			start = new Button("Start Game!");
 			start.setOnAction((ActionEvent e) -> {
 				client.sendStringRequest("START#" + user.getId());
 			});
-			start.setTranslateX(mid);
+			start.setTranslateX(mid + 120);
 			start.setTranslateY(300);
 			add(start);
 		}
-		
-		faction.setPromptText("Choose faction");
 
-		chooseFaction.setOnAction((ActionEvent e) -> {
-			if (faction != null)
-				client.sendStringRequest("CHSFAC#" + faction.getValue() + "#" + user.getId());
-		});
-		
 		ready.setOnAction((ActionEvent e) -> {
 			client.sendStringRequest("READY#" + user.getId());
 		});
@@ -175,26 +255,26 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		scenetitle = new Text(client.sendStringRequest("TITLE"));
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 
-		chooseFaction.setTranslateX(mid + 220);
-		faction.setTranslateX(mid - 80);
+		alienBox.setTranslateX(Main.WIDTH - 144);
+		humanBox.setTranslateX(16);
 		scenetitle.setTranslateX(mid);
-		humans.setTranslateX(mid - 80);
-		aliens.setTranslateX(mid + 80);
-		ready.setTranslateX(mid - 80);
+		players.setTranslateX(mid - 60);
+		ready.setTranslateX(mid + 60);
+		goBack.setTranslateX(mid - 60);
 
-		chooseFaction.setTranslateY(100);
-		faction.setTranslateY(100);
+		int boxHeight = -10;
+		alienBox.setTranslateY(boxHeight);
+		humanBox.setTranslateY(boxHeight);
 		scenetitle.setTranslateY(50);
-		humans.setTranslateY(140);
-		aliens.setTranslateY(140);
+		players.setTranslateY(140);
+		goBack.setTranslateY(300);
 		ready.setTranslateY(300);
 
+		add(alienBox);
+		add(humanBox);
 		add(ready);
-		add(chooseFaction);
 		add(scenetitle);
-		add(faction);
-		add(humans);
-		add(aliens);
+		add(players);
 	}
 
 	public Server getServer() {

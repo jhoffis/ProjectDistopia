@@ -2,11 +2,11 @@ package window;
 
 import java.util.HashMap;
 
-import javax.swing.JOptionPane;
-
 import adt.LobbySceneADT;
 import javafx.application.Application;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lobby.scene.Lobby;
@@ -53,25 +53,33 @@ public class LobbyFrame extends Application {
 		setScene("MainMenu");
 		PRIMARY_STAGE.setTitle(TITLE);
 		PRIMARY_STAGE.setResizable(false);
-		PRIMARY_STAGE.setOnHidden(e -> shutdown());
+		PRIMARY_STAGE.setOnCloseRequest(e -> {
+			e.consume();
+
+	        // execute own shutdown procedure
+	        shutdown();
+		});
 		PRIMARY_STAGE.show();
 	}
 	
 	public static void forceShutdownLobby() {
-		PRIMARY_STAGE.setOnHidden(null);
+		PRIMARY_STAGE.setOnCloseRequest(null);
 		PRIMARY_STAGE.close();
 	}
 
 	public static void shutdown() {
-		int val = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
-		if (val == 0) {
-			System.out.println("Shutdown");
-			if (Main.CLIENT != null)
-				Main.CLIENT.leave(Main.USER.getId());
-			if (Main.SERVER != null)
-				Main.SERVER.setRunning(false);
-			System.exit(0);
-		}
+		 Alert alert = new Alert(Alert.AlertType.NONE, "Are you sure you want to exit now?", ButtonType.YES, ButtonType.NO);
+		 alert.setTitle("Beware!");
+		    if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
+		        // you may need to close other windows or replace this with Platform.exit();
+		    	System.out.println("Shutdown");
+				if (Main.CLIENT != null)
+					Main.CLIENT.leave(Main.USER.getId());
+				if (Main.SERVER != null)
+					Main.SERVER.setRunning(false);
+		    	PRIMARY_STAGE.close();
+		    	System.exit(0);
+		    }
 	}
 
 	public static void add(Pane pane, Node e) {
