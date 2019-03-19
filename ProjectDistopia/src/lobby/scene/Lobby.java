@@ -1,11 +1,11 @@
 package lobby.scene;
 
 import adt.LobbySceneADT;
+import audio.MediaAudio;
 import elem.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -214,8 +214,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			alienBox.getChildren().add(new Label("\n" + facNames[i]));
 			alienBox.getChildren().add(facPics[i]);
 			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
-				if (!facChosen[clicked])
-					client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
+				changeFac(clicked);
 			});
 
 		}
@@ -229,8 +228,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			facPics[i].setOnMouseExited((MouseEvent e) -> {
 				/* Get small */});
 			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
-				if (!facChosen[clicked])
-					client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
+				changeFac(clicked);
 			});
 			humanBox.getChildren().add(new Label("\n" + facNames[i]));
 			humanBox.getChildren().add(facPics[i]);
@@ -275,6 +273,13 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		add(ready);
 		add(scenetitle);
 		add(players);
+	}
+
+	private void changeFac(int clicked) {
+		if (!facChosen[clicked]) {
+			client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
+			new MediaAudio("/sfx/" + facNames[clicked] + "lobbybtn");
+		}
 	}
 
 	public Server getServer() {
