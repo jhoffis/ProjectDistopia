@@ -12,20 +12,21 @@ public class BgMusicListener {
 	private int lastPlayed;
 	private MediaAudio media;
 	private int songs;
+	private String type;
 
-	public BgMusicListener(int songs) {
+	public BgMusicListener(int songs,  String type) {
 		// Maybe use action for something later, cause it's awesome
 		lastPlayed = -1;
 		this.songs = songs;
+		this.type = type;
 		playAndChooseNextRandomly();
 	}
 
 	public void playAndChooseNextRandomly() {
 		if(media != null && media.isPlaying())
 			media.stop();
-		media = new MediaAudio("/music/music" + findRandomSong());
+		media = new MediaAudio("/music/" + type + "/music" + findRandomSong());
 		
-		media.play();
 		media.getMediaPlayer().setOnEndOfMedia(() -> playAndChooseNextRandomly());
 	}
 

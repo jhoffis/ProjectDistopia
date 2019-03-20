@@ -45,6 +45,8 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private ImageView[] facPics;
 	private Color txtColor = new Color(244.0 / 255.0, 240.0 / 255.0, 224.0 / 255.0, 1.0);
 	private Color bckColor = new Color(44.0 / 255.0, 44.0 / 255.0, 44.0 / 255.0, 1.0);
+	private VBox humanBox;
+	private VBox alienBox;
 
 	public Lobby(String pathname) {
 		super(pathname);
@@ -82,6 +84,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	public void leaveLobby() {
 		new MediaAudio("/sfx/btn").play();
 		running = false;
+		server.stopWatch();
 		client.leave(user.getId());
 
 		if (user.getHost() == 1)
@@ -95,7 +98,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	public void run() {
 
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 20.0;
+		double amountOfTicks = 5.0;
 		double ns = 1000000000 / amountOfTicks;
 		double deltatick = 0;
 		double deltarender = 0;
@@ -120,9 +123,30 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				// START GAME AND RUN LOOP SOMEWHERE ELSE
 				if (Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
 					System.err.println("--STARTED--");
+					if(user.getFaction().equals( "Aiazom")) {
+						Main.MUSIC_TYPE = 5;
+					} else if(user.getFaction().equals("Gazellia") || user.getFaction().equals("Empire of Anglia")) {
+						Main.MUSIC_TYPE = 3;
+					} else if(user.getFaction().equals( "Republic of Wessland")) {
+						Main.MUSIC_TYPE = 4;
+					} else if(user.getFaction().equals( "Jotnatium")) {
+						Main.MUSIC_TYPE = 1;
+					} else if(user.getFaction().equals( "Theilron Hills")) {
+						Main.MUSIC_TYPE = 2;
+					} else {
+						
+					}
 					Platform.runLater(() -> Main.openGameFrame());
-					Platform.runLater(() -> LobbyFrame.forceShutdownLobby());
+//					Platform.runLater(() -> LobbyFrame.forceShutdownLobby());
 					running = false;
+					
+					Platform.runLater(() -> rm(goBack));
+					Platform.runLater(() -> rm(ready));
+					Platform.runLater(() -> rm(start));
+					Platform.runLater(() -> rm(humanBox));
+					Platform.runLater(() -> rm(alienBox));
+					Platform.runLater(() -> scenetitle.setText("Don't mind this ok"));
+					
 					break;
 				}
 
@@ -141,6 +165,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 								utxt += "No faction, ";
 							} else {
 								utxt += uinput[i] + ", ";
+								user.setFaction(uinput[i]);
 							}
 							break;
 						case 2:
@@ -220,8 +245,8 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		ready = new Button("Ready");
 
 		facPics = new ImageView[6];
-		VBox humanBox = new VBox();
-		VBox alienBox = new VBox();
+		humanBox = new VBox();
+		alienBox = new VBox();
 
 		for (int i = 0; i < facPics.length / 2; i++) {
 			int clicked = i;

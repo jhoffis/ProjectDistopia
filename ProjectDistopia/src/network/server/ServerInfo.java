@@ -120,7 +120,7 @@ public class ServerInfo {
 	public void start(Integer id) {
 		if(users.get(id).getHost() == 1) {
 			for (Entry<Integer, User> entry : users.entrySet()) {
-				if(entry.getValue().isReady() == false)
+				if(entry.getValue().isReady() == false || entry.getValue().getFaction().equals(""))
 					return;
 			}
 		}
@@ -133,7 +133,7 @@ public class ServerInfo {
 	 */
 	public void checkConnections() {
 		for (Entry<Integer, User> entry : users.entrySet()) {
-			if (System.currentTimeMillis() - entry.getValue().getTimeLastRec() > 5000) {
+			if (System.currentTimeMillis() - entry.getValue().getTimeLastRec() > 10000) {
 				leaveLobby(entry.getValue().getId());
 			}
 		}

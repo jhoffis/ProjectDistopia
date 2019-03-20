@@ -13,6 +13,7 @@ import window.LobbyFrame;
 public class ServerWatch implements Runnable{
 
 	private ServerInfo info;
+	private boolean running;
 	
 	public ServerWatch(ServerInfo info) {
 		this.info = info;
@@ -20,34 +21,37 @@ public class ServerWatch implements Runnable{
 	
 	@Override
 	public void run() {
+		running = true;
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 2.0;
+		double amountOfTicks = 1.0;
 		double ns = 1000000000 / amountOfTicks;
 		double deltatick = 0;
 		double deltarender = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 
-		while (Main.SERVER != null) {
+		while (Main.SERVER != null && running) {
 			long now = System.nanoTime();
 			deltatick += (now - lastTime) / ns;
 			lastTime = now;
 			while (deltatick >= 1) {
 				deltatick--;
-				frames++;
+//				frames++;
 
 				info.checkConnections();
 
 			}
 
-			if (System.currentTimeMillis() - timer > 1000) {
-				timer += 1000;
-				System.out.println("CHECKING CONNECTIONS: " + frames);
-				frames = 0;
-			}
+//			if (System.currentTimeMillis() - timer > 1000) {
+//				timer += 1000;
+//				System.out.println("CHECKING CONNECTIONS: " + frames);
+//				frames = 0;
+//			}
 		}
-		
-		
+	}
+	
+	public void endTheWatch() {
+		running = false;
 	}
 
 }

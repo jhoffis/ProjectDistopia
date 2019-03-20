@@ -25,7 +25,7 @@ public class SocketThread extends Thread{
 	public void run() {
 
 		try {
-			System.out.println("SOCKET ACCEPTING");
+//			System.out.println("SOCKET ACCEPTING");
 			Socket socket = socketserver.accept();
 			server.setAvailable(availableIndex, false);
 			server.updateSocket();
@@ -62,11 +62,12 @@ public class SocketThread extends Thread{
 		}
 		server.setAvailable(availableIndex, true);
 
-		try {
-			join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			join();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("Joined");
 	}
 
 	/**

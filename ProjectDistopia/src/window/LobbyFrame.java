@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import adt.LobbySceneADT;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -43,7 +45,8 @@ public class LobbyFrame extends Application {
 
 		for (int i = 0; i < pathnames.length; i++) {
 			Pane pane = new Pane();
-			pane.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+			pane.setBackground(
+					new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 			PANES.put(pathnames[i], pane);
 		}
 		// FAKE:
@@ -63,35 +66,36 @@ public class LobbyFrame extends Application {
 		PRIMARY_STAGE.setOnCloseRequest(e -> {
 			e.consume();
 
-	        // execute own shutdown procedure
-	        shutdown();
+			// execute own shutdown procedure
+			shutdown();
 		});
 		
 		PRIMARY_STAGE.show();
 	}
-	
+
 	public static void forceShutdownLobby() {
 		PRIMARY_STAGE.setOnCloseRequest(null);
 		PRIMARY_STAGE.close();
 	}
 
 	public static synchronized void shutdown() {
-		 Alert alert = new Alert(Alert.AlertType.NONE, "Are you sure you want to exit now?", ButtonType.YES, ButtonType.NO);
-		 alert.setTitle("Beware!");
-		    if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-		        // you may need to close other windows or replace this with Platform.exit();
-		    	System.out.println("Shutdown");
-				if (Main.CLIENT != null) {
-					Main.CLIENT.leave(Main.USER.getId());
-					Main.CLIENT = null;
-				}
-				if (Main.SERVER != null) {
-					Main.SERVER.setRunning(false);
-					Main.SERVER = null;
-				}
-		    	PRIMARY_STAGE.close();
-		    	System.exit(0);
-		    }
+		Alert alert = new Alert(Alert.AlertType.NONE, "Are you sure you want to exit now?", ButtonType.YES,
+				ButtonType.NO);
+		alert.setTitle("Beware!");
+		if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
+			// you may need to close other windows or replace this with Platform.exit();
+			System.out.println("Shutdown");
+			if (Main.CLIENT != null) {
+				Main.CLIENT.leave(Main.USER.getId());
+				Main.CLIENT = null;
+			}
+			if (Main.SERVER != null) {
+				Main.SERVER.setRunning(false);
+				Main.SERVER = null;
+			}
+			Platform.runLater(() -> PRIMARY_STAGE.close());
+			System.exit(0);
+		}
 	}
 
 	public static void add(Pane pane, Node e) {
@@ -116,7 +120,7 @@ public class LobbyFrame extends Application {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public static void replacePane(String panename) {
 		PANES.replace(panename, new Pane());
 	}

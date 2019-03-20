@@ -19,6 +19,7 @@ public class SettingsProperties implements PropertiesADT {
 	private BinarySortedFileSearch userPositionFinder;
 	private HashMap<String, Boolean> boolSettings;
 	private HashMap<String, Long> longSettings;
+	
 
 	public SettingsProperties() {
 		this(null);
@@ -114,6 +115,10 @@ public class SettingsProperties implements PropertiesADT {
 	
 	public boolean getNoSFX() {
 		return boolSettings.get("NOSFX");
+	}
+	
+	public long getVolume() {
+		return longSettings.get("VOLUME");
 	}
 	
 	public boolean getFullscreenFromFile() {

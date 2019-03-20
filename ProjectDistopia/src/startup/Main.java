@@ -1,7 +1,9 @@
 package startup;
 
+import audio.BgMusicListener;
 import elem.User;
 import game.handlers.GameHandler;
+import javafx.application.Platform;
 import network.client.Client;
 import network.server.Server;
 import sort.SettingsProperties;
@@ -11,8 +13,8 @@ import window.LobbyFrame;
 
 public class Main {
 
-	private static GameFrame GAME_FRAME;
-	private static String OS;
+	public static GameFrame GAME_FRAME;
+	public static String OS;
 	public static String NAME;
 	public static UserProperties USER_PROPERTIES;
 	public static SettingsProperties SETTINGS_PROPERTIES;
@@ -21,8 +23,7 @@ public class Main {
 	public static User USER;
 	public static int WIDTH;
 	public static int HEIGHT;
-	
-	
+	public static int MUSIC_TYPE;
 
 	public static void main(String[] args) {
 		OS = System.getProperty("os.name").toLowerCase();
@@ -34,6 +35,7 @@ public class Main {
 		NAME = "Battle of Authradgard";
 		WIDTH = 600;
 		HEIGHT = 500;
+
 		
 		String dir = "./.battleOfAuthradgard/";
 		if (Main.isWindows()) {
@@ -64,8 +66,8 @@ public class Main {
 	
 	public static void openGameFrame() {
 		
+		GAME_FRAME = new GameFrame(WIDTH, HEIGHT, NAME);
 		GameHandler gm = new GameHandler();
-		GAME_FRAME = new GameFrame(WIDTH, HEIGHT, NAME, gm);
 		new Thread(gm).start();
 	}
 	

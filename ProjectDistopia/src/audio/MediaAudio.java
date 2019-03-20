@@ -4,6 +4,7 @@ import game.handlers.GameHandler;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import startup.Main;
 
 public class MediaAudio {
 	private Media hit;
@@ -13,10 +14,11 @@ public class MediaAudio {
 		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
 		mediaPlayer = new MediaPlayer(hit);
 		setVolume();
+		mediaPlayer.play();
 	}
 	
 	public void setVolume() {
-//		mediaPlayer.setVolume(GameHandler.volume);
+		mediaPlayer.setVolume(Main.SETTINGS_PROPERTIES.getVolume() / 100.0);
 	}
 
 	public void play() {

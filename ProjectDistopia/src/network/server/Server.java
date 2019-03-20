@@ -51,6 +51,10 @@ public class Server {
 	public boolean isRunning() {
 		return running;
 	}
+	
+	public void stopWatch() {
+		watch.endTheWatch();
+	}
 
 	public void setRunning(boolean running) {
 
@@ -59,8 +63,8 @@ public class Server {
 		if (running == false) {
 			try {
 				socketserver.close();
-				watchThread.join();
-			} catch (IOException | InterruptedException e) {
+				watch.endTheWatch();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 

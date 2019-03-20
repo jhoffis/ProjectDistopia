@@ -26,7 +26,7 @@ public class TCPServer {
 		socket.start();
 	}
 
-	public void updateSocket() {
+	public synchronized void updateSocket() {
 		int i = 0;
 		int tried = 0;
 		while(tried < 3) {
