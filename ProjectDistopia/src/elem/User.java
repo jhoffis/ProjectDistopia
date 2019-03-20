@@ -19,7 +19,6 @@ public class User {
 	private int host;
 	private long timeLastRec;
 
-
 	public User(String toStringVal) {
 		this(toStringVal.split("#")[0], Integer.valueOf(toStringVal.split("#")[1]),
 				Integer.valueOf(toStringVal.split("#")[2]), Integer.valueOf(toStringVal.split("#")[3]));
@@ -37,7 +36,7 @@ public class User {
 		this.finalid = finalid;
 	}
 
-	//FIXME skal vise ping ikke fast tid
+
 	public long updateTime() {
 		return timeLastRec = System.currentTimeMillis();
 	}
@@ -50,10 +49,11 @@ public class User {
 	public String toStringLobby() {
 		return name + "#" + faction + "#" + host + "#" + (ready ? 1 : 0);
 	}
+
 	public boolean isReady() {
 		return ready;
 	}
-	
+
 	public void setReady(boolean ready) {
 		this.ready = ready;
 	}

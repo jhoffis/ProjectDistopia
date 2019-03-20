@@ -58,6 +58,7 @@ public class ServerInfo {
 	 * FIXME what about when you have a samegame.
 	 */
 	public String leaveLobby(Integer id) {
+		System.out.println(id + " is leaving.. bye");
 		users.remove(id);
 		return "LEFT";
 	}
@@ -127,9 +128,12 @@ public class ServerInfo {
 		started = true;
 	}
 
+	/*
+	 * Lost connection : too high ping!
+	 */
 	public void checkConnections() {
 		for (Entry<Integer, User> entry : users.entrySet()) {
-			if (entry.getValue().getTimeLastRec() > 5000) {
+			if (System.currentTimeMillis() - entry.getValue().getTimeLastRec() > 5000) {
 				leaveLobby(entry.getValue().getId());
 			}
 		}
