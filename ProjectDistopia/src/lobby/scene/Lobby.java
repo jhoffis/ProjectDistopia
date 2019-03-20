@@ -112,6 +112,11 @@ public class Lobby extends LobbySceneADT implements Runnable {
 
 				client.sendAck(user.getId());
 
+				if(client == null) {
+					running = false;
+					break;
+				}
+				
 				// START GAME AND RUN LOOP SOMEWHERE ELSE
 				if (Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
 					System.err.println("--STARTED--");

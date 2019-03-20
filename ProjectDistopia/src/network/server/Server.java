@@ -16,6 +16,8 @@ import elem.ConnectionConfig;
 
 public class Server {
 
+	private ServerWatch watch;
+	private Thread watchThread;
 	private int serverport;
 	private boolean running;
 	private ServerSocket socketserver;
@@ -38,6 +40,10 @@ public class Server {
 			System.out.println("TCP server: " + e.getMessage());
 			e.printStackTrace();
 		}
+		
+		watch = new ServerWatch(info);
+		watchThread = new Thread(watch);
+		watchThread.start();
 	}
 	/*
 	 * Getters and setters
@@ -53,7 +59,8 @@ public class Server {
 		if (running == false) {
 			try {
 				socketserver.close();
-			} catch (IOException e) {
+				watchThread.join();
+			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
 

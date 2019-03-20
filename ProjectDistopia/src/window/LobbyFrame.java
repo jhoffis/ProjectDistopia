@@ -75,16 +75,20 @@ public class LobbyFrame extends Application {
 		PRIMARY_STAGE.close();
 	}
 
-	public static void shutdown() {
+	public static synchronized void shutdown() {
 		 Alert alert = new Alert(Alert.AlertType.NONE, "Are you sure you want to exit now?", ButtonType.YES, ButtonType.NO);
 		 alert.setTitle("Beware!");
 		    if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
 		        // you may need to close other windows or replace this with Platform.exit();
 		    	System.out.println("Shutdown");
-				if (Main.CLIENT != null)
+				if (Main.CLIENT != null) {
 					Main.CLIENT.leave(Main.USER.getId());
-				if (Main.SERVER != null)
+					Main.CLIENT = null;
+				}
+				if (Main.SERVER != null) {
 					Main.SERVER.setRunning(false);
+					Main.SERVER = null;
+				}
 		    	PRIMARY_STAGE.close();
 		    	System.exit(0);
 		    }

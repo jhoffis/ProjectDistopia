@@ -37,6 +37,7 @@ public class User {
 		this.finalid = finalid;
 	}
 
+	//FIXME skal vise ping ikke fast tid
 	public long updateTime() {
 		return timeLastRec = System.currentTimeMillis();
 	}

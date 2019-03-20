@@ -127,4 +127,12 @@ public class ServerInfo {
 		started = true;
 	}
 
+	public void checkConnections() {
+		for (Entry<Integer, User> entry : users.entrySet()) {
+			if (entry.getValue().getTimeLastRec() > 5000) {
+				leaveLobby(entry.getValue().getId());
+			}
+		}
+	}
+
 }
