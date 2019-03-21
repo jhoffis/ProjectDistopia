@@ -123,6 +123,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				// START GAME AND RUN LOOP SOMEWHERE ELSE
 				if (Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
 					System.err.println("--STARTED--");
+					Main.USER = user;
 					if(user.getFaction().equals( "Aiazom")) {
 						Main.MUSIC_TYPE = 5;
 					} else if(user.getFaction().equals("Gazellia") || user.getFaction().equals("Empire of Anglia")) {

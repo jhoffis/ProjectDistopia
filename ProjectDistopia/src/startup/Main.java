@@ -18,7 +18,7 @@ public class Main {
 	public static String NAME;
 	public static UserProperties USER_PROPERTIES;
 	public static SettingsProperties SETTINGS_PROPERTIES;
-	public static Server SERVER; 
+	public static Server SERVER;
 	public static Client CLIENT;
 	public static User USER;
 	public static int WIDTH;
@@ -35,7 +35,7 @@ public class Main {
 		NAME = "Battle of Authradgard";
 		WIDTH = 600;
 		HEIGHT = 500;
-		
+
 		String dir = "./.battleOfAuthradgard/";
 		if (Main.isWindows()) {
 			System.out.println("You have Windows");
@@ -48,12 +48,22 @@ public class Main {
 		}
 		USER_PROPERTIES.initProperties(dir, "users");
 		SETTINGS_PROPERTIES.initProperties(dir, "settings");
-		
-//		openGameFrame();
 
-		LobbyFrame lf = new LobbyFrame();
-		lf.openWindow(args, WIDTH, HEIGHT, NAME);
+		/*
+		 * DEBUG
+		 */
+		boolean testing = false;
 		
+		if (testing) {
+			USER = new User("JOnathan Test", 69, 1, 69);
+			USER.setFaction("Aiazom");
+			MUSIC_TYPE = 0;
+			openGameFrame();
+
+		} else {
+			LobbyFrame lf = new LobbyFrame();
+			lf.openWindow(args, WIDTH, HEIGHT, NAME);
+		}
 	}
 
 	public static boolean isWindows() {
@@ -65,15 +75,15 @@ public class Main {
 
 		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0);
 	}
-	
+
 	public static void openGameFrame() {
-		
+
 		GAME_FRAME = new GameFrame(WIDTH, HEIGHT, NAME);
 		GameHandler gm = new GameHandler(GAME_FRAME);
 		new Thread(gm).start();
 	}
-	
+
 	public static void closeGameFrame() {
-		//FIXME close the GAME_FRAME
+		// FIXME close the GAME_FRAME
 	}
 }

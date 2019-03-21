@@ -130,6 +130,11 @@ public class GameHandler extends GameVisualADT implements Runnable {
 				System.out.println("FPS: " + frames);
 				frames = 0;
 			}
+			try {
+				Thread.sleep(4);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

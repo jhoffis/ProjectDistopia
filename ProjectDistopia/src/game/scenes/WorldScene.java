@@ -31,11 +31,12 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	private int calcX;
 	private int calcY;
 	private float zoom;
+	private boolean mouseSelect;
 
 	public WorldScene(JFrame frame) {
 		world = new World(64, 64, size);
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
-		ui = new WorldUI();
+		ui = new WorldUI(Main.USER.getFaction());
 
 	}
 
@@ -48,13 +49,10 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 		for (int x = 0; x < world.getWidth(); x++) {
 			int n = x;
 			for (int y = 0; y < world.getHeight(); y++) {
-				
+
 				Tile tile = world.getTile(x, y);
-				
-				if (n % 2 == 0)
-					g.setColor(tile.getColor());
-				else
-					g.setColor(Color.white);
+
+				g.setColor(tile.getColor());
 
 				// FIXME legg til som Tiles i stedet og ha en eller annen type tabell som holder
 				// referanser til hver sin x,y koordinat : px.
@@ -62,7 +60,7 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 				zoom = (sizeWH / 2f * world.getWidth());
 				calcX = (int) (((x * sizeWH) + cam.getX()) - zoom);
 				calcY = (int) (((y * sizeWH) + cam.getY()) - zoom);
-				
+
 				g.fillRect(calcX, calcY, sizeWH, sizeWH);
 
 				n++;
@@ -75,8 +73,7 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	@Override
 	public void tick() {
 		ui.tick();
-		
-		
+
 	}
 
 	public Camera getCam() {
@@ -143,8 +140,16 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	public void mouseDragged(MouseEvent e) {
 		// TEST FIXME
 //		System.out.println("x: " + (e.getX() - mouseClickx) + " y: " + (e.getY() - mouseClicky));
-		getCam().setX(mouseClickxCam + (e.getX() - mouseClickx));
-		getCam().setY(mouseClickyCam + (e.getY() - mouseClicky));
+
+		int x = e.getX();
+		int y = e.getY();
+
+		// Sjekk om man er over ui
+		if (!ui.above(mouseClickx, mouseClicky)) {
+			getCam().setX(mouseClickxCam + (e.getX() - mouseClickx));
+			getCam().setY(mouseClickyCam + (e.getY() - mouseClicky));
+			mouseSelect = false;
+		}
 	}
 
 	@Override
@@ -166,20 +171,20 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 		int x = e.getX();
 		int y = e.getY();
 		System.out.println("Mouse Clicked at X: " + x + " - Y: " + y);
+
+		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		System.out.println("Mouse Entered frame at X: " + x + " - Y: " + y);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		System.out.println("Mouse Exited frame at X: " + x + " - Y: " + y);
 	}
 
 	@Override
@@ -188,6 +193,7 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 		mouseClickyCam = cam.getY();
 		mouseClickx = e.getX();
 		mouseClicky = e.getY();
+		mouseSelect = true;
 //        System.out.println("Mouse Pressed at X: " + mouseClickx + " - Y: " + mouseClickx);
 	}
 
@@ -195,7 +201,17 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	public void mouseReleased(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		System.out.println("Mouse Released at X: " + x + " - Y: " + y);
+		
+		if (mouseSelect) {
+			// Sjekk om man er over ui
+			if (ui.above(x, y)) {
+				// check for ui events
+				ui.runEvent(x, y);
+			} else {
+				// select tile.
+			}
+		}
+		mouseSelect = false;
 	}
 
 }

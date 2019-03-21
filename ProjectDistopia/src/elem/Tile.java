@@ -9,10 +9,10 @@ public class Tile {
 	private Color color;
 
 	
-	public Tile( int type, int state) {
+	public Tile( int type, int state, Color color) {
 		this.type = type;
 		this.state = state;
-		this.color = Color.green;
+		this.color = color;
 	}
 
 
