@@ -2,18 +2,22 @@ package window;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import game.scenes.WorldScene;
+import game.scenes.world.WorldMouseMove;
 import javafx.application.Platform;
 import startup.Main;
 
 public class GameFrame extends JFrame {
 
 	public GameFrame(int width, int height, String title) {
+
 
 		setBounds(0, 0, width, height);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -37,7 +41,7 @@ public class GameFrame extends JFrame {
 		setLocationRelativeTo(null);
 		setTitle(title);
 		setResizable(false);
-		
+
 		if (Main.SETTINGS_PROPERTIES.getFullscreen()) {
 			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 			Main.WIDTH = dim.width;

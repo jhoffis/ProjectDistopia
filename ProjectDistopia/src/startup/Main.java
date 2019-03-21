@@ -13,7 +13,7 @@ import window.LobbyFrame;
 
 public class Main {
 
-	public static GameFrame GAME_FRAME;
+	private static GameFrame GAME_FRAME;
 	public static String OS;
 	public static String NAME;
 	public static UserProperties USER_PROPERTIES;
@@ -35,7 +35,6 @@ public class Main {
 		NAME = "Battle of Authradgard";
 		WIDTH = 600;
 		HEIGHT = 500;
-
 		
 		String dir = "./.battleOfAuthradgard/";
 		if (Main.isWindows()) {
@@ -49,9 +48,12 @@ public class Main {
 		}
 		USER_PROPERTIES.initProperties(dir, "users");
 		SETTINGS_PROPERTIES.initProperties(dir, "settings");
+		
+//		openGameFrame();
 
 		LobbyFrame lf = new LobbyFrame();
 		lf.openWindow(args, WIDTH, HEIGHT, NAME);
+		
 	}
 
 	public static boolean isWindows() {
@@ -67,7 +69,7 @@ public class Main {
 	public static void openGameFrame() {
 		
 		GAME_FRAME = new GameFrame(WIDTH, HEIGHT, NAME);
-		GameHandler gm = new GameHandler();
+		GameHandler gm = new GameHandler(GAME_FRAME);
 		new Thread(gm).start();
 	}
 	

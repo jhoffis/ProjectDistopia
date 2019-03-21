@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 
 import adt.GameSceneADT;
@@ -37,14 +38,6 @@ public class WorldUI implements GameSceneADT {
 		
 	}
 
-	@Override
-	public MouseListener getMouseListener() {
-		return null;
-	}
 
-	@Override
-	public MouseWheelListener getMouseWheelListener() {
-		return null;
-	}
 
 }

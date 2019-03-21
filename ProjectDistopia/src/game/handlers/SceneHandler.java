@@ -1,5 +1,7 @@
 package game.handlers;
 
+import javax.swing.JFrame;
+
 import adt.GameSceneADT;
 import game.scenes.GovScene;
 import game.scenes.MenuScene;
@@ -12,10 +14,10 @@ public class SceneHandler {
 	private GameSceneADT[] scenes;
 	private int currentScene;
 
-	public SceneHandler() {
+	public SceneHandler(JFrame frame) {
 		scenes = new GameSceneADT[5];
 		currentScene = 0;
-		scenes[0] = new WorldScene();
+		scenes[0] = new WorldScene(frame);
 		scenes[1] = new GovScene();
 		scenes[2] = new MenuScene();
 		scenes[3] = new OptionsScene();

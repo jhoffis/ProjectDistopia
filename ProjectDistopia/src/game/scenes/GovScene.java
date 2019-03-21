@@ -3,6 +3,7 @@ package game.scenes;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 
 import adt.GameSceneADT;
@@ -37,16 +38,6 @@ public class GovScene implements GameSceneADT {
 		
 	}
 
-	@Override
-	public MouseListener getMouseListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public MouseWheelListener getMouseWheelListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

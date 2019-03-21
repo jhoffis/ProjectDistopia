@@ -1,11 +1,15 @@
 package game.handlers;
 
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
+
+import javax.swing.JFrame;
 
 import adt.GameVisualADT;
 import audio.BgMusicListener;
 import audio.MediaAudio;
+import game.scenes.WorldScene;
 import javafx.embed.swing.JFXPanel;
 import startup.Main;
 
@@ -14,20 +18,27 @@ public class GameHandler extends GameVisualADT implements Runnable {
 	private SceneHandler sh;
 	private BufferStrategy bs;
 	private BgMusicListener bg;
+	private JFrame frame;
 
-	public GameHandler() {
-		sh = new SceneHandler();
-
+	public GameHandler(JFrame frame) {
+		sh = new SceneHandler(frame);
+		this.frame = frame;
+		
 		JFXPanel fxPanel = new JFXPanel();
-		Main.GAME_FRAME.add(fxPanel);
-		Main.GAME_FRAME.add(this);
-		Main.GAME_FRAME.addKeyListener(sh.getCurrent());
-		Main.GAME_FRAME.addMouseListener(sh.getCurrent().getMouseListener());
-		Main.GAME_FRAME.addMouseWheelListener(sh.getCurrent().getMouseWheelListener());
-		Main.GAME_FRAME.setFocusable(true);
-		Main.GAME_FRAME.requestFocus();
-		Main.GAME_FRAME.setVisible(true);
+		frame.add(fxPanel);
+		frame.add(this);
 
+//		MouseListener ml = new WorldMouse((WorldScene) sh.getCurrent());
+
+		frame.addKeyListener(sh.getCurrent());
+		this.addMouseListener((WorldScene) sh.getCurrent());
+		this.addMouseMotionListener((WorldScene) sh.getCurrent());
+		frame.addMouseWheelListener((WorldScene) sh.getCurrent());
+		
+		frame.setFocusable(true);
+		frame.requestFocus();
+		frame.setVisible(true);
+		
 		switch (Main.MUSIC_TYPE) {
 		case 1:
 			bg = new BgMusicListener(2, "type1");
@@ -71,12 +82,14 @@ public class GameHandler extends GameVisualADT implements Runnable {
 			}
 		}
 		bs.show();
+
+		Toolkit.getDefaultToolkit().sync();
 	}
 
 	@Override
 	public void tick() {
 		sh.getCurrent().tick();
-		Main.GAME_FRAME.requestFocus();
+		frame.requestFocus();
 	}
 
 	@Override
