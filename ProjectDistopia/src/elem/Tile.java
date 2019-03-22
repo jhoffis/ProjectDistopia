@@ -1,10 +1,13 @@
 package elem;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 
+import adt.GameSceneADT;
 import game.scenes.world.Echo;
 
-public class Tile {
+public class Tile implements GameSceneADT{
 
 	private int type;
 	private int state;
@@ -51,6 +54,41 @@ public class Tile {
 	public void select() {
 		// TODO Auto-generated method stub
 		Echo.println("I am selected");
+	}
+
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void render(Graphics g) {
+		//TODO render ui.
+		g.setColor(color);
+		g.fillRect(0, 0, 100, 100);
+	}
+
+
+	@Override
+	public void tick() {
+		
 	}
 	
 }

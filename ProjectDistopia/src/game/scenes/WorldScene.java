@@ -58,11 +58,11 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 
 				// FIXME legg til som Tiles i stedet og ha en eller annen type tabell som holder
 				// referanser til hver sin x,y koordinat : px.
-				//Size with height (of camera)
+				// Size with height (of camera)
 				sizeWH = size + cam.getZ();
-				//Midpoint of the map.
+				// Midpoint of the map.
 				zoom = (sizeWH / 2f * world.getWidth());
-				//x, y respecively.
+				// x, y respecively.
 				calcX = (int) (((x * sizeWH) + cam.getX()) - zoom);
 				calcY = (int) (((y * sizeWH) + cam.getY()) - zoom);
 
@@ -169,7 +169,7 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 		getCam().translateZ(direction * getSizeWH() / 4);
 		getCam().translateX(((Main.WIDTH / 2) - e.getX()) / 6);
 		getCam().translateY(((Main.HEIGHT / 2) - e.getY()) / 6);
-		
+
 		Echo.println(zoom);
 	}
 
@@ -177,14 +177,18 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		Echo.println("Mouse Clicked at X: " + x + " - Y: " + y);
 
 		Tile tile = getTileByCoor(x, y);
+		ui.setSelectedTile(tile);
 		tile.select();
 	}
 
-	private Tile getTileByCoor(int x, int y) {
-		return null;
+	private Tile getTileByCoor(int mx, int my) {
+		int size = world.getWidth();
+		int x = (int) (size - (zoom - (mx - cam.getX())) / sizeWH);
+		int y = (int) (size -(zoom - (my - cam.getY())) / sizeWH);
+		Echo.println("Mouse Clicked at X: " + x + " - Y: " + y);
+		return world.getTile(x, y);
 	}
 
 	@Override
@@ -213,7 +217,7 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	public void mouseReleased(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		
+
 		if (mouseSelect) {
 			// Sjekk om man er over ui
 			if (ui.above(x, y)) {

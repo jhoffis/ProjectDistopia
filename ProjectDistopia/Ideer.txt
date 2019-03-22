@@ -1,4 +1,6 @@
-Distopian world set in the future. Lag bare for å kunne spille med venner 🙂
+﻿Distopian world set in the future. Lag bare for å kunne spille med venner 🙂
+
+Legg til sjekk av versjon der om versjonen din app har er lavere enn den som er skrevet så får du feilmelding, men du kan overskrive den.
 
 Battle of Authradgard
 

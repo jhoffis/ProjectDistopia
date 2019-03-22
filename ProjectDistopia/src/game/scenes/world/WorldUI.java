@@ -14,6 +14,7 @@ import adt.Button;
 import adt.GameSceneADT;
 import elem.Area;
 import elem.StdBtn;
+import elem.Tile;
 import startup.Main;
 
 public class WorldUI implements GameSceneADT {
@@ -25,6 +26,7 @@ public class WorldUI implements GameSceneADT {
 	private int profilePicSize;
 	private int profilePicX;
 	private int profilePicY;
+	private Tile tile;
 
 	public WorldUI(String fac, Font font) {
 		occupiedAreas = new ArrayList<Area>();
@@ -56,6 +58,8 @@ public class WorldUI implements GameSceneADT {
 		buttons.add(new StdBtn(Main.WIDTH - topBtnBuffer - topBtnWidth, topBtnBuffer, 100, topBtnHeight,
 				new Color(13, 0, 80), "Menu", new Font("Georgia", Font.PLAIN, (int) (topBtnHeight / 1.5f)),
 				() -> System.exit(0)));
+		
+		tile = null;
 	}
 
 	@Override
@@ -88,11 +92,19 @@ public class WorldUI implements GameSceneADT {
 			buttons.get(i).render(g);
 		}
 		
+		if(tile != null) {
+			tile.render(g);
+		}
+		
 	}
 
 	@Override
 	public void tick() {
 		debug.tick();
+		
+		if(tile != null) {
+			tile.tick();
+		}
 	}
 
 	public boolean above(int x, int y) {
@@ -132,6 +144,10 @@ public class WorldUI implements GameSceneADT {
 
 	public void setButtons(ArrayList<Button> buttons) {
 		this.buttons = buttons;
+	}
+
+	public void setSelectedTile(Tile tile) {
+		this.tile = tile;
 	}
 
 }
