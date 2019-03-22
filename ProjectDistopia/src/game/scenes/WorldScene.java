@@ -1,6 +1,7 @@
 package game.scenes;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -13,6 +14,7 @@ import adt.GameSceneADT;
 import elem.Camera;
 import elem.Tile;
 import game.scenes.world.World;
+import game.scenes.world.Echo;
 import game.scenes.world.WorldUI;
 import startup.Main;
 
@@ -34,10 +36,10 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	private boolean mouseSelect;
 
 	public WorldScene(JFrame frame) {
+		Font font = new Font("Georgia", Font.PLAIN, 16);
 		world = new World(64, 64, size);
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
-		ui = new WorldUI(Main.USER.getFaction());
-
+		ui = new WorldUI(Main.USER.getFaction(), font);
 	}
 
 	@Override
@@ -56,8 +58,11 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 
 				// FIXME legg til som Tiles i stedet og ha en eller annen type tabell som holder
 				// referanser til hver sin x,y koordinat : px.
+				//Size with height (of camera)
 				sizeWH = size + cam.getZ();
+				//Midpoint of the map.
 				zoom = (sizeWH / 2f * world.getWidth());
+				//x, y respecively.
 				calcX = (int) (((x * sizeWH) + cam.getX()) - zoom);
 				calcY = (int) (((y * sizeWH) + cam.getY()) - zoom);
 
@@ -73,7 +78,6 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	@Override
 	public void tick() {
 		ui.tick();
-
 	}
 
 	public Camera getCam() {
@@ -163,16 +167,24 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 		int unitsToScroll = e.getUnitsToScroll();
 		int direction = unitsToScroll < 0 ? 1 : -1;
 		getCam().translateZ(direction * getSizeWH() / 4);
-
+		getCam().translateX(((Main.WIDTH / 2) - e.getX()) / 6);
+		getCam().translateY(((Main.HEIGHT / 2) - e.getY()) / 6);
+		
+		Echo.println(zoom);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		System.out.println("Mouse Clicked at X: " + x + " - Y: " + y);
+		Echo.println("Mouse Clicked at X: " + x + " - Y: " + y);
 
-		
+		Tile tile = getTileByCoor(x, y);
+		tile.select();
+	}
+
+	private Tile getTileByCoor(int x, int y) {
+		return null;
 	}
 
 	@Override

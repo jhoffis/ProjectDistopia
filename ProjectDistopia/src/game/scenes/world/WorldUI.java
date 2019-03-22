@@ -21,16 +21,17 @@ public class WorldUI implements GameSceneADT {
 	private ArrayList<Area> occupiedAreas;
 	private ArrayList<Button> buttons;
 	private BufferedImage profilePic;
+	private Echo debug;
 	private int profilePicSize;
 	private int profilePicX;
 	private int profilePicY;
 
-	public WorldUI(String fac) {
+	public WorldUI(String fac, Font font) {
 		occupiedAreas = new ArrayList<Area>();
 		// Top bar
-		occupiedAreas.add(new Area(0, 0, Main.WIDTH, Main.HEIGHT / 24));
+		occupiedAreas.add(0, new Area(0, 0, Main.WIDTH, Main.HEIGHT / 24));
 		// Bottom bar
-		occupiedAreas.add(new Area(0, (int) (Main.HEIGHT - (Main.HEIGHT / 6f)), Main.WIDTH, Main.HEIGHT));
+		occupiedAreas.add(1, new Area(0, (int) (Main.HEIGHT - (Main.HEIGHT / 6f)), Main.WIDTH, Main.HEIGHT));
 
 		// Profile picture
 		try {
@@ -44,6 +45,9 @@ public class WorldUI implements GameSceneADT {
 		profilePicX = Main.WIDTH - profilePicSize - picBuffer;
 		profilePicY = Main.HEIGHT - profilePicSize - picBuffer;
 
+		debug = new Echo(font, occupiedAreas.get(0).getY2() + font.getSize());
+		
+		
 		// Final buttons like menu and shit
 		buttons = new ArrayList<Button>();
 		int topBtnHeight = Main.HEIGHT / 32;
@@ -71,6 +75,7 @@ public class WorldUI implements GameSceneADT {
 
 	@Override
 	public void render(Graphics g) {
+		debug.render(g);
 		g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.8f));
 
 		for (int i = 0; i < occupiedAreas.size(); i++) {
@@ -82,11 +87,12 @@ public class WorldUI implements GameSceneADT {
 		for (int i = 0; i < buttons.size(); i++) {
 			buttons.get(i).render(g);
 		}
+		
 	}
 
 	@Override
 	public void tick() {
-
+		debug.tick();
 	}
 
 	public boolean above(int x, int y) {
@@ -110,6 +116,22 @@ public class WorldUI implements GameSceneADT {
 			}
 
 		}
+	}
+
+	public ArrayList<Area> getOccupiedAreas() {
+		return occupiedAreas;
+	}
+
+	public void setOccupiedAreas(ArrayList<Area> occupiedAreas) {
+		this.occupiedAreas = occupiedAreas;
+	}
+
+	public ArrayList<Button> getButtons() {
+		return buttons;
+	}
+
+	public void setButtons(ArrayList<Button> buttons) {
+		this.buttons = buttons;
 	}
 
 }

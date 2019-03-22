@@ -10,6 +10,7 @@ import adt.GameVisualADT;
 import audio.BgMusicListener;
 import audio.MediaAudio;
 import game.scenes.WorldScene;
+import game.scenes.world.Echo;
 import javafx.embed.swing.JFXPanel;
 import startup.Main;
 
@@ -128,6 +129,7 @@ public class GameHandler extends GameVisualADT implements Runnable {
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS: " + frames);
+				Echo.println("FPS: " + frames);
 				frames = 0;
 			}
 			try {

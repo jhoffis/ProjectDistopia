@@ -333,11 +333,11 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		add(scenetitle);
 		add(players);
 	}
-
+	MediaAudio lobbybtn;
 	private void changeFac(int clicked) {
 		if (!facChosen[clicked]) {
 			client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
-			new MediaAudio("/sfx/" + facNames[clicked] + "/lobbybtn").play();
+			lobbybtn = new MediaAudio("/sfx/" + facNames[clicked] + "/lobbybtn");
 		}
 	}
 

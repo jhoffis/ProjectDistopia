@@ -2,6 +2,8 @@ package elem;
 
 import java.awt.Color;
 
+import game.scenes.world.Echo;
+
 public class Tile {
 
 	private int type;
@@ -43,6 +45,12 @@ public class Tile {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+
+	public void select() {
+		// TODO Auto-generated method stub
+		Echo.println("I am selected");
 	}
 	
 }

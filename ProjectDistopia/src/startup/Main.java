@@ -52,7 +52,7 @@ public class Main {
 		/*
 		 * DEBUG
 		 */
-		boolean testing = false;
+		boolean testing = true;
 		
 		if (testing) {
 			USER = new User("JOnathan Test", 69, 1, 69);
