@@ -34,9 +34,10 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	private int calcY;
 	private float zoom;
 	private boolean mouseSelect;
+	public static Font font;
 
 	public WorldScene(JFrame frame) {
-		Font font = new Font("Georgia", Font.PLAIN, 16);
+		font = new Font("Georgia", Font.BOLD, 16);
 		world = new World(64, 64, size);
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
 		ui = new WorldUI(Main.USER.getFaction(), font);

@@ -27,6 +27,7 @@ public class WorldUI implements GameSceneADT {
 	private int profilePicX;
 	private int profilePicY;
 	private Tile tile;
+	private Color uiColor;
 
 	public WorldUI(String fac, Font font) {
 		occupiedAreas = new ArrayList<Area>();
@@ -60,6 +61,8 @@ public class WorldUI implements GameSceneADT {
 				() -> System.exit(0)));
 		
 		tile = null;
+		
+		uiColor = new Color(44f / 255f, 44f / 255f, 44f / 255f,0.8f);
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public class WorldUI implements GameSceneADT {
 	@Override
 	public void render(Graphics g) {
 		debug.render(g);
-		g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.8f));
+		g.setColor(uiColor);
 
 		for (int i = 0; i < occupiedAreas.size(); i++) {
 			Area a = occupiedAreas.get(i);

@@ -56,7 +56,7 @@ public class Main {
 		
 		if (testing) {
 			USER = new User("JOnathan Test", 69, 1, 69);
-			USER.setFaction("Aiazom");
+			USER.setFaction("Gazellia");
 			MUSIC_TYPE = 0;
 			openGameFrame();
 

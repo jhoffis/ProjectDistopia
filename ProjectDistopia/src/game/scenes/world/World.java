@@ -41,7 +41,7 @@ public class World {
 			System.out.println("Green Color value = " + green);
 			System.out.println("Blue Color value = " + blue);
 
-			tiles[i] = new Tile(0, 100, new Color(red, green, blue));
+			tiles[i] = new Tile(0, 100, new Color(red, green, blue), "SOMETILEFIXME");
 		}
 	}
 
