@@ -56,30 +56,31 @@ public class Options extends LobbySceneADT {
 		slider.setBlockIncrement(10);
 
 		goBack.setOnAction((ActionEvent e) -> {
-			LobbyFrame.setScene("MainMenu");
-			new MediaAudio("/sfx/btn").play();
+			LobbyFrame.setScene("LAST");
+			Main.lbtn();
 		});
 		fullscreen.setOnAction((ActionEvent e) -> {
 			Main.SETTINGS_PROPERTIES.setFullscreen(fullscreen.isSelected());
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		allmusic.setOnAction((ActionEvent e) -> {
 			Main.SETTINGS_PROPERTIES.setAllMusic(allmusic.isSelected());
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		nomusic.setOnAction((ActionEvent e) -> {
 			Main.SETTINGS_PROPERTIES.setNoMusic(nomusic.isSelected());
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		nosfx.setOnAction((ActionEvent e) -> {
 			Main.SETTINGS_PROPERTIES.setNoSFX(nosfx.isSelected());
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		slider.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newVal) {
 				long l = Math.round((double) newVal);
 				sliderLabel.setText(sliderText + l);
 				Main.SETTINGS_PROPERTIES.setVolume(l);
+				Main.updateVolume();
 			}
 		});
 

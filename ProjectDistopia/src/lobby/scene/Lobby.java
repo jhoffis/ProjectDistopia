@@ -37,6 +37,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private Text scenetitle;
 	private String availFac = "";
 	private Button ready;
+	private Button options;
 	private Button start;
 	private Image[] facImgs;
 	private String[] facNames = { "Aiazom", "Gazellia", "Jotnatium", "Republic of Wessland", "Empire of Anglia",
@@ -47,11 +48,10 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private Color bckColor = new Color(44.0 / 255.0, 44.0 / 255.0, 44.0 / 255.0, 1.0);
 	private VBox humanBox;
 	private VBox alienBox;
+	private MediaAudio lobbybtn;
 
 	public Lobby(String pathname) {
 		super(pathname);
-		
-		
 
 		goBack = new Button("Return");
 		facChosen = new boolean[facNames.length];
@@ -82,7 +82,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	}
 
 	public void leaveLobby() {
-		new MediaAudio("/sfx/btn").play();
+		Main.lbtn();
 		running = false;
 		server.stopWatch();
 		client.leave(user.getId());
@@ -91,7 +91,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			server.setRunning(false);
 
 		LobbyFrame.setScene("MainMenu");
-		
+
 	}
 
 	@Override
@@ -115,39 +115,43 @@ public class Lobby extends LobbySceneADT implements Runnable {
 
 				client.sendAck(user.getId());
 
-				if(client == null) {
+				if (client == null) {
 					running = false;
 					break;
 				}
-				
+
 				// START GAME AND RUN LOOP SOMEWHERE ELSE
 				if (Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
 					System.err.println("--STARTED--");
 					Main.USER = user;
-					if(user.getFaction().equals( "Aiazom")) {
+					if (user.getFaction().equals("Aiazom")) {
 						Main.MUSIC_TYPE = 5;
-					} else if(user.getFaction().equals("Gazellia") || user.getFaction().equals("Empire of Anglia")) {
+					} else if (user.getFaction().equals("Gazellia") || user.getFaction().equals("Empire of Anglia")) {
 						Main.MUSIC_TYPE = 3;
-					} else if(user.getFaction().equals( "Republic of Wessland")) {
+					} else if (user.getFaction().equals("Republic of Wessland")) {
 						Main.MUSIC_TYPE = 4;
-					} else if(user.getFaction().equals( "Jotnatium")) {
+					} else if (user.getFaction().equals("Jotnatium")) {
 						Main.MUSIC_TYPE = 1;
-					} else if(user.getFaction().equals( "Theilron Hills")) {
+					} else if (user.getFaction().equals("Theilron Hills")) {
 						Main.MUSIC_TYPE = 2;
 					} else {
-						
+
 					}
 					Platform.runLater(() -> Main.openGameFrame());
 //					Platform.runLater(() -> LobbyFrame.forceShutdownLobby());
 					running = false;
-					
+					for (int i = 0; i < Main.SOUNDS.size(); i++) {
+						int n = i;
+						Platform.runLater(() -> Main.SOUNDS.get(n).stop());
+					}
 					Platform.runLater(() -> rm(goBack));
 					Platform.runLater(() -> rm(ready));
 					Platform.runLater(() -> rm(start));
 					Platform.runLater(() -> rm(humanBox));
 					Platform.runLater(() -> rm(alienBox));
+					Platform.runLater(() -> rm(options));
 					Platform.runLater(() -> scenetitle.setText("Don't mind this ok"));
-					
+
 					break;
 				}
 
@@ -244,7 +248,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 
 		players = new Label();
 		ready = new Button("Ready");
-
+		options = new Button("Options");
 		facPics = new ImageView[6];
 		humanBox = new VBox();
 		alienBox = new VBox();
@@ -288,7 +292,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			start = new Button("Start Game!");
 			start.setOnAction((ActionEvent e) -> {
 				client.sendStringRequest("START#" + user.getId());
-				new MediaAudio("/sfx/btn").play();
+				Main.lbtn();
 			});
 			start.setTranslateX(mid + 120);
 			start.setTranslateY(300);
@@ -297,22 +301,26 @@ public class Lobby extends LobbySceneADT implements Runnable {
 
 		ready.setOnAction((ActionEvent e) -> {
 			client.sendStringRequest("READY#" + user.getId());
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 
-		String txt;
-
+		options.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("OPTIONS");
+			Main.lbtn();
+		});
 		scenetitle = new Text(client.sendStringRequest("TITLE").toUpperCase());
 		scenetitle.setFont(Font.font("Georgia", FontWeight.NORMAL, 24));
 		scenetitle.setFill(txtColor);
 		players.setTextFill(txtColor);
-		LobbyFrame.getPane(panename).setBackground(new Background(new BackgroundFill(bckColor, CornerRadii.EMPTY, Insets.EMPTY)));
+		LobbyFrame.getPane(panename)
+				.setBackground(new Background(new BackgroundFill(bckColor, CornerRadii.EMPTY, Insets.EMPTY)));
 
 		alienBox.setTranslateX(Main.WIDTH - 144);
 		humanBox.setTranslateX(16);
 		scenetitle.setTranslateX(mid);
 		players.setTranslateX(mid - 60);
-		ready.setTranslateX(mid + 60);
+		ready.setTranslateX(mid + 61);
+		options.setTranslateX(mid - 3);
 		goBack.setTranslateX(mid - 60);
 
 		int boxHeight = -10;
@@ -321,19 +329,20 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		scenetitle.setTranslateY(50);
 		players.setTranslateY(140);
 		goBack.setTranslateY(300);
+		options.setTranslateY(300);
 		ready.setTranslateY(300);
 
 //		alienBox.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 //		humanBox.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-		
-		
+
 		add(alienBox);
 		add(humanBox);
 		add(ready);
 		add(scenetitle);
 		add(players);
+		add(options);
 	}
-	MediaAudio lobbybtn;
+
 	private void changeFac(int clicked) {
 		if (!facChosen[clicked]) {
 			client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());

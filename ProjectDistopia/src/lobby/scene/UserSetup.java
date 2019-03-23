@@ -39,16 +39,16 @@ public class UserSetup extends LobbySceneADT {
 
 		mainMenu.setOnAction((ActionEvent e) -> {
 			LobbyFrame.setScene("MainMenu");
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		append.setOnAction((ActionEvent e) -> {
 			addUser();
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		appendAndRet.setOnAction((ActionEvent e) -> {
 			if (addUser())
 				LobbyFrame.setScene("Last");
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		newUsr.setOnKeyPressed((KeyEvent e) -> checkNoErrorsInUsername());
 

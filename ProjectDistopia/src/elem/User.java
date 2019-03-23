@@ -3,7 +3,7 @@ package elem;
 import java.util.Random;
 
 /**
- * Add faction selection and such later TODO
+ * 
  * 
  * @author jhoffis
  *

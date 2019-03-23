@@ -66,22 +66,27 @@ public class LobbySetup extends LobbySceneADT {
 			public void handle(MouseEvent event) {
 				// code used for retrieving x,y values
 				LobbyFrame.setScene("User");
-				new MediaAudio("/sfx/btn").play();
+				Main.lbtn();
 			}
 		};
-		goBack.setOnAction((ActionEvent e) -> LobbyFrame.setScene("MainMenu"));
-		userSetup.setOnMouseClicked((MouseEvent e) -> LobbyFrame.setScene("User"));
+		goBack.setOnAction((ActionEvent e) -> {
+			LobbyFrame.setScene("MainMenu");
+			Main.lbtn();
+		});
+		userSetup.setOnMouseClicked((MouseEvent e) -> {
+			LobbyFrame.setScene("User");
+			Main.lbtn();
+		});
 		userSetup.setOnKeyPressed((KeyEvent e) -> {
 			if (e.getCode().equals(KeyCode.ENTER))
 				LobbyFrame.setScene("User");
-			new MediaAudio("/sfx/btn").play();
 		});
 		request.setOnMouseClicked((MouseEvent e) -> {
-			if(host)
+			if (host)
 				hostServer();
 			else
 				joinServer();
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 
 		update();
@@ -134,8 +139,7 @@ public class LobbySetup extends LobbySceneADT {
 
 		String[] arr = new String[lines.size() - 1];
 		usrsComplete = new HashMap<String, String>();
-		
-		
+
 		for (int i = 0; i < arr.length; i++) {
 			arr[i] = lines.get(i + 1).split("=")[1].split("#")[0];
 			usrsComplete.put(arr[i], lines.get(i + 1).split("=")[1]);
@@ -144,19 +148,19 @@ public class LobbySetup extends LobbySceneADT {
 	}
 
 	private void hostServer() {
-		
+
 		if (!(txtInput.getText().matches("^[a-zA-Z0-9æøåÆØÅ. ]+$")) || txtInput.getText().length() < 1
 				|| txtInput.getText().length() > 15 || usrs.getValue() == null) {
 			return;
 		}
-		
+
 		Main.SERVER = new Server(txtInput.getText());
 		LobbyFrame.replacePane("LOBBY");
 		Lobby lobby = new Lobby("LOBBY");
 		lobby.setServer(Main.SERVER);
 		joinServer(ConnectionConfig.SERVER.valueAsString(), lobby);
 	}
-	
+
 	private void joinServer() {
 		if (!(txtInput.getText().matches("^[a-zA-Z0-9æøåÆØÅ. ]+$")) || txtInput.getText().length() < 1
 				|| txtInput.getText().length() > 15) {
@@ -166,7 +170,7 @@ public class LobbySetup extends LobbySceneADT {
 		Lobby lobby = new Lobby("LOBBY");
 		joinServer(txtInput.getText(), lobby);
 	}
-	
+
 	private void joinServer(String ip, Lobby lobby) {
 
 		if (usrs.getValue() == null) {
@@ -181,7 +185,6 @@ public class LobbySetup extends LobbySceneADT {
 
 		LobbyFrame.setAndReplaceScene(lobby);
 		System.out.println(((Lobby) LobbyFrame.CURRENT_SCENE).getUser().getName());
-
 
 	}
 

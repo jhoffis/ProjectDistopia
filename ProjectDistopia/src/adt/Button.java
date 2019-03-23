@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import elem.Area;
+import startup.Main;
 
 public abstract class Button {
 
@@ -15,6 +16,11 @@ public abstract class Button {
 	protected Event event;
 	protected int textX;
 	protected int textY;
+	
+	public Button(int x, int y, int width, int height, Event event) {
+		area = new Area(x, y, x + width, y + height);
+		this.event = event;
+	}
 	
 	public Button(int x, int y, int width, int height, Color color, String title, Font font, Event event) {
 		area = new Area(x, y, x + width, y + height);
@@ -61,5 +67,6 @@ public abstract class Button {
 	
 	public void runEvent() {
 		event.exec();
+		Main.lbtn();
 	}
 }

@@ -89,11 +89,15 @@ public class Tile implements GameSceneADT {
 		g.setFont(font);
 		g.setColor(textColor);
 		drawStrings(g, " -" + province + "- " + "\nStatus: " + state + "\nThings", 0, y);
+		
+
 	}
 
 	@Override
 	public void tick() {
-
+		for(GameObject go : objects) {
+			go.tick();
+		}
 	}
 
 	private void drawStrings(Graphics g, String str, int x, int y) {
@@ -101,6 +105,50 @@ public class Tile implements GameSceneADT {
 		for (int i = 0; i < arr.length; i++) {
 			g.drawString(arr[i], x, y + (i * font.getSize()));
 		}
+	}
+
+	public Color getTextColor() {
+		return textColor;
+	}
+
+	public void setTextColor(Color textColor) {
+		this.textColor = textColor;
+	}
+
+	public ArrayList<GameObject> getObjects() {
+		return objects;
+	}
+
+	public void setObjects(ArrayList<GameObject> objects) {
+		this.objects = objects;
+	}
+
+	public Font getFont() {
+		return font;
+	}
+
+	public void setFont(Font font) {
+		this.font = font;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public GameObject getObject(int i) {
+		return objects.get(i);
 	}
 
 }

@@ -2,15 +2,12 @@ package window;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import game.scenes.WorldScene;
-import game.scenes.world.WorldMouseMove;
 import javafx.application.Platform;
 import startup.Main;
 
@@ -23,19 +20,7 @@ public class GameFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				if (JOptionPane.showConfirmDialog(null, "Sure you want to exit?") == 0) {
-					if (Main.CLIENT != null) {
-						Main.CLIENT.leave(Main.USER.getId());
-						Main.CLIENT = null;
-					}
-					if (Main.SERVER != null) {
-						Main.SERVER.setRunning(false);
-						Main.SERVER = null;
-					}
-					Platform.runLater(() -> LobbyFrame.PRIMARY_STAGE.close());
-					dispose();
-					System.exit(0);
-				}
+				close();
 			}
 		});
 		setLocationRelativeTo(null);
@@ -48,6 +33,22 @@ public class GameFrame extends JFrame {
 			Main.HEIGHT = dim.height;
 			setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 			setUndecorated(true);
+		}
+	}
+	
+	public void close() {
+		if (JOptionPane.showConfirmDialog(null, "Sure you want to exit?") == 0) {
+			if (Main.CLIENT != null) {
+				Main.CLIENT.leave(Main.USER.getId());
+				Main.CLIENT = null;
+			}
+			if (Main.SERVER != null) {
+				Main.SERVER.setRunning(false);
+				Main.SERVER = null;
+			}
+			Platform.runLater(() -> LobbyFrame.PRIMARY_STAGE.close());
+			dispose();
+			System.exit(0);
 		}
 	}
 

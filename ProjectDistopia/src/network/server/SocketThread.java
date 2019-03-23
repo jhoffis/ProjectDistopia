@@ -108,6 +108,8 @@ public class SocketThread extends Thread{
 			break;
 		case "STARTED":
 			return String.valueOf(info.isStarted());
+		case "WORLDINFO":
+			return info.worldinfo();
 		};
 
 		return null;

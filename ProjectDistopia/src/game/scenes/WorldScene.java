@@ -12,13 +12,15 @@ import javax.swing.event.MouseInputAdapter;
 
 import adt.GameSceneADT;
 import elem.Camera;
+import elem.GreatLeader;
 import elem.Tile;
 import game.scenes.world.World;
 import game.scenes.world.Echo;
 import game.scenes.world.WorldUI;
+import network.server.WorldInfo;
 import startup.Main;
 
-public class WorldScene extends MouseInputAdapter implements GameSceneADT {
+public class WorldScene implements GameSceneADT {
 
 	private World world;
 	private WorldUI ui;
@@ -38,9 +40,13 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 
 	public WorldScene(JFrame frame) {
 		font = new Font("Georgia", Font.BOLD, 16);
-		world = new World(64, 64, size);
+
+		world = new World(size);
+
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
 		ui = new WorldUI(Main.USER.getFaction(), font);
+
+		world.getTile(10, 10).getObjects().add(new GreatLeader("temp", 5));
 	}
 
 	@Override
@@ -57,7 +63,7 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 
 				g.setColor(tile.getColor());
 
-				// FIXME legg til som Tiles i stedet og ha en eller annen type tabell som holder
+				// legg til som Tiles i stedet og ha en eller annen type tabell som holder
 				// referanser til hver sin x,y koordinat : px.
 				// Size with height (of camera)
 				sizeWH = size + cam.getZ();
@@ -66,8 +72,12 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 				// x, y respecively.
 				calcX = (int) (((x * sizeWH) + cam.getX()) - zoom);
 				calcY = (int) (((y * sizeWH) + cam.getY()) - zoom);
+				if (tile.getObjects().size() < 1)
+					g.fillRect(calcX, calcY, sizeWH, sizeWH);
 
-				g.fillRect(calcX, calcY, sizeWH, sizeWH);
+				for (int i = 0; i < tile.getObjects().size(); i++) {
+					tile.getObject(i).render(g, calcX, calcY, sizeWH, sizeWH);
+				}
 
 				n++;
 			}
@@ -79,6 +89,9 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 	@Override
 	public void tick() {
 		ui.tick();
+		for(Tile t : world.getTiles()) {
+			 t.tick();
+		}
 	}
 
 	public Camera getCam() {
@@ -141,94 +154,122 @@ public class WorldScene extends MouseInputAdapter implements GameSceneADT {
 		this.sizeWH = sizeWH;
 	}
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TEST FIXME
-//		System.out.println("x: " + (e.getX() - mouseClickx) + " y: " + (e.getY() - mouseClicky));
-
-		int x = e.getX();
-		int y = e.getY();
-
-		// Sjekk om man er over ui
-		if (!ui.above(mouseClickx, mouseClicky)) {
-			getCam().setX(mouseClickxCam + (e.getX() - mouseClickx));
-			getCam().setY(mouseClickyCam + (e.getY() - mouseClicky));
-			mouseSelect = false;
-		}
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-//		System.out.println("Move");
-	}
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-//		System.out.println("SCROLL");
-		int unitsToScroll = e.getUnitsToScroll();
-		int direction = unitsToScroll < 0 ? 1 : -1;
-		getCam().translateZ(direction * getSizeWH() / 4);
-		getCam().translateX(((Main.WIDTH / 2) - e.getX()) / 6);
-		getCam().translateY(((Main.HEIGHT / 2) - e.getY()) / 6);
-
-		Echo.println(zoom);
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
-
-		Tile tile = getTileByCoor(x, y);
-		ui.setSelectedTile(tile);
-		tile.select();
-	}
-
-	private Tile getTileByCoor(int mx, int my) {
+	public Tile getTileByCoor(int mx, int my) {
 		int size = world.getWidth();
+		Tile res = null;
+
 		int x = (int) (size - (zoom - (mx - cam.getX())) / sizeWH);
-		int y = (int) (size -(zoom - (my - cam.getY())) / sizeWH);
+		int y = (int) (size - (zoom - (my - cam.getY())) / sizeWH);
 		Echo.println("Mouse Clicked at X: " + x + " - Y: " + y);
-		return world.getTile(x, y);
+
+		if (x >= 0 && x <= size && y >= 0 && y <= size)
+			res = world.getTile(x, y);
+
+		return res;
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
+	public World getWorld() {
+		return world;
 	}
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
+	public void setWorld(World world) {
+		this.world = world;
 	}
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		mouseClickxCam = cam.getX();
-		mouseClickyCam = cam.getY();
-		mouseClickx = e.getX();
-		mouseClicky = e.getY();
-		mouseSelect = true;
-//        System.out.println("Mouse Pressed at X: " + mouseClickx + " - Y: " + mouseClickx);
+	public WorldUI getUi() {
+		return ui;
 	}
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
+	public void setUi(WorldUI ui) {
+		this.ui = ui;
+	}
 
-		if (mouseSelect) {
-			// Sjekk om man er over ui
-			if (ui.above(x, y)) {
-				// check for ui events
-				ui.runEvent(x, y);
-			} else {
-				// select tile.
-			}
-		}
-		mouseSelect = false;
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public int getIncVecSize() {
+		return incVecSize;
+	}
+
+	public void setIncVecSize(int incVecSize) {
+		this.incVecSize = incVecSize;
+	}
+
+	public int getMouseClickxCam() {
+		return mouseClickxCam;
+	}
+
+	public void setMouseClickxCam(int mouseClickxCam) {
+		this.mouseClickxCam = mouseClickxCam;
+	}
+
+	public int getMouseClickyCam() {
+		return mouseClickyCam;
+	}
+
+	public void setMouseClickyCam(int mouseClickyCam) {
+		this.mouseClickyCam = mouseClickyCam;
+	}
+
+	public int getMouseClickx() {
+		return mouseClickx;
+	}
+
+	public void setMouseClickx(int mouseClickx) {
+		this.mouseClickx = mouseClickx;
+	}
+
+	public int getMouseClicky() {
+		return mouseClicky;
+	}
+
+	public void setMouseClicky(int mouseClicky) {
+		this.mouseClicky = mouseClicky;
+	}
+
+	public int getCalcX() {
+		return calcX;
+	}
+
+	public void setCalcX(int calcX) {
+		this.calcX = calcX;
+	}
+
+	public int getCalcY() {
+		return calcY;
+	}
+
+	public void setCalcY(int calcY) {
+		this.calcY = calcY;
+	}
+
+	public float getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
+	}
+
+	public boolean isMouseSelect() {
+		return mouseSelect;
+	}
+
+	public void setMouseSelect(boolean mouseSelect) {
+		this.mouseSelect = mouseSelect;
+	}
+
+	public static Font getFont() {
+		return font;
+	}
+
+	public static void setFont(Font font) {
+		WorldScene.font = font;
 	}
 
 }

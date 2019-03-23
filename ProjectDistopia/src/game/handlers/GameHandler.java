@@ -6,6 +6,7 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import adt.GameSceneADT;
 import adt.GameVisualADT;
 import audio.BgMusicListener;
 import audio.MediaAudio;
@@ -24,28 +25,30 @@ public class GameHandler extends GameVisualADT implements Runnable {
 	public GameHandler(JFrame frame) {
 		sh = new SceneHandler(frame);
 		this.frame = frame;
-		
+
 		JFXPanel fxPanel = new JFXPanel();
 		frame.add(fxPanel);
 		frame.add(this);
 
 //		MouseListener ml = new WorldMouse((WorldScene) sh.getCurrent());
 
-		frame.addKeyListener(sh.getCurrent());
-		this.addMouseListener((WorldScene) sh.getCurrent());
-		this.addMouseMotionListener((WorldScene) sh.getCurrent());
-		frame.addMouseWheelListener((WorldScene) sh.getCurrent());
-		
+		for (GameSceneADT s : sh.getScenes()) {
+			frame.addKeyListener(s);
+		}
+		this.addMouseListener(sh);
+		this.addMouseMotionListener(sh);
+		frame.addMouseWheelListener(sh);
+
 		frame.setFocusable(true);
 		frame.requestFocus();
 		frame.setVisible(true);
-		
+
 		switch (Main.MUSIC_TYPE) {
 		case 1:
 			bg = new BgMusicListener(2, "type1");
 			break;
 		case 2:
-			bg = new BgMusicListener(2, "type2");
+			bg = new BgMusicListener(9, "type2");
 			break;
 		case 3:
 			bg = new BgMusicListener(1, "type3");
@@ -111,7 +114,7 @@ public class GameHandler extends GameVisualADT implements Runnable {
 			while (deltaTick >= 1) {
 				deltaTick--;
 				tick();
-
+				Main.CLIENT.sendAck(Main.USER.getId());
 			}
 
 			while (deltaRender >= 1) {

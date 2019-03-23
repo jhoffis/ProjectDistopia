@@ -17,7 +17,8 @@ public class MainMenu extends LobbySceneADT {
 	private Button joinGame;
 	private Button options;
 	private Button exit;
-
+	
+	
 	public MainMenu(String pathname) {
 		super(pathname);
 
@@ -26,28 +27,30 @@ public class MainMenu extends LobbySceneADT {
 		joinGame = new Button("Join");
 		options = new Button("Options");
 		exit = new Button("Exit Game");
-
+		
+		Main.SOUNDS.add(0, new MediaAudio("/sfx/ambience"));
+		
 		super.numBtn = LobbyFrame.HEIGHT / (5 + 2);
 
 		createUser.setOnAction((ActionEvent e) -> {
 			LobbyFrame.setScene("User");
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		hostGame.setOnAction((ActionEvent e) -> {
 			LobbyFrame.setScene("HostSetup");
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		joinGame.setOnAction((ActionEvent e) -> {
 			LobbyFrame.setScene("JoinSetup");
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		options.setOnAction((ActionEvent e) -> {
 			LobbyFrame.setScene("Options");
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 		exit.setOnAction((ActionEvent e) -> {
 			LobbyFrame.shutdown();
-			new MediaAudio("/sfx/btn").play();
+			Main.lbtn();
 		});
 
 		createUser.setTranslateY(numBtn * 1);

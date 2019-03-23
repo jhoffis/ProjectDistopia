@@ -8,7 +8,6 @@ import javafx.scene.media.AudioSpectrumListener;
 
 public class BgMusicListener {
 
-	private Random r = new Random();
 	private int lastPlayed;
 	private MediaAudio media;
 	private int songs;
@@ -16,39 +15,34 @@ public class BgMusicListener {
 
 	public BgMusicListener(int songs,  String type) {
 		// Maybe use action for something later, cause it's awesome
-		lastPlayed = -1;
+		lastPlayed = 0;
 		this.songs = songs;
 		this.type = type;
-		playAndChooseNextRandomly();
+		playNext();
 	}
 
-	public void playAndChooseNextRandomly() {
+	public void playNext() {
 		if(media != null && media.isPlaying())
 			media.stop();
-		media = new MediaAudio("/music/" + type + "/music" + findRandomSong());
+		lastPlayed = findSong();
+		media = new MediaAudio("/music/" + type + "/music" + lastPlayed);
 		
-		media.getMediaPlayer().setOnEndOfMedia(() -> playAndChooseNextRandomly());
+		media.getMediaPlayer().setOnEndOfMedia(() -> playNext());
 	}
 
 	public void updateVolume() {
 		media.setVolume();
 	}
 
-	private int findRandomSong() {
-		int nextSong = 1;
-
-		do {
-			nextSong = r.nextInt(songs) + 1;
-		} while (nextSong == lastPlayed);
-		lastPlayed = nextSong;
-		return nextSong;
+	private int findSong() {
+		return (lastPlayed + 1) % (songs + 1);
 	}
 
 	public void playOrStop() {
 		if(media != null && media.isPlaying())
 			media.stop();
 		else
-			playAndChooseNextRandomly();
+			playNext();
 	}
 
 }

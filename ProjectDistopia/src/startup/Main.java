@@ -1,6 +1,9 @@
 package startup;
 
+import java.util.ArrayList;
+
 import audio.BgMusicListener;
+import audio.MediaAudio;
 import elem.User;
 import game.handlers.GameHandler;
 import javafx.application.Platform;
@@ -24,6 +27,7 @@ public class Main {
 	public static int WIDTH;
 	public static int HEIGHT;
 	public static int MUSIC_TYPE;
+	public static ArrayList<MediaAudio> SOUNDS;
 
 	public static void main(String[] args) {
 		OS = System.getProperty("os.name").toLowerCase();
@@ -35,7 +39,7 @@ public class Main {
 		NAME = "Battle of Authradgard";
 		WIDTH = 600;
 		HEIGHT = 500;
-
+		SOUNDS = new ArrayList<MediaAudio>();
 		String dir = "./.battleOfAuthradgard/";
 		if (Main.isWindows()) {
 			System.out.println("You have Windows");
@@ -52,8 +56,8 @@ public class Main {
 		/*
 		 * DEBUG
 		 */
-		boolean testing = true;
-		
+		boolean testing = false;
+
 		if (testing) {
 			USER = new User("JOnathan Test", 69, 1, 69);
 			USER.setFaction("Gazellia");
@@ -84,6 +88,16 @@ public class Main {
 	}
 
 	public static void closeGameFrame() {
-		// FIXME close the GAME_FRAME
+		GAME_FRAME.close();
+	}
+
+	public static void updateVolume() {
+		for(int i = 0; i < SOUNDS.size(); i++) {
+			SOUNDS.get(i).setVolume();
+		}		
+	}
+	
+	public static void lbtn() {
+		SOUNDS.add(1, new MediaAudio("/sfx/btn"));
 	}
 }

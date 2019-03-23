@@ -7,17 +7,20 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import elem.Tile;
+import network.server.WorldInfo;
+import startup.Main;
 
 public class World {
-
+	private WorldInfo worldInfo;
 	private int width;
 	private int height;
 	private Tile[] tiles;
 	private int size;
 
-	public World(int width, int height, int size) {
-		this.width = width;
-		this.height = height;
+	public World(int size) {
+		worldInfo = new WorldInfo(Main.CLIENT.sendStringRequest("WORLDINFO"));
+		this.width = worldInfo.getSize();
+		this.height = worldInfo.getSize();
 		this.size = size;
 
 		BufferedImage image = null;

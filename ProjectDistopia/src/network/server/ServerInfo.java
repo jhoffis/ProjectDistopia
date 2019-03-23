@@ -10,9 +10,11 @@ public class ServerInfo {
 
 	private HashMap<Integer, User> users;
 	private HashMap<String, Integer> faction;
+	private WorldInfo world;
 	private Random r;
 	private String title;
 	private boolean started;
+	private boolean init;
 
 	public ServerInfo() {
 
@@ -127,6 +129,11 @@ public class ServerInfo {
 		
 		started = true;
 	}
+	
+	public void initStart() {
+		world = new WorldInfo(64);
+		init = true;
+	}
 
 	/*
 	 * Lost connection : too high ping!
@@ -137,6 +144,12 @@ public class ServerInfo {
 				leaveLobby(entry.getValue().getId());
 			}
 		}
+	}
+
+	public String worldinfo() {
+		if(!init)
+			initStart();
+		return world.toString();
 	}
 
 }

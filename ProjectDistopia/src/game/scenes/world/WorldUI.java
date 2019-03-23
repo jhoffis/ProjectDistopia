@@ -13,8 +13,10 @@ import javax.imageio.ImageIO;
 import adt.Button;
 import adt.GameSceneADT;
 import elem.Area;
+import elem.InvisibleBtn;
 import elem.StdBtn;
 import elem.Tile;
+import game.handlers.SceneHandler;
 import startup.Main;
 
 public class WorldUI implements GameSceneADT {
@@ -58,8 +60,8 @@ public class WorldUI implements GameSceneADT {
 		int topBtnBuffer = (int) (((Main.HEIGHT / 24f) - (Main.HEIGHT / 32f)) / 2f);
 		buttons.add(new StdBtn(Main.WIDTH - topBtnBuffer - topBtnWidth, topBtnBuffer, 100, topBtnHeight,
 				new Color(13, 0, 80), "Menu", new Font("Georgia", Font.PLAIN, (int) (topBtnHeight / 1.5f)),
-				() -> System.exit(0)));
-		
+				() -> SceneHandler.changeScene(2)));
+		buttons.add(new InvisibleBtn(profilePicX, profilePicY, profilePicSize, profilePicSize, () -> Echo.println("FIXME GO TO LEADER")));
 		tile = null;
 		
 		uiColor = new Color(44f / 255f, 44f / 255f, 44f / 255f,0.8f);
@@ -105,9 +107,10 @@ public class WorldUI implements GameSceneADT {
 	public void tick() {
 		debug.tick();
 		
-		if(tile != null) {
-			tile.tick();
-		}
+//		FIXME
+//		if(tile != null) {
+//			tile.tick();
+//		}
 	}
 
 	public boolean above(int x, int y) {
@@ -129,7 +132,6 @@ public class WorldUI implements GameSceneADT {
 				buttons.get(i).runEvent();
 				return;
 			}
-
 		}
 	}
 
