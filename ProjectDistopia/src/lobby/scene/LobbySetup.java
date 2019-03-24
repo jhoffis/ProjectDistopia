@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import adt.LobbySceneADT;
-import audio.MediaAudio;
 import elem.ConnectionConfig;
 import elem.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -20,7 +21,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import network.server.Server;
+import network.client.Client;
+import network.server.workinggears.Server;
 import startup.Main;
 import window.LobbyFrame;
 
@@ -36,6 +38,7 @@ public class LobbySetup extends LobbySceneADT {
 	private Button userSetup;
 	private EventHandler<MouseEvent> usrCreate;
 	private HashMap<String, String> usrsComplete;
+	private User user;
 
 	public LobbySetup(String pathname, boolean host) {
 		super(pathname);
@@ -178,14 +181,53 @@ public class LobbySetup extends LobbySceneADT {
 		}
 
 		String newUserVal = usrsComplete.get(usrs.getValue());
-		User user = new User(newUserVal);
+		user = new User(newUserVal);
 		user.setHost(host ? 1 : 0);
 		lobby.setUser(user);
-		lobby.tryJoin(ip);
+
+		String request = tryJoin(ip);
+
+		if (request.equals("OK")) {
+			lobby.join(Main.CLIENT, user);
+		} else {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Failed to join");
+			alert.setHeaderText("Results:");
+
+			String contentText = "Just failed";
+			switch (request) {
+			case "F":
+				contentText = "Server is full!";
+				break;
+			case "C":
+				contentText = "This user is already connected!";
+				break;
+			}
+			alert.setContentText(contentText);
+
+			alert.showAndWait();
+			return;
+		}
 
 		LobbyFrame.setAndReplaceScene(lobby);
 		System.out.println(((Lobby) LobbyFrame.CURRENT_SCENE).getUser().getName());
 
+	}
+
+	public String tryJoin(String ip) {
+		System.out.println("Trying to join a server with " + ip);
+
+		Main.CLIENT = new Client(ip);
+
+		String newUserVal = Main.CLIENT.sendStringRequest("JOIN#" + user.toString());
+
+		if (newUserVal.equals("F") || newUserVal.equals("C"))
+			return newUserVal;
+		else if (!newUserVal.equals(user.toString()))
+			user = Main.USER_PROPERTIES.setUserID(newUserVal);
+
+		Main.USER = user;
+		return "OK";
 	}
 
 }

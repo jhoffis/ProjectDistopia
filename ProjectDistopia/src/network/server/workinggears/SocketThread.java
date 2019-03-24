@@ -1,4 +1,4 @@
-package network.server;
+package network.server.workinggears;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import network.server.info.ServerInfo;
 
 public class SocketThread extends Thread{
 
@@ -112,7 +114,7 @@ public class SocketThread extends Thread{
 			return info.worldinfo();
 		};
 
-		return null;
+		return "NULL";
 	}
 
 }

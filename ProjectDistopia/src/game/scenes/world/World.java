@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import elem.Tile;
-import network.server.WorldInfo;
+import network.server.info.WorldInfo;
 import startup.Main;
 
 public class World {

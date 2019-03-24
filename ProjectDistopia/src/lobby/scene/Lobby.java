@@ -2,12 +2,15 @@ package lobby.scene;
 
 import adt.LobbySceneADT;
 import audio.MediaAudio;
+import elem.BackStoryStrings;
+import elem.HoveringTooltip;
 import elem.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -20,7 +23,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import network.client.Client;
-import network.server.Server;
+import network.server.workinggears.Server;
 import startup.Main;
 import window.LobbyFrame;
 
@@ -49,13 +52,14 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private VBox humanBox;
 	private VBox alienBox;
 	private MediaAudio lobbybtn;
+	private BackStoryStrings backstory;
 
 	public Lobby(String pathname) {
 		super(pathname);
 
 		goBack = new Button("Return");
 		facChosen = new boolean[facNames.length];
-
+		backstory = new BackStoryStrings();
 		goBack.setOnAction((ActionEvent e) -> leaveLobby());
 		String str = "Loading...";
 		loading = new Label(str);
@@ -84,11 +88,13 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	public void leaveLobby() {
 		Main.lbtn();
 		running = false;
-		server.stopWatch();
+
 		client.leave(user.getId());
 
-		if (user.getHost() == 1)
+		if (user.getHost() == 1) {
+			server.stopWatch();
 			server.setRunning(false);
+		}
 
 		LobbyFrame.setScene("MainMenu");
 
@@ -213,6 +219,12 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				System.out.println("FPS: " + frames);
 				frames = 0;
 			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -224,22 +236,15 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		this.user = user;
 	}
 
-	public void tryJoin(String ip) {
-		System.out.println("Trying to join a server with " + ip);
+	public void join(Client client, User user) {
 
-		Main.CLIENT = new Client(ip);
-		Main.USER = user;
-		client = Main.CLIENT;
-
-		String newUserVal = client.sendStringRequest("JOIN#" + user.toString());
-		if (!newUserVal.equals(user.toString()))
-			user = Main.USER_PROPERTIES.setUserID(newUserVal);
+		this.client = client;
+		this.user = user;
 
 		initLook();
 		running = true;
 		new Thread(this).start();
 
-		System.out.println("Joined and got this in return " + newUserVal);
 	}
 
 	private void initLook() {
@@ -253,40 +258,8 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		humanBox = new VBox();
 		alienBox = new VBox();
 
-		for (int i = 0; i < facPics.length / 2; i++) {
-			int clicked = i;
-			facPics[i] = new ImageView();
-			facPics[i].setImage(facImgs[i * 2]);
-			Label label = new Label("\n" + facNames[i]);
-			label.setTextFill(txtColor);
-			alienBox.getChildren().add(label);
-			alienBox.getChildren().add(facPics[i]);
-			facPics[i].setOnMouseEntered((MouseEvent e) -> {
-				new MediaAudio("/sfx/hover").play();
-				/* Get big */});
-			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
-				changeFac(clicked);
-			});
-
-		}
-
-		for (int i = facPics.length / 2; i < facPics.length; i++) {
-			int clicked = i;
-			facPics[i] = new ImageView();
-			facPics[i].setImage(facImgs[i * 2]);
-			facPics[i].setOnMouseEntered((MouseEvent e) -> {
-				new MediaAudio("/sfx/hover").play();
-				/* Get big */});
-			facPics[i].setOnMouseExited((MouseEvent e) -> {
-				/* Get small */});
-			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
-				changeFac(clicked);
-			});
-			Label label = new Label("\n" + facNames[i]);
-			label.setTextFill(txtColor);
-			humanBox.getChildren().add(label);
-			humanBox.getChildren().add(facPics[i]);
-		}
+		pics(0, facPics.length / 2, alienBox);
+		pics(facPics.length / 2, facPics.length, humanBox);
 
 		if (user.getHost() == 1) {
 			start = new Button("Start Game!");
@@ -341,6 +314,38 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		add(scenetitle);
 		add(players);
 		add(options);
+	}
+
+	private void pics(int a, int length, VBox box) {
+
+		for (int i = a; i < length; i++) {
+			int clicked = i;
+			facPics[i] = new ImageView();
+			facPics[i].setImage(facImgs[i * 2]);
+
+			Label label = new Label("\n" + facNames[i]);
+			label.setTextFill(txtColor);
+			box.getChildren().add(label);
+
+			box.getChildren().add(facPics[i]);
+			facPics[i].setOnMouseEntered((MouseEvent e) -> {
+				new MediaAudio("/sfx/hover").play();
+				/* Get big */});
+			facPics[i].setOnMouseClicked((MouseEvent e) -> {/* Get smaller */
+				changeFac(clicked);
+			});
+
+
+			HoveringTooltip ht = new HoveringTooltip(100);
+			ht.setMaxWidth(200);
+			ht.setWrapText(true);
+			ht.setText(backstory.getStory(i));
+			ht.addHoveringTarget(facPics[i]);
+			Tooltip.install(facPics[i], ht);
+			
+
+		}
+
 	}
 
 	private void changeFac(int clicked) {

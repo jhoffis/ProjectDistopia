@@ -1,6 +1,7 @@
-package network.server;
+package network.server.workinggears;
 
 import javafx.application.Platform;
+import network.server.info.ServerInfo;
 import startup.Main;
 import window.LobbyFrame;
 /**
@@ -23,30 +24,23 @@ public class ServerWatch implements Runnable{
 	public void run() {
 		running = true;
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 1.0;
-		double ns = 1000000000 / amountOfTicks;
 		double deltatick = 0;
-		double deltarender = 0;
-		long timer = System.currentTimeMillis();
-		int frames = 0;
 
 		while (Main.SERVER != null && running) {
 			long now = System.nanoTime();
-			deltatick += (now - lastTime) / ns;
+			deltatick += (now - lastTime);
 			lastTime = now;
 			while (deltatick >= 1) {
 				deltatick--;
-//				frames++;
-
 				info.checkConnections();
-
 			}
-
-//			if (System.currentTimeMillis() - timer > 1000) {
-//				timer += 1000;
-//				System.out.println("CHECKING CONNECTIONS: " + frames);
-//				frames = 0;
-//			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	

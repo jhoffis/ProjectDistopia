@@ -86,7 +86,8 @@ public class LobbyFrame extends Application {
 			// you may need to close other windows or replace this with Platform.exit();
 			System.out.println("Shutdown");
 			if (Main.CLIENT != null) {
-				Main.CLIENT.leave(Main.USER.getId());
+				if(Main.USER != null)
+					Main.CLIENT.leave(Main.USER.getId());
 				Main.CLIENT = null;
 			}
 			if (Main.SERVER != null) {

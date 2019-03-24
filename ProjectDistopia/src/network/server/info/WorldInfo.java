@@ -1,4 +1,4 @@
-package network.server;
+package network.server.info;
 
 public class WorldInfo {
 

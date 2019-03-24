@@ -1,7 +1,9 @@
-package network.server;
+package network.server.workinggears;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+
+import network.server.info.ServerInfo;
 
 public class TCPServer {
 

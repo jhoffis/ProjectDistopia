@@ -17,7 +17,7 @@ import elem.Tile;
 import game.scenes.world.World;
 import game.scenes.world.Echo;
 import game.scenes.world.WorldUI;
-import network.server.WorldInfo;
+import network.server.info.WorldInfo;
 import startup.Main;
 
 public class WorldScene implements GameSceneADT {

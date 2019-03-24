@@ -1,9 +1,11 @@
-package network.server;
+package network.server.workinggears;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
 import elem.ConnectionConfig;
+import network.server.info.ServerInfo;
+import network.server.registry.ComputeServer;
 
 /**
  * Use both regular sockets, ack and rmi. Make it simple as you can practice
@@ -31,6 +33,8 @@ public class Server {
 		info = new ServerInfo();
 		info.setTitle(title);
 		System.out.println("TCP server starting at port " + serverport);
+		
+//		ComputeServer cs = new ComputeServer();
 		
 		try {
 			socketserver = new ServerSocket(serverport);

@@ -1,7 +1,7 @@
 package network.client;
 
 import elem.ConnectionConfig;
-import elem.User;
+import network.client.registry.ComputeClient;
 
 public class Client {
 
@@ -11,22 +11,32 @@ public class Client {
 	public Client(String ip) {
 		int port = ConnectionConfig.PORT.valueAsInteger();
 		client = new TCPClient(ip, port);
+		
+//		ComputeClient cc = new ComputeClient();
+		
 	}
 
 	public String sendStringRequest(String str) {
+		String res = null;
 		if (str != null) {
-			str = client.convert(str);
+			res = client.convert(str);
+		} else {
+			return "";
 		}
-
-		return str;
+		if(res == null) {
+			System.err.println("----------------------------------------------");
+			System.err.println("-----------FAILED TO CONTACT SERVER-----------");
+			System.err.println("----------------------------------------------");
+		}
+		return res;
 	}
 
 	public void sendAck(int id) {
-		client.convert("ACK#" + id);
+		sendStringRequest("ACK#" + id);
 	}
 
 	public void leave(int id) {
-		client.convert("LEAVE#" + id);
+		sendStringRequest("LEAVE#" + id);
 	}
 	/*
 	 * FIXME

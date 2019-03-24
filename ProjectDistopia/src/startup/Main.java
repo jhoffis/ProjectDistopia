@@ -8,7 +8,7 @@ import elem.User;
 import game.handlers.GameHandler;
 import javafx.application.Platform;
 import network.client.Client;
-import network.server.Server;
+import network.server.workinggears.Server;
 import sort.SettingsProperties;
 import sort.UserProperties;
 import window.GameFrame;

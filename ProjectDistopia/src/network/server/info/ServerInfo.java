@@ -1,4 +1,4 @@
-package network.server;
+package network.server.info;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -38,10 +38,18 @@ public class ServerInfo {
 
 		// Dette blir ikke skikkelig brukt før man har en savegame for ellers leaver man
 		// bare lobbyen.
+		
+		if(users.size() == 2)
+			return "F";
+		
 		for (Entry<Integer, User> entry : users.entrySet()) {
 			if (entry.getValue().getFinalid() == finalid && entry.getValue().getName().equals(name)) {
 				// Already in.
-				return entry.toString();
+				if(entry.getValue().isConnected())
+					return "C";
+				entry.getValue().updateTime();
+				entry.getValue().setConnected(true);
+				return entry.getValue().toString();
 			}
 		}
 
@@ -53,6 +61,9 @@ public class ServerInfo {
 
 		User newUser = new User(name, key, host, finalid);
 		users.put(key, newUser);
+		System.out.println("RETURNING VALUES: " + newUser.toString());
+		newUser.updateTime();
+		newUser.setConnected(true);
 		return newUser.toString();
 	}
 
@@ -141,6 +152,7 @@ public class ServerInfo {
 	public void checkConnections() {
 		for (Entry<Integer, User> entry : users.entrySet()) {
 			if (System.currentTimeMillis() - entry.getValue().getTimeLastRec() > 10000) {
+				entry.getValue().setConnected(false);
 				leaveLobby(entry.getValue().getId());
 			}
 		}
