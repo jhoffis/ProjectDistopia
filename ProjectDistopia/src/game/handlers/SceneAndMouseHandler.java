@@ -16,12 +16,12 @@ import game.scenes.WorldScene;
 import game.scenes.world.Echo;
 import startup.Main;
 
-public class SceneHandler extends MouseInputAdapter {
+public class SceneAndMouseHandler extends MouseInputAdapter {
 
 	private GameSceneADT[] scenes;
 	private static int currentScene;
 
-	public SceneHandler(JFrame frame) {
+	public SceneAndMouseHandler(JFrame frame) {
 		scenes = new GameSceneADT[5];
 		currentScene = 0;
 		scenes[0] = new WorldScene(frame);

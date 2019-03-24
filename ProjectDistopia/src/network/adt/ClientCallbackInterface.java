@@ -1,6 +1,10 @@
 package network.adt;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Stack;
+
+import adt.Unit;
+import elem.Tile;
 
 public interface ClientCallbackInterface extends Remote{
 	
@@ -13,4 +17,6 @@ public interface ClientCallbackInterface extends Remote{
 	public boolean isNotified() throws RemoteException;
 	
 	public void acknowledge(String msg) throws RemoteException;
+	
 }
+

@@ -13,7 +13,7 @@ import adt.Button;
 import adt.GameSceneADT;
 import elem.Area;
 import elem.StdBtn;
-import game.handlers.SceneHandler;
+import game.handlers.SceneAndMouseHandler;
 import startup.Main;
 
 /**
@@ -44,7 +44,7 @@ public class SaveGameScene implements GameSceneADT {
 		Font font = new Font("Georgia", Font.PLAIN, (int) (btnHeight / 1.5f));
 
 		buttons.add(new StdBtn(mid, b0y, btnWidth, btnHeight, Color.BLACK, "Main menu", font,
-				() -> SceneHandler.changeScene(2)));
+				() -> SceneAndMouseHandler.changeScene(2)));
 
 		buttons.add(new StdBtn(mid, b3y, btnWidth, btnHeight, Color.BLACK, "Save", font,
 				() -> System.out.println("DO STUFF")));

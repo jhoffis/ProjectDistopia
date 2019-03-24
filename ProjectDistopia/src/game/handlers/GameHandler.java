@@ -17,20 +17,19 @@ import startup.Main;
 
 public class GameHandler extends GameVisualADT implements Runnable {
 
-	private SceneHandler sh;
+	private SceneAndMouseHandler sh;
 	private BufferStrategy bs;
 	private BgMusicListener bg;
 	private JFrame frame;
 
 	public GameHandler(JFrame frame) {
-		sh = new SceneHandler(frame);
+		sh = new SceneAndMouseHandler(frame);
 		this.frame = frame;
 
 		JFXPanel fxPanel = new JFXPanel();
 		frame.add(fxPanel);
 		frame.add(this);
 
-//		MouseListener ml = new WorldMouse((WorldScene) sh.getCurrent());
 
 		for (GameSceneADT s : sh.getScenes()) {
 			frame.addKeyListener(s);

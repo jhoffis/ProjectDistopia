@@ -29,12 +29,10 @@ public class Server {
 
 	public Server(String title) {
 		this.title = title;
-		serverport = ConnectionConfig.PORT.valueAsInteger();
+		serverport = ConnectionConfig.TCPPORT.valueAsInteger();
 		info = new ServerInfo();
 		info.setTitle(title);
 		System.out.println("TCP server starting at port " + serverport);
-		
-//		ComputeServer cs = new ComputeServer();
 		
 		try {
 			socketserver = new ServerSocket(serverport);
@@ -66,6 +64,7 @@ public class Server {
 
 		if (running == false) {
 			try {
+				info.getComputeServer().exit();
 				socketserver.close();
 				watch.endTheWatch();
 			} catch (IOException e) {

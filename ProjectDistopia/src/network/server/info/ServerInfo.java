@@ -5,12 +5,15 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import elem.User;
+import game.scenes.world.World;
+import network.server.registry.ComputeServer;
 
 public class ServerInfo {
 
 	private HashMap<Integer, User> users;
 	private HashMap<String, Integer> faction;
-	private WorldInfo world;
+	private World world;
+	private ComputeServer cs;
 	private Random r;
 	private String title;
 	private boolean started;
@@ -22,6 +25,9 @@ public class ServerInfo {
 		r = new Random();
 		faction = new HashMap<String, Integer>();
 
+		world = new World(64, 64);
+		cs = new ComputeServer(users, world);
+		
 		faction.put("Aiazom", 0);
 		faction.put("Gazellia", 1);
 		faction.put("Jotnatium", 2);
@@ -142,7 +148,6 @@ public class ServerInfo {
 	}
 	
 	public void initStart() {
-		world = new WorldInfo(64);
 		init = true;
 	}
 
@@ -162,6 +167,14 @@ public class ServerInfo {
 		if(!init)
 			initStart();
 		return world.toString();
+	}
+
+	public ComputeServer getComputeServer() {
+		return cs;
+	}
+
+	public void setComputeServer(ComputeServer cs) {
+		this.cs = cs;
 	}
 
 }

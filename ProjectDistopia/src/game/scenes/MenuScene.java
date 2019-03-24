@@ -10,7 +10,7 @@ import adt.Button;
 import adt.GameSceneADT;
 import elem.Area;
 import elem.StdBtn;
-import game.handlers.SceneHandler;
+import game.handlers.SceneAndMouseHandler;
 import javafx.event.ActionEvent;
 import startup.Main;
 import window.LobbyFrame;
@@ -35,11 +35,11 @@ public class MenuScene implements GameSceneADT {
 		Font font = new Font("Georgia", Font.PLAIN, (int) (btnHeight / 1.5f));
 
 		buttons.add(new StdBtn(mid, b0y, btnWidth, btnHeight, Color.BLACK, "Return to game", font,
-				() -> SceneHandler.changeScene(0)));
+				() -> SceneAndMouseHandler.changeScene(0)));
 		buttons.add(new StdBtn(mid, b1y, btnWidth, btnHeight, Color.BLACK, "Save game", font,
-				() -> SceneHandler.changeScene(4)));
+				() -> SceneAndMouseHandler.changeScene(4)));
 		buttons.add(new StdBtn(mid, b2y, btnWidth, btnHeight, Color.BLACK, "Options", font,
-				() -> SceneHandler.changeScene(3)));
+				() -> SceneAndMouseHandler.changeScene(3)));
 		buttons.add(new StdBtn(mid, b3y, btnWidth, btnHeight, Color.BLACK, "Leave", font,
 				() -> Main.closeGameFrame()));
 	}

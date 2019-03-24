@@ -1,6 +1,11 @@
 package network.adt;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Stack;
+
+import adt.Unit;
+import elem.Tile;
+import game.scenes.world.World;
 
 public interface ServerCallbackInterface extends Remote{
 
@@ -14,5 +19,17 @@ public interface ServerCallbackInterface extends Remote{
 	 */
 	public void registerClientCallbackObject(ClientCallbackInterface clientcallbackobj) throws RemoteException;
 	
-	public void doOperation(int a, int b) throws RemoteException;
+	public void attack(Unit attacker, Tile rightClicked) throws RemoteException;
+	
+	public void move(Unit unit, Tile rightClicked) throws RemoteException;
+	
+	public void createUnit(Tile where) throws RemoteException;
+	
+	public void createBuilding(Tile where) throws RemoteException;
+	
+	public Stack<Unit> getUnitUpdates(Integer userID) throws RemoteException;
+	
+	public Stack<Tile> getTileUpdates(Integer userID) throws RemoteException;
+	
+	public World getAllWorldInfo () throws RemoteException;
 }

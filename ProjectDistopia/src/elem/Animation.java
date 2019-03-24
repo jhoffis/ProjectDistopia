@@ -2,11 +2,16 @@ package elem;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
-public class Animation {
+public class Animation implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8595997650191035372L;
 	private BufferedImage[] frames;
 	private int currentFrame;
 	private int from, to;

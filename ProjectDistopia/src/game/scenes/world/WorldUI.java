@@ -16,7 +16,7 @@ import elem.Area;
 import elem.InvisibleBtn;
 import elem.StdBtn;
 import elem.Tile;
-import game.handlers.SceneHandler;
+import game.handlers.SceneAndMouseHandler;
 import startup.Main;
 
 public class WorldUI implements GameSceneADT {
@@ -60,7 +60,7 @@ public class WorldUI implements GameSceneADT {
 		int topBtnBuffer = (int) (((Main.HEIGHT / 24f) - (Main.HEIGHT / 32f)) / 2f);
 		buttons.add(new StdBtn(Main.WIDTH - topBtnBuffer - topBtnWidth, topBtnBuffer, 100, topBtnHeight,
 				new Color(13, 0, 80), "Menu", new Font("Georgia", Font.PLAIN, (int) (topBtnHeight / 1.5f)),
-				() -> SceneHandler.changeScene(2)));
+				() -> SceneAndMouseHandler.changeScene(2)));
 		buttons.add(new InvisibleBtn(profilePicX, profilePicY, profilePicSize, profilePicSize, () -> Echo.println("FIXME GO TO LEADER")));
 		tile = null;
 		
@@ -96,7 +96,6 @@ public class WorldUI implements GameSceneADT {
 		for (int i = 0; i < buttons.size(); i++) {
 			buttons.get(i).render(g);
 		}
-		
 		if(tile != null) {
 			tile.render(g);
 		}

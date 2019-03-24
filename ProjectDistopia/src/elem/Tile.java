@@ -4,7 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 import adt.GameObject;
 import adt.GameSceneADT;
@@ -12,8 +17,12 @@ import game.scenes.WorldScene;
 import game.scenes.world.Echo;
 import startup.Main;
 
-public class Tile implements GameSceneADT {
+public class Tile implements GameSceneADT, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 136420646496997209L;
 	private int type;
 	private int state;
 	private Color color;
@@ -23,15 +32,82 @@ public class Tile implements GameSceneADT {
 	private String province;
 	private int y;
 
-	public Tile(int type, int state, Color color, String province) {
-		this.type = type;
+	public Tile(int state, Color color, String province) {
 		this.state = state;
 		this.color = color;
+
+		type = findImg(color);
+
 		objects = new ArrayList<GameObject>();
-		font = WorldScene.font;
+		font = new Font("Georgia", Font.BOLD, 16);
 		this.province = province;
 		y = (int) (Main.HEIGHT - (Main.HEIGHT / 8f));
 		textColor = new Color(244f / 255f, 240f / 255f, 224f / 255f, 1f);
+	}
+
+	private int findImg(Color rgb) {
+		int res = -1;
+		if (color.getRed() == 0) {
+			if (color.getBlue() == 255) {
+				// elv
+				res = 0;
+			} else if (color.getGreen() == 255) {
+				// Grass
+				res = 1;
+			} else if (color.getGreen() > 0) {
+				// skog
+				res = 2;
+			} else {
+				// dypvann
+				res = 3;
+			}
+		} else {
+
+			switch (color.getGreen()) {
+			case 255:
+				res = 4;
+				break;
+			case 148:
+				res = 5;
+				break;
+			case 117:
+				res = 6;
+				break;
+			case 80:
+				res = 7;
+				break;
+			case 65:
+				res = 8;
+				break;
+			case 0:
+				res = 9;
+				switch (color.getBlue()) {
+				// Spawn loc og arbeidsbygning
+				case 0:
+
+					break;
+				case 1:
+
+					break;
+				case 2:
+
+					break;
+				case 3:
+
+					break;
+				case 4:
+
+					break;
+				case 5:
+
+					break;
+				}
+				break;
+			}
+
+		}
+
+		return res;
 	}
 
 	public int getType() {
@@ -89,13 +165,12 @@ public class Tile implements GameSceneADT {
 		g.setFont(font);
 		g.setColor(textColor);
 		drawStrings(g, " -" + province + "- " + "\nStatus: " + state + "\nThings", 0, y);
-		
 
 	}
 
 	@Override
 	public void tick() {
-		for(GameObject go : objects) {
+		for (GameObject go : objects) {
 			go.tick();
 		}
 	}
@@ -104,6 +179,7 @@ public class Tile implements GameSceneADT {
 		String[] arr = str.split("\n");
 		for (int i = 0; i < arr.length; i++) {
 			g.drawString(arr[i], x, y + (i * font.getSize()));
+//			System.out.println(arr[i]);
 		}
 	}
 

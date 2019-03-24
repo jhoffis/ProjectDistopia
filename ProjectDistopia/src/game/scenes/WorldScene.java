@@ -4,27 +4,30 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
-import javax.swing.event.MouseInputAdapter;
 
+import adt.GameObject;
 import adt.GameSceneADT;
 import elem.Camera;
 import elem.GreatLeader;
 import elem.Tile;
-import game.scenes.world.World;
 import game.scenes.world.Echo;
+import game.scenes.world.World;
+import game.scenes.world.WorldLocalVisual;
 import game.scenes.world.WorldUI;
-import network.server.info.WorldInfo;
+import network.client.Client;
 import startup.Main;
 
 public class WorldScene implements GameSceneADT {
 
 	private World world;
+	private WorldLocalVisual visual;
 	private WorldUI ui;
 	private Camera cam;
+	private Client client;
 	private int size = 4;
 	private int incVecSize;
 	private int sizeWH;
@@ -41,12 +44,19 @@ public class WorldScene implements GameSceneADT {
 	public WorldScene(JFrame frame) {
 		font = new Font("Georgia", Font.BOLD, 16);
 
-		world = new World(size);
+		// GET WORLD FROM REGISTRY
 
+		client = Main.CLIENT;
+		try {
+			world = client.getServerMethods().getAllWorldInfo();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		visual = new WorldLocalVisual(world);
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
 		ui = new WorldUI(Main.USER.getFaction(), font);
 
-		world.getTile(10, 10).getObjects().add(new GreatLeader("temp", 5));
+		world.getTile(10, 10).getObjects().add(new GreatLeader("aiazom/greatleader", 1, 0));
 	}
 
 	@Override
@@ -72,11 +82,12 @@ public class WorldScene implements GameSceneADT {
 				// x, y respecively.
 				calcX = (int) (((x * sizeWH) + cam.getX()) - zoom);
 				calcY = (int) (((y * sizeWH) + cam.getY()) - zoom);
-				if (tile.getObjects().size() < 1)
-					g.fillRect(calcX, calcY, sizeWH, sizeWH);
-
+				
+				g.drawImage(visual.getTile(x, y).getImg(), calcX, calcY, sizeWH, sizeWH, null);
+				
 				for (int i = 0; i < tile.getObjects().size(); i++) {
 					tile.getObject(i).render(g, calcX, calcY, sizeWH, sizeWH);
+					
 				}
 
 				n++;
@@ -89,8 +100,8 @@ public class WorldScene implements GameSceneADT {
 	@Override
 	public void tick() {
 		ui.tick();
-		for(Tile t : world.getTiles()) {
-			 t.tick();
+		for (Tile t : world.getTiles()) {
+			t.tick();
 		}
 	}
 

@@ -3,25 +3,24 @@ package game.scenes.world;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
 import elem.Tile;
-import network.server.info.WorldInfo;
-import startup.Main;
 
-public class World {
-	private WorldInfo worldInfo;
+public class World implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4694723104357277257L;
 	private int width;
 	private int height;
 	private Tile[] tiles;
-	private int size;
 
-	public World(int size) {
-		worldInfo = new WorldInfo(Main.CLIENT.sendStringRequest("WORLDINFO"));
-		this.width = worldInfo.getSize();
-		this.height = worldInfo.getSize();
-		this.size = size;
+	public World(int width, int height) {
+		this.width = width;
+		this.height = height;
 
 		BufferedImage image = null;
 		try {
@@ -40,25 +39,17 @@ public class World {
 			int red = (clr & 0x00ff0000) >> 16;
 			int green = (clr & 0x0000ff00) >> 8;
 			int blue = clr & 0x000000ff;
-			System.out.println("Red Color value = " + red);
-			System.out.println("Green Color value = " + green);
-			System.out.println("Blue Color value = " + blue);
+//			System.out.println("Red Color value = " + red);
+//			System.out.println("Green Color value = " + green);
+//			System.out.println("Blue Color value = " + blue);
 
-			tiles[i] = new Tile(0, 100, new Color(red, green, blue), "SOMETILEFIXME");
+			tiles[i] = new Tile(100, new Color(red, green, blue), "SOMETILEFIXME");
 		}
 	}
 
 	public Tile getTile(int x, int y) {
 //		System.out.println("x " + x + " y " + y);
 		return tiles[x + width * y];
-	}
-
-	public void setTileSize(int size) {
-		this.size = size;
-	}
-
-	public int getTileSize() {
-		return size;
 	}
 
 	public int getWidth() {

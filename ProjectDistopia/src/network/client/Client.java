@@ -1,19 +1,50 @@
 package network.client;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Random;
+
 import elem.ConnectionConfig;
-import network.client.registry.ComputeClient;
+import network.adt.ClientCallbackInterface;
+import network.adt.ServerCallbackInterface;
+import network.client.registry.ClientCallbackImplement;
 
 public class Client {
 
 	private TCPClient client;
-	
+	private Registry registry;
+	private ClientCallbackInterface clientcallbackobj;
+	private ServerCallbackInterface sc;
 
 	public Client(String ip) {
-		int port = ConnectionConfig.PORT.valueAsInteger();
-		client = new TCPClient(ip, port);
-		
-//		ComputeClient cc = new ComputeClient();
-		
+		int tcpport = ConnectionConfig.TCPPORT.valueAsInteger();
+		int regport = ConnectionConfig.REGPORT.valueAsInteger();
+		client = new TCPClient(ip, tcpport);
+
+		try {
+
+			// Get the registry (you need to specify the ip address/port of the registry if
+			// you're running from a different host)
+			registry = LocateRegistry.getRegistry(ip, regport);
+
+			// Look up the registry for the remote ServerCallback object
+			sc = (ServerCallbackInterface) registry.lookup(ServerCallbackInterface.SERVER_INAME);
+
+			// register the clientcallback object with the remote servercallback object
+			clientcallbackobj = new ClientCallbackImplement();
+
+			sc.registerClientCallbackObject(clientcallbackobj); // The add method is invoked on the server
+
+		} catch (Exception e) {
+			System.err.println("Error in RMI " + e.getMessage());
+			e.getStackTrace();
+		}
+
+	}
+
+	public ServerCallbackInterface getServerMethods() {
+		return sc;
 	}
 
 	public String sendStringRequest(String str) {
@@ -23,7 +54,7 @@ public class Client {
 		} else {
 			return "";
 		}
-		if(res == null) {
+		if (res == null) {
 			System.err.println("----------------------------------------------");
 			System.err.println("-----------FAILED TO CONTACT SERVER-----------");
 			System.err.println("----------------------------------------------");
@@ -38,6 +69,7 @@ public class Client {
 	public void leave(int id) {
 		sendStringRequest("LEAVE#" + id);
 	}
+
 	/*
 	 * FIXME
 	 */

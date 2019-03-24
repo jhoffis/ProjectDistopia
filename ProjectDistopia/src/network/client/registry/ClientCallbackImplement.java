@@ -3,6 +3,7 @@ package network.client.registry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import game.scenes.world.Echo;
 import network.adt.ClientCallbackInterface;
 
 public class ClientCallbackImplement extends UnicastRemoteObject implements ClientCallbackInterface {
@@ -10,13 +11,13 @@ public class ClientCallbackImplement extends UnicastRemoteObject implements Clie
 	private static final long serialVersionUID = 1L;
 	private boolean notified = false;
 
-	protected ClientCallbackImplement() throws RemoteException {
+	public ClientCallbackImplement() throws RemoteException {
 		super();
 	}
 
 	@Override
 	public void notify(String result) throws RemoteException {
-		System.out.println(result);
+		Echo.println(result);
 		notified = true;
 	}
 
@@ -31,6 +32,5 @@ public class ClientCallbackImplement extends UnicastRemoteObject implements Clie
 		
 		return notified;
 	}
-
 	
 }

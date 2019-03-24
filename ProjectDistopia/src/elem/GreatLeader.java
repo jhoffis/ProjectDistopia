@@ -10,8 +10,8 @@ public class GreatLeader extends Unit {
 
 	private BufferedImage frame;
 	
-	public GreatLeader(String animationSource, int amountOfImgs) {
-		super(animationSource, amountOfImgs);
+	public GreatLeader(String animationSource, int amountOfImgs, int userID) {
+		super(animationSource, amountOfImgs, userID);
 		animation.setAnimation(0, amountOfImgs);
 	}
 

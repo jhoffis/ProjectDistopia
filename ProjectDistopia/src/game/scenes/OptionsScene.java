@@ -13,7 +13,7 @@ import adt.Button;
 import adt.GameSceneADT;
 import elem.Area;
 import elem.StdBtn;
-import game.handlers.SceneHandler;
+import game.handlers.SceneAndMouseHandler;
 import startup.Main;
 
 public class OptionsScene implements GameSceneADT {
@@ -35,7 +35,7 @@ public class OptionsScene implements GameSceneADT {
 		Font font = new Font("Georgia", Font.PLAIN, (int) (btnHeight / 1.5f));
 
 		buttons.add(new StdBtn(mid, b0y, btnWidth, btnHeight, Color.BLACK, "Main menu", font,
-				() -> SceneHandler.changeScene(2)));
+				() -> SceneAndMouseHandler.changeScene(2)));
 		buttons.add(new StdBtn(mid, b1y, btnWidth, btnHeight, Color.BLACK, "Fullscreen", font,
 				() -> System.out.println("DO STUFF")));
 		buttons.add(new StdBtn(mid, b2y, btnWidth, btnHeight, Color.BLACK, "No music", font,
