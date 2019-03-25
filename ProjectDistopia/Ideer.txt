@@ -1,5 +1,8 @@
 ﻿Distopian world set in the future. Lag bare for å kunne spille med venner 🙂
 
+Noe visuelt er sikkert feil med GameObjects visining. Kanskje den ikke blir lagt til eller kanskje den ikke viser på riktig vis...
+
+
 Legg til sjekk av versjon der om versjonen din app har er lavere enn den som er skrevet så får du feilmelding, men du kan overskrive den.
 
 Battle of Authradgard

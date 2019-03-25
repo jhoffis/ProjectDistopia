@@ -3,23 +3,38 @@ package adt;
 import java.awt.Graphics;
 import java.io.Serializable;
 
-import elem.Animation;
+import elem.AnimationVal;
 
-public abstract class GameObject implements Serializable{
+public abstract class GameObject implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7160720415294991283L;
-	protected Animation animation;
+	protected AnimationVal animation;
 	protected int userID;
-	
+
 	public GameObject(String animationSource, int amountOfImgs, int userID) {
-		animation = new Animation(animationSource, amountOfImgs);
+		animation = new AnimationVal(animationSource, amountOfImgs);
 		this.userID = userID;
 	}
-	
-	public abstract void render(Graphics g, int screenX, int screenY, int screenSizeX, int screenSizeY);
 
-	public abstract void tick();
+	public AnimationVal getAnimation() {
+		return animation;
+	}
+
+	public void setAnimation(AnimationVal animation) {
+		this.animation = animation;
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
+	public abstract void tick(); 
+	
 }

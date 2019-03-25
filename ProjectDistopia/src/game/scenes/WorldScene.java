@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.JFrame;
 
@@ -37,6 +38,7 @@ public class WorldScene implements GameSceneADT {
 	private int mouseClicky = 0;
 	private int calcX;
 	private int calcY;
+	private int userID;
 	private float zoom;
 	private boolean mouseSelect;
 	public static Font font;
@@ -47,6 +49,7 @@ public class WorldScene implements GameSceneADT {
 		// GET WORLD FROM REGISTRY
 
 		client = Main.CLIENT;
+		userID = Main.USER.getId();
 		try {
 			world = client.getServerMethods().getAllWorldInfo();
 		} catch (RemoteException e) {
@@ -56,7 +59,11 @@ public class WorldScene implements GameSceneADT {
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
 		ui = new WorldUI(Main.USER.getFaction(), font);
 
-		world.getTile(10, 10).getObjects().add(new GreatLeader("aiazom/greatleader", 1, 0));
+		try {
+			client.getServerMethods().createUnit(new GreatLeader("aiazom/greatleader", 1, Main.USER.getId(), "Aifrohm"), world.getTile(10, 10));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -83,12 +90,7 @@ public class WorldScene implements GameSceneADT {
 				calcX = (int) (((x * sizeWH) + cam.getX()) - zoom);
 				calcY = (int) (((y * sizeWH) + cam.getY()) - zoom);
 				
-				g.drawImage(visual.getTile(x, y).getImg(), calcX, calcY, sizeWH, sizeWH, null);
-				
-				for (int i = 0; i < tile.getObjects().size(); i++) {
-					tile.getObject(i).render(g, calcX, calcY, sizeWH, sizeWH);
-					
-				}
+				visual.getTile(x, y).render(g,calcX, calcY, sizeWH, sizeWH);
 
 				n++;
 			}
@@ -100,9 +102,28 @@ public class WorldScene implements GameSceneADT {
 	@Override
 	public void tick() {
 		ui.tick();
+		
+		try {
+			updateTiles(client.getServerMethods().getTileUpdates(userID));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
 		for (Tile t : world.getTiles()) {
 			t.tick();
 		}
+	}
+
+	private void updateTiles(Stack<Tile> tileUpdates) {
+		
+		while(!tileUpdates.isEmpty()) {
+			Tile tile= tileUpdates.pop();
+			int x = tile.getX();
+			int y = tile.getY();
+			world.getTile(x, y).setStats(tile.getState(), tile.getObjects());
+			visual.getTile(x, y).update();
+		}
+		
 	}
 
 	public Camera getCam() {

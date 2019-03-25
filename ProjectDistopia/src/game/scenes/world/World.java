@@ -43,7 +43,7 @@ public class World implements Serializable{
 //			System.out.println("Green Color value = " + green);
 //			System.out.println("Blue Color value = " + blue);
 
-			tiles[i] = new Tile(100, new Color(red, green, blue), "SOMETILEFIXME");
+			tiles[i] = new Tile(100, new Color(red, green, blue), "SOMETILEFIXME", i % width, i / width);
 		}
 	}
 
@@ -74,5 +74,9 @@ public class World implements Serializable{
 
 	public void setTiles(Tile[] tiles) {
 		this.tiles = tiles;
+	}
+
+	public void setTile(Tile tile, int x, int y) {
+		tiles[x + width * y] = tile;
 	}
 }

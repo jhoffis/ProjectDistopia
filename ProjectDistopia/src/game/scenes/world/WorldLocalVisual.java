@@ -60,7 +60,7 @@ public class WorldLocalVisual {
 		}
 		
 		for (int i = 0; i < temp.length; i++) {
-			tiles[i] = new TileLocalVisual(imgs[temp[i].getType()]);
+			tiles[i] = new TileLocalVisual(imgs[temp[i].getType()], temp[i]);
 		}
 	}
 

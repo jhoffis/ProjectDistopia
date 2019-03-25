@@ -1,32 +1,24 @@
 package elem;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
 import adt.Unit;
-import game.scenes.world.Echo;
 
 public class GreatLeader extends Unit {
 
-	private BufferedImage frame;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9184619069531364577L;
 	
-	public GreatLeader(String animationSource, int amountOfImgs, int userID) {
-		super(animationSource, amountOfImgs, userID);
+	public GreatLeader(String animationSource, int amountOfImgs, int userID, String name) {
+		super(animationSource, amountOfImgs, userID, name, 100, 1);
 		animation.setAnimation(0, amountOfImgs);
 	}
 
-	@Override
-	public void render(Graphics g, int screenX, int screenY, int screenSizeX, int screenSizeY) {
-		try {
-			g.drawImage(frame, screenX, screenY, screenSizeX, screenSizeY, null);
-		} catch(Exception e) {
-			Echo.println(e.getMessage());
-		}
-	}
+
 
 	@Override
 	public void tick() {
-		frame = animation.getFrame();
+		animation.updateFrame();
 	}
 
 

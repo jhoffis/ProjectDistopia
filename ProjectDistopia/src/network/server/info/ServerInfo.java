@@ -26,8 +26,7 @@ public class ServerInfo {
 		faction = new HashMap<String, Integer>();
 
 		world = new World(64, 64);
-		cs = new ComputeServer(users, world);
-		
+		cs = new ComputeServer(world);
 		faction.put("Aiazom", 0);
 		faction.put("Gazellia", 1);
 		faction.put("Jotnatium", 2);
@@ -67,7 +66,9 @@ public class ServerInfo {
 
 		User newUser = new User(name, key, host, finalid);
 		users.put(key, newUser);
-		System.out.println("RETURNING VALUES: " + newUser.toString());
+		for (Entry<Integer, User> entry : users.entrySet()) {
+			System.out.println("RETURNING VALUES: " + entry.getValue().toString());
+		}
 		newUser.updateTime();
 		newUser.setConnected(true);
 		return newUser.toString();
@@ -145,10 +146,12 @@ public class ServerInfo {
 		}
 		
 		started = true;
+		initStart();
 	}
 	
 	public void initStart() {
 		init = true;
+		cs.startUp(users);
 	}
 
 	/*
