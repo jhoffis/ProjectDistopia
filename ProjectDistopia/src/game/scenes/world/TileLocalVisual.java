@@ -14,11 +14,12 @@ public class TileLocalVisual {
 	private Tile tile;
 	private AnimationVis unit;
 	private AnimationVal val;
+	private boolean fogOfWar;
 
 	public TileLocalVisual(BufferedImage img, Tile tile) {
 		this.img = img;
 		this.tile = tile;
-		update();
+		update(true);
 	}
 
 	public BufferedImage getImg() {
@@ -29,7 +30,10 @@ public class TileLocalVisual {
 		this.img = img;
 	}
 
-	public void update() {
+	public void update(boolean fogOfWar) {
+		
+		this.fogOfWar = fogOfWar;
+		
 		if (tile.getObjects().size() > 0) {
 			val = tile.getObject(0).getAnimation();
 			unit = new AnimationVis(val);
@@ -41,14 +45,18 @@ public class TileLocalVisual {
 
 	public void render(Graphics g, int screenX, int screenY, int screenSizeX, int screenSizeY) {
 		g.drawImage(img, screenX, screenY, screenSizeX, screenSizeY, null);
-		
-		if(tile.getFaction() != null) {
-			g.setColor(new Color(1f, 0f, 0f, 0.5f));
+
+		if (tile.getFaction() != null) {
+			g.setColor(new Color(1f, 0f, 0f, 0.6f));
 			g.fillRect(screenX, screenY, screenSizeX, screenSizeY);
 		}
-		
-		if (unit != null)
-			g.drawImage(unit.getFrame(), screenX, screenY, screenSizeX, screenSizeY, null);
+		if (!fogOfWar) {
+			if (unit != null)
+				g.drawImage(unit.getFrame(), screenX, screenY, screenSizeX, screenSizeY, null);
+		} else {
+			g.setColor(new Color(0f, 0f, 0f, 0.5f));
+			g.fillRect(screenX, screenY, screenSizeX, screenSizeY);
+		}
 	}
 
 }

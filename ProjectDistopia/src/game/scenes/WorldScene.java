@@ -96,7 +96,7 @@ public class WorldScene implements GameSceneADT {
 		sizeWH = size + cam.getZ();
 		// Midpoint of the map.
 		zoom = (sizeWH / 2f * world.getWidth());
-		//No updates from camera while rendering
+		// No updates from camera while rendering
 		camX = cam.getX();
 		camY = cam.getY();
 		// do normal redraw
@@ -132,6 +132,14 @@ public class WorldScene implements GameSceneADT {
 		g.drawImage(bufferedImage, 0, 0, Main.WIDTH, Main.HEIGHT, null);
 
 		ui.render(g);
+	}
+
+	private boolean visible(int x, int y) {
+		return !(myLand.containsKey(new Point(x, y)) || myLand.containsKey(new Point(x - 1, y))
+				|| myLand.containsKey(new Point(x - 1, y - 1)) || myLand.containsKey(new Point(x - 1, y + 1))
+				|| myLand.containsKey(new Point(x + 1, y)) || myLand.containsKey(new Point(x + 1, y - 1))
+				|| myLand.containsKey(new Point(x + 1, y + 1)) || myLand.containsKey(new Point(x, y - 1))
+				|| myLand.containsKey(new Point(x, y + 1)));
 	}
 
 	@Override
@@ -174,15 +182,22 @@ public class WorldScene implements GameSceneADT {
 			Point xy = new Point(x, y);
 			if (tile.getFaction().equals(Main.USER.getFaction())) {
 				// MINE!!!
+				
 				if (!myLand.containsKey(xy)) {
 					myLand.put(xy, world.getTile(x, y));
 				}
+				//Gå igjennom og fjern fog of war hvor det trengs.
+				visual.getTile(x, y).update(visible(x, y));
 			} else if (myLand.containsKey(xy)) {
 				// NOT mine.... ;(
 				myLand.remove(xy);
+				//Gå igjennom og legg til fog of war hvor det trengs. FIXME
+				visual.getTile(x, y).update(
+			} else {
+				visual.getTile(x, y).update(true);
 			}
 
-			visual.getTile(x, y).update();
+			
 		}
 
 	}
