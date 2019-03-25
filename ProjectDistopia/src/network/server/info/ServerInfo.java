@@ -25,7 +25,8 @@ public class ServerInfo {
 		r = new Random();
 		faction = new HashMap<String, Integer>();
 
-		world = new World(64, 64);
+		// Size size turn
+		world = new World(64, 64, 0);
 		cs = new ComputeServer(world);
 		faction.put("Aiazom", 0);
 		faction.put("Gazellia", 1);
@@ -38,19 +39,19 @@ public class ServerInfo {
 	public void ready(Integer id) {
 		users.get(id).setReady(!users.get(id).isReady());
 	}
-	
+
 	public String join(String name, Integer id, Integer host, Integer finalid) {
 
 		// Dette blir ikke skikkelig brukt før man har en savegame for ellers leaver man
 		// bare lobbyen.
-		
-		if(users.size() == 2)
+
+		if (users.size() == 2)
 			return "F";
-		
+
 		for (Entry<Integer, User> entry : users.entrySet()) {
 			if (entry.getValue().getFinalid() == finalid && entry.getValue().getName().equals(name)) {
 				// Already in.
-				if(entry.getValue().isConnected())
+				if (entry.getValue().isConnected())
 					return "C";
 				entry.getValue().updateTime();
 				entry.getValue().setConnected(true);
@@ -100,7 +101,7 @@ public class ServerInfo {
 		System.err.println("Ping: " + (System.currentTimeMillis() - users.get(id).getTimeLastRec()));
 		users.get(id).updateTime();
 	}
-	
+
 	public int isStarted() {
 		return started ? 1 : 0;
 	}
@@ -136,19 +137,19 @@ public class ServerInfo {
 
 		return res;
 	}
-	
+
 	public void start(Integer id) {
-		if(users.get(id).getHost() == 1) {
+		if (users.get(id).getHost() == 1) {
 			for (Entry<Integer, User> entry : users.entrySet()) {
-				if(entry.getValue().isReady() == false || entry.getValue().getFaction().equals(""))
+				if (entry.getValue().isReady() == false || entry.getValue().getFaction().equals(""))
 					return;
 			}
 		}
-		
+
 		started = true;
 		initStart();
 	}
-	
+
 	public void initStart() {
 		init = true;
 		cs.startUp(users);
@@ -161,13 +162,15 @@ public class ServerInfo {
 		for (Entry<Integer, User> entry : users.entrySet()) {
 			if (System.currentTimeMillis() - entry.getValue().getTimeLastRec() > 10000) {
 				entry.getValue().setConnected(false);
-				leaveLobby(entry.getValue().getId());
+				if (!started) {
+					leaveLobby(entry.getValue().getId());
+				}
 			}
 		}
 	}
 
 	public String worldinfo() {
-		if(!init)
+		if (!init)
 			initStart();
 		return world.toString();
 	}
@@ -178,6 +181,29 @@ public class ServerInfo {
 
 	public void setComputeServer(ComputeServer cs) {
 		this.cs = cs;
+	}
+
+	public boolean checkNextTurn() {
+		for (Entry<Integer, User> entry : users.entrySet()) {
+			if (!entry.getValue().isNextTurn())
+				return false;
+		}
+		return true;
+	}
+
+	public void nextTurn(Integer id) {
+		users.get(id).pressNextTurn();
+		if (checkNextTurn()) {
+			nextTurn();
+		}
+	}
+
+	private void nextTurn() {
+		for (Entry<Integer, User> entry : users.entrySet()) {
+			entry.getValue().setNextTurn(false);
+		}
+
+		world.nextTurn();
 	}
 
 }

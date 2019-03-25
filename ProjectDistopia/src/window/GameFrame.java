@@ -8,13 +8,13 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import game.handlers.GameHandler;
 import javafx.application.Platform;
 import startup.Main;
 
 public class GameFrame extends JFrame {
 
 	public GameFrame(int width, int height, String title) {
-
 
 		setBounds(0, 0, width, height);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -28,16 +28,15 @@ public class GameFrame extends JFrame {
 		setResizable(false);
 
 		if (Main.SETTINGS_PROPERTIES.getFullscreen()) {
-			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-			Main.WIDTH = dim.width;
-			Main.HEIGHT = dim.height;
 			setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 			setUndecorated(true);
 		}
 	}
-	
+
 	public void close() {
 		if (JOptionPane.showConfirmDialog(null, "Sure you want to exit?") == 0) {
+
+			GameHandler.RUNNING = false;
 			if (Main.CLIENT != null) {
 				Main.CLIENT.leave(Main.USER.getId());
 				Main.CLIENT = null;
@@ -46,9 +45,12 @@ public class GameFrame extends JFrame {
 				Main.SERVER.setRunning(false);
 				Main.SERVER = null;
 			}
-			Platform.runLater(() -> LobbyFrame.PRIMARY_STAGE.close());
+			if (Main.BACKGROUNDMUSIC != null) {
+				Main.BACKGROUNDMUSIC.playOrStop();
+				Main.BACKGROUNDMUSIC = null;
+			}
+			Platform.runLater(() -> LobbyFrame.setScene("MAINMENU"));
 			dispose();
-			System.exit(0);
 		}
 	}
 

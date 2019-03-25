@@ -19,17 +19,18 @@ public class GameHandler extends GameVisualADT implements Runnable {
 
 	private SceneAndMouseHandler sh;
 	private BufferStrategy bs;
-	private BgMusicListener bg;
 	private JFrame frame;
+	public static boolean RUNNING;
 
 	public GameHandler(JFrame frame) {
+		RUNNING = true;
+		
 		sh = new SceneAndMouseHandler(frame);
 		this.frame = frame;
 
 		JFXPanel fxPanel = new JFXPanel();
 		frame.add(fxPanel);
 		frame.add(this);
-
 
 		for (GameSceneADT s : sh.getScenes()) {
 			frame.addKeyListener(s);
@@ -44,24 +45,21 @@ public class GameHandler extends GameVisualADT implements Runnable {
 
 		switch (Main.MUSIC_TYPE) {
 		case 1:
-			bg = new BgMusicListener(2, "type1");
+			Main.BACKGROUNDMUSIC = new BgMusicListener(2, "type1");
 			break;
 		case 2:
-			bg = new BgMusicListener(9, "type2");
+			Main.BACKGROUNDMUSIC = new BgMusicListener(9, "type2");
 			break;
 		case 3:
-			bg = new BgMusicListener(1, "type3");
+			Main.BACKGROUNDMUSIC = new BgMusicListener(1, "type3");
 			break;
 		case 4:
-			bg = new BgMusicListener(1, "type4");
+			Main.BACKGROUNDMUSIC = new BgMusicListener(1, "type4");
 			break;
 		case 5:
-			bg = new BgMusicListener(5, "type5");
+			Main.BACKGROUNDMUSIC = new BgMusicListener(5, "type5");
 			break;
-		}
-		;
-		new MediaAudio("/sfx/hover").play();
-//		bg.playAndChooseNextRandomly();
+		};
 
 	}
 
@@ -105,7 +103,7 @@ public class GameHandler extends GameVisualADT implements Runnable {
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 
-		while (true) {
+		while (RUNNING) {
 			long now = System.nanoTime();
 			deltaTick += (now - lastTime) / ns;
 			deltaRender += (now - lastTime) / (ns / 3);
@@ -130,15 +128,15 @@ public class GameHandler extends GameVisualADT implements Runnable {
 
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
-				System.out.println("FPS: " + frames);
+//				System.out.println("FPS: " + frames);
 				Echo.println("FPS: " + frames);
 				frames = 0;
 			}
-			try {
-				Thread.sleep(4);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(4);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 	}

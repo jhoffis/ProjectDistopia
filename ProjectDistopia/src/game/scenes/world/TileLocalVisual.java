@@ -1,9 +1,9 @@
 package game.scenes.world;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import adt.GameObject;
 import elem.AnimationVal;
 import elem.AnimationVis;
 import elem.Tile;
@@ -41,6 +41,12 @@ public class TileLocalVisual {
 
 	public void render(Graphics g, int screenX, int screenY, int screenSizeX, int screenSizeY) {
 		g.drawImage(img, screenX, screenY, screenSizeX, screenSizeY, null);
+		
+		if(tile.getFaction() != null) {
+			g.setColor(new Color(1f, 0f, 0f, 0.5f));
+			g.fillRect(screenX, screenY, screenSizeX, screenSizeY);
+		}
+		
 		if (unit != null)
 			g.drawImage(unit.getFrame(), screenX, screenY, screenSizeX, screenSizeY, null);
 	}

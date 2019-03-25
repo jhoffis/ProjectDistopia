@@ -16,6 +16,7 @@ public class User {
 	private int finalid;
 	private boolean connected;
 	private boolean ready;
+	private boolean nextTurn;
 	private int host;
 	private long timeLastRec;
 
@@ -34,6 +35,10 @@ public class User {
 		this.host = host;
 		faction = "";
 		this.finalid = finalid;
+	}
+	
+	public void pressNextTurn() {
+		nextTurn = !nextTurn;
 	}
 
 
@@ -72,6 +77,8 @@ public class User {
 
 	public void setConnected(boolean connected) {
 		this.connected = connected;
+		if(!connected)
+			setNextTurn(false);
 	}
 
 	public long getTimeLastRec() {
@@ -112,6 +119,14 @@ public class User {
 
 	public void setFinalid(int finalid) {
 		this.finalid = finalid;
+	}
+
+	public boolean isNextTurn() {
+		return nextTurn;
+	}
+
+	public void setNextTurn(boolean nextTurn) {
+		this.nextTurn = nextTurn;
 	}
 
 }

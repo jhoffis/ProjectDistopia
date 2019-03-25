@@ -47,15 +47,29 @@ public class ServerCallbackImplement extends UnicastRemoteObject implements Serv
 	}
 
 	@Override
-	public void attack(Unit attacker, Tile rightClicked) throws RemoteException {
+	public Tile attack(Unit attacker, Tile from, Tile dest) throws RemoteException {
 		// TODO
 		clientcallbackobj.acknowledge("From Server: Attack");
+		return dest;
 	}
 
 	@Override
-	public void move(Unit unit, Tile rightClicked) throws RemoteException {
-		// TODO
-		clientcallbackobj.acknowledge("From Server: Message recieved!");
+	public Tile move(Unit unit, Tile from, Tile dest) throws RemoteException {
+		from.getObjects().clear();
+
+		if (dest.getObjects().size() > 0)
+			dest.getObjects().set(0, unit);
+		else
+			dest.getObjects().add(unit);
+		
+		dest.setFaction(unit.getFaction());
+
+		for (Entry<Integer, User> entry : users.entrySet()) {
+			tileUpdate.get(entry.getKey()).push(from);
+			tileUpdate.get(entry.getKey()).push(dest);
+		}
+
+		return dest;
 	}
 
 	@Override
@@ -65,13 +79,11 @@ public class ServerCallbackImplement extends UnicastRemoteObject implements Serv
 	}
 
 	@Override
-	public Stack<Unit> getUnitUpdates(Integer userID) throws RemoteException {
-		return unitUpdate.get(userID);
-	}
-
-	@Override
 	public Stack<Tile> getTileUpdates(Integer userID) throws RemoteException {
-		return tileUpdate.get(userID);
+		@SuppressWarnings("unchecked")
+		Stack<Tile> res = (Stack<Tile>) tileUpdate.get(userID).clone();
+		tileUpdate.get(userID).clear();
+		return res;
 	}
 
 	/**
@@ -106,4 +118,10 @@ public class ServerCallbackImplement extends UnicastRemoteObject implements Serv
 			tileUpdate.put(entry.getKey(), new Stack<Tile>());
 		}
 	}
+
+	@Override
+	public int getTurn() throws RemoteException {
+		return world.getTurn();
+	}
+
 }

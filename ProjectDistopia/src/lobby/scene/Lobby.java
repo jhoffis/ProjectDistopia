@@ -288,7 +288,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		LobbyFrame.getPane(panename)
 				.setBackground(new Background(new BackgroundFill(bckColor, CornerRadii.EMPTY, Insets.EMPTY)));
 
-		alienBox.setTranslateX(Main.WIDTH - 144);
+		alienBox.setTranslateX(LobbyFrame.WIDTH - 144);
 		humanBox.setTranslateX(16);
 		scenetitle.setTranslateX(mid);
 		players.setTranslateX(mid - 60);

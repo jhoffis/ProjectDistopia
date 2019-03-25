@@ -16,11 +16,13 @@ public class World implements Serializable{
 	private static final long serialVersionUID = 4694723104357277257L;
 	private int width;
 	private int height;
+	private int turn;
 	private Tile[] tiles;
 
-	public World(int width, int height) {
+	public World(int width, int height, int turn) {
 		this.width = width;
 		this.height = height;
+		this.turn = turn;
 
 		BufferedImage image = null;
 		try {
@@ -45,6 +47,10 @@ public class World implements Serializable{
 
 			tiles[i] = new Tile(100, new Color(red, green, blue), "SOMETILEFIXME", i % width, i / width);
 		}
+	}
+	
+	public void nextTurn() {
+		turn++;
 	}
 
 	public Tile getTile(int x, int y) {
@@ -78,5 +84,13 @@ public class World implements Serializable{
 
 	public void setTile(Tile tile, int x, int y) {
 		tiles[x + width * y] = tile;
+	}
+
+	public int getTurn() {
+		return turn;
+	}
+
+	public void setTurn(int turn) {
+		this.turn = turn;
 	}
 }

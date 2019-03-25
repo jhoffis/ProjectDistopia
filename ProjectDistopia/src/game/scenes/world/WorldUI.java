@@ -51,20 +51,24 @@ public class WorldUI implements GameSceneADT {
 		profilePicY = Main.HEIGHT - profilePicSize - picBuffer;
 
 		debug = new Echo(font, occupiedAreas.get(0).getY2() + font.getSize());
-		
-		
+
 		// Final buttons like menu and shit
 		buttons = new ArrayList<Button>();
 		int topBtnHeight = Main.HEIGHT / 32;
 		int topBtnWidth = 100;
 		int topBtnBuffer = (int) (((Main.HEIGHT / 24f) - (Main.HEIGHT / 32f)) / 2f);
+		Font font1 = new Font("Georgia", Font.PLAIN, (int) (topBtnHeight / 1.5f));
 		buttons.add(new StdBtn(Main.WIDTH - topBtnBuffer - topBtnWidth, topBtnBuffer, 100, topBtnHeight,
-				new Color(13, 0, 80), "Menu", new Font("Georgia", Font.PLAIN, (int) (topBtnHeight / 1.5f)),
-				() -> SceneAndMouseHandler.changeScene(2)));
-		buttons.add(new InvisibleBtn(profilePicX, profilePicY, profilePicSize, profilePicSize, () -> Echo.println("FIXME GO TO LEADER")));
+				new Color(13, 0, 80), "Menu", font1, () -> SceneAndMouseHandler.changeScene(2)));
+		buttons.add(new InvisibleBtn(profilePicX, profilePicY, profilePicSize, profilePicSize,
+				() -> Echo.println("FIXME GO TO LEADER")));
 		tile = null;
-		
-		uiColor = new Color(44f / 255f, 44f / 255f, 44f / 255f,0.8f);
+
+		buttons.add(new StdBtn(profilePicX - (profilePicSize + 10), profilePicY, profilePicSize, profilePicSize,
+				new Color(13, 0, 80), "Next turn", font1,
+				() -> Main.CLIENT.sendStringRequest("NXTURN#" + Main.USER.getId())));
+
+		uiColor = new Color(44f / 255f, 44f / 255f, 44f / 255f, 0.8f);
 	}
 
 	@Override
@@ -96,16 +100,16 @@ public class WorldUI implements GameSceneADT {
 		for (int i = 0; i < buttons.size(); i++) {
 			buttons.get(i).render(g);
 		}
-		if(tile != null) {
+		if (tile != null) {
 			tile.render(g);
 		}
-		
+
 	}
 
 	@Override
 	public void tick() {
 		debug.tick();
-		
+
 //		FIXME
 //		if(tile != null) {
 //			tile.tick();
@@ -150,8 +154,18 @@ public class WorldUI implements GameSceneADT {
 		this.buttons = buttons;
 	}
 
+	public Tile getSelectedTile() {
+		return tile;
+	}
+
 	public void setSelectedTile(Tile tile) {
 		this.tile = tile;
+		tile.select();
+	}
+
+	public void nextTurn(World world) {
+		if (tile != null)
+			setSelectedTile(world.getTile(tile.getX(), tile.getY()));
 	}
 
 }

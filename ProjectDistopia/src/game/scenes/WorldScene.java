@@ -1,16 +1,21 @@
 package game.scenes;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 import javax.swing.JFrame;
 
-import adt.GameObject;
 import adt.GameSceneADT;
 import elem.Camera;
 import elem.GreatLeader;
@@ -26,6 +31,7 @@ public class WorldScene implements GameSceneADT {
 
 	private World world;
 	private WorldLocalVisual visual;
+	private HashMap<Point, Tile> myLand;
 	private WorldUI ui;
 	private Camera cam;
 	private Client client;
@@ -39,15 +45,22 @@ public class WorldScene implements GameSceneADT {
 	private int calcX;
 	private int calcY;
 	private int userID;
+	private int turn;
 	private float zoom;
 	private boolean mouseSelect;
+	private int renderTilesFromX;
+	private int renderTilesFromY;
+	private int renderTilesToX;
+	private int renderTilesToY;
+	private int camX;
+	private int camY;
 	public static Font font;
 
 	public WorldScene(JFrame frame) {
 		font = new Font("Georgia", Font.BOLD, 16);
 
 		// GET WORLD FROM REGISTRY
-
+		turn = -1;
 		client = Main.CLIENT;
 		userID = Main.USER.getId();
 		try {
@@ -58,9 +71,13 @@ public class WorldScene implements GameSceneADT {
 		visual = new WorldLocalVisual(world);
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
 		ui = new WorldUI(Main.USER.getFaction(), font);
-
+		myLand = new HashMap<Point, Tile>();
 		try {
-			client.getServerMethods().createUnit(new GreatLeader("aiazom/greatleader", 1, Main.USER.getId(), "Aifrohm"), world.getTile(10, 10));
+			GreatLeader aifrohm = new GreatLeader("aiazom/greatleader", 1, Main.USER.getFaction(), "Aifrohm");
+			// FIXME
+			myLand.put(new Point(10, 10), world.getTile(10, 10));
+			world.getTile(10, 10).setFaction(Main.USER.getFaction());
+			client.getServerMethods().createUnit(aifrohm, world.getTile(10, 10));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -69,32 +86,50 @@ public class WorldScene implements GameSceneADT {
 	@Override
 	public void render(Graphics g) {
 
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT);
+		BufferedImage bufferedImage = new BufferedImage(Main.WIDTH, Main.HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-		for (int x = 0; x < world.getWidth(); x++) {
-			int n = x;
-			for (int y = 0; y < world.getHeight(); y++) {
+		// Create a graphics which can be used to draw into the buffered image
+		Graphics2D g2d = bufferedImage.createGraphics();
+		// create the offscreen buffer and associated Graphics
+		// clear the exposed area
+		// Size with height (of camera)
+		sizeWH = size + cam.getZ();
+		// Midpoint of the map.
+		zoom = (sizeWH / 2f * world.getWidth());
+		//No updates from camera while rendering
+		camX = cam.getX();
+		camY = cam.getY();
+		// do normal redraw
+		g2d.setBackground(Color.BLACK);
+
+		renderTilesFromX = getClosestTileXByCoor(0);
+		renderTilesFromY = getClosestTileYByCoor(0);
+		renderTilesToX = getClosestTileXByCoor(Main.WIDTH) + 1;
+		renderTilesToY = getClosestTileYByCoor(Main.HEIGHT) + 1;
+
+		for (int x = renderTilesFromX; x < renderTilesToX; x++) {
+			for (int y = renderTilesFromY; y < renderTilesToY; y++) {
 
 				Tile tile = world.getTile(x, y);
 
-				g.setColor(tile.getColor());
+				g2d.setColor(tile.getColor());
 
 				// legg til som Tiles i stedet og ha en eller annen type tabell som holder
 				// referanser til hver sin x,y koordinat : px.
-				// Size with height (of camera)
-				sizeWH = size + cam.getZ();
-				// Midpoint of the map.
-				zoom = (sizeWH / 2f * world.getWidth());
-				// x, y respecively.
-				calcX = (int) (((x * sizeWH) + cam.getX()) - zoom);
-				calcY = (int) (((y * sizeWH) + cam.getY()) - zoom);
-				
-				visual.getTile(x, y).render(g,calcX, calcY, sizeWH, sizeWH);
 
-				n++;
+				// x, y respecively. zoom plasserer kartet i midten...
+				calcX = (int) (((x * sizeWH) + camX) - zoom);
+				calcY = (int) (((y * sizeWH) + camY) - zoom);
+
+				visual.getTile(x, y).render(g2d, calcX, calcY, sizeWH, sizeWH);
+
+				g2d.setColor(Color.white);
+				g2d.drawString("Turn: " + turn, 100, 100);
+
 			}
 		}
+
+		g.drawImage(bufferedImage, 0, 0, Main.WIDTH, Main.HEIGHT, null);
 
 		ui.render(g);
 	}
@@ -102,36 +137,54 @@ public class WorldScene implements GameSceneADT {
 	@Override
 	public void tick() {
 		ui.tick();
-		
+
 		try {
 			updateTiles(client.getServerMethods().getTileUpdates(userID));
+			int newTurn = client.getServerMethods().getTurn();
+			if (newTurn != turn) {
+				turn = newTurn;
+				newTurn();
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		
+
 		for (Tile t : world.getTiles()) {
 			t.tick();
 		}
 	}
 
+	private void newTurn() {
+		for (Entry<Point, Tile> entry : myLand.entrySet()) {
+			Echo.println("Size " + entry.getValue().getObjects().size());
+			if (entry.getValue().getObjects().size() > 0)
+				entry.getValue().getObject(0).resetExpendablePoints();
+		}
+
+		ui.nextTurn(world);
+	}
+
 	private void updateTiles(Stack<Tile> tileUpdates) {
-		
-		while(!tileUpdates.isEmpty()) {
-			Tile tile= tileUpdates.pop();
+
+		while (!tileUpdates.isEmpty()) {
+			Tile tile = tileUpdates.pop();
 			int x = tile.getX();
 			int y = tile.getY();
-			world.getTile(x, y).setStats(tile.getState(), tile.getObjects());
+			world.getTile(x, y).setStats(tile.getState(), tile.getObjects(), tile.getFaction());
+			Point xy = new Point(x, y);
+			if (tile.getFaction().equals(Main.USER.getFaction())) {
+				// MINE!!!
+				if (!myLand.containsKey(xy)) {
+					myLand.put(xy, world.getTile(x, y));
+				}
+			} else if (myLand.containsKey(xy)) {
+				// NOT mine.... ;(
+				myLand.remove(xy);
+			}
+
 			visual.getTile(x, y).update();
 		}
-		
-	}
 
-	public Camera getCam() {
-		return cam;
-	}
-
-	public void setCam(Camera cam) {
-		this.cam = cam;
 	}
 
 	@Override
@@ -166,6 +219,56 @@ public class WorldScene implements GameSceneADT {
 
 	}
 
+	public Tile getTileByCoor(int mx, int my) {
+		int size = world.getWidth();
+		Tile res = null;
+
+		int x = getTileXByCoor(mx);
+		int y = getTileYByCoor(my);
+		Echo.println("Mouse Clicked at X: " + x + " - Y: " + y);
+
+		if (x >= 0 && x <= size && y >= 0 && y <= size)
+			res = world.getTile(x, y);
+
+		return res;
+	}
+
+	public int getTileXByCoor(int mx) {
+		return (int) (world.getWidth() - (zoom - (mx - cam.getX())) / sizeWH);
+	}
+
+	public int getTileYByCoor(int my) {
+		return (int) (world.getHeight() - (zoom - (my - cam.getY())) / sizeWH);
+	}
+
+	private int getClosestTileYByCoor(int my) {
+		int res = getTileYByCoor(my);
+		if (my <= 0 && res < 0) {
+			res = 0;
+		} else if (my >= Main.HEIGHT && res >= world.getHeight()) {
+			res = world.getHeight() - 1;
+		}
+		return res;
+	}
+
+	private int getClosestTileXByCoor(int mx) {
+		int res = getTileXByCoor(mx);
+		if (mx <= 0 && res < 0) {
+			res = 0;
+		} else if (mx >= Main.WIDTH && res >= world.getWidth()) {
+			res = world.getWidth() - 1;
+		}
+		return res;
+	}
+
+	public Camera getCam() {
+		return cam;
+	}
+
+	public void setCam(Camera cam) {
+		this.cam = cam;
+	}
+
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -184,20 +287,6 @@ public class WorldScene implements GameSceneADT {
 
 	public void setSizeWH(int sizeWH) {
 		this.sizeWH = sizeWH;
-	}
-
-	public Tile getTileByCoor(int mx, int my) {
-		int size = world.getWidth();
-		Tile res = null;
-
-		int x = (int) (size - (zoom - (mx - cam.getX())) / sizeWH);
-		int y = (int) (size - (zoom - (my - cam.getY())) / sizeWH);
-		Echo.println("Mouse Clicked at X: " + x + " - Y: " + y);
-
-		if (x >= 0 && x <= size && y >= 0 && y <= size)
-			res = world.getTile(x, y);
-
-		return res;
 	}
 
 	public World getWorld() {

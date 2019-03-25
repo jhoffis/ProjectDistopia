@@ -28,17 +28,17 @@ public class Main {
 	public static int HEIGHT;
 	public static int MUSIC_TYPE;
 	public static ArrayList<MediaAudio> SOUNDS;
+	public static BgMusicListener BACKGROUNDMUSIC;
 
 	public static void main(String[] args) {
 		OS = System.getProperty("os.name").toLowerCase();
 		USER_PROPERTIES = new UserProperties();
 		SETTINGS_PROPERTIES = new SettingsProperties();
+		BACKGROUNDMUSIC = null;
 		SERVER = null;
 		CLIENT = null;
 		USER = null;
 		NAME = "Battle of Authradgard";
-		WIDTH = 600;
-		HEIGHT = 500;
 		SOUNDS = new ArrayList<MediaAudio>();
 		String dir = "./.battleOfAuthradgard/";
 		if (Main.isWindows()) {
@@ -66,8 +66,15 @@ public class Main {
 
 		} else {
 			LobbyFrame lf = new LobbyFrame();
-			lf.openWindow(args, WIDTH, HEIGHT, NAME);
+			lf.openWindow(args, 600, 500, NAME);
 		}
+	}
+
+	public static boolean setWindowed(boolean val) {
+		SETTINGS_PROPERTIES.setFullscreen(val);
+		HEIGHT = SETTINGS_PROPERTIES.getWindowedHeight();
+		WIDTH = SETTINGS_PROPERTIES.getWindowedWidth();
+		return val;
 	}
 
 	public static boolean isWindows() {
@@ -81,7 +88,7 @@ public class Main {
 	}
 
 	public static void openGameFrame() {
-
+		setWindowed(SETTINGS_PROPERTIES.getFullscreen());
 		GAME_FRAME = new GameFrame(WIDTH, HEIGHT, NAME);
 		GameHandler gm = new GameHandler(GAME_FRAME);
 		new Thread(gm).start();
@@ -92,11 +99,11 @@ public class Main {
 	}
 
 	public static void updateVolume() {
-		for(int i = 0; i < SOUNDS.size(); i++) {
+		for (int i = 0; i < SOUNDS.size(); i++) {
 			SOUNDS.get(i).setVolume();
-		}		
+		}
 	}
-	
+
 	public static void lbtn() {
 		SOUNDS.add(1, new MediaAudio("/sfx/btn"));
 	}

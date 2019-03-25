@@ -69,7 +69,7 @@ public class LobbyFrame extends Application {
 			// execute own shutdown procedure
 			shutdown();
 		});
-		
+
 		PRIMARY_STAGE.show();
 	}
 

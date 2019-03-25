@@ -1,5 +1,7 @@
 package sort;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +12,7 @@ import java.util.List;
 
 import adt.PropertiesADT;
 import search.BinarySortedFileSearch;
+import startup.Main;
 
 public class SettingsProperties implements PropertiesADT {
 
@@ -242,6 +245,22 @@ public class SettingsProperties implements PropertiesADT {
 		}
 		
 		return val == 1;
+	}
+
+	public int getWindowedHeight() {
+		if(getFullscreen()) {
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			return dim.height;
+		}
+		return 500;
+	}
+
+	public int getWindowedWidth() {
+		if(getFullscreen()) {
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			return dim.width;
+		}
+		return 600;
 	}
 	
 

@@ -112,6 +112,9 @@ public class SocketThread extends Thread{
 			return String.valueOf(info.isStarted());
 		case "WORLDINFO":
 			return info.worldinfo();
+		case "NXTURN":
+			info.nextTurn(Integer.valueOf(input[1]));
+			break;
 		};
 
 		return "NULL";

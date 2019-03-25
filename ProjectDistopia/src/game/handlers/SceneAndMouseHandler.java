@@ -2,11 +2,14 @@ package game.handlers;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.rmi.RemoteException;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
 import adt.GameSceneADT;
+import adt.Unit;
 import elem.Tile;
 import game.scenes.GovScene;
 import game.scenes.MenuScene;
@@ -59,13 +62,14 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 
 		// Sjekk om man er over ui
 		case (0):
-			WorldScene s0 = ((WorldScene) scenes[0]);
-			if (!s0.getUi().above(s0.getMouseClickx(), s0.getMouseClicky())) {
-				s0.getCam().setX(s0.getMouseClickxCam() + (e.getX() - s0.getMouseClickx()));
-				s0.getCam().setY(s0.getMouseClickyCam() + (e.getY() - s0.getMouseClicky()));
-				s0.setMouseSelect(false);
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				WorldScene s0 = ((WorldScene) scenes[0]);
+				if (!s0.getUi().above(s0.getMouseClickx(), s0.getMouseClicky())) {
+					s0.getCam().setX(s0.getMouseClickxCam() + (e.getX() - s0.getMouseClickx()));
+					s0.getCam().setY(s0.getMouseClickyCam() + (e.getY() - s0.getMouseClicky()));
+					s0.setMouseSelect(false);
+				}
 			}
-
 			break;
 		}
 	}
@@ -93,7 +97,7 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 			s0.getCam().translateX(x);
 			s0.getCam().translateY(y);
 
-			Echo.println("Cam X: " + x + ", Y: " + y);
+			Echo.println("Cam X: " + x + ", Y: " + y + ", Z: " + s0.getCam().getZ());
 			break;
 		}
 	}
@@ -107,12 +111,37 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 
 		case (0):
 			WorldScene s0 = ((WorldScene) scenes[0]);
-			if (!s0.getUi().above(x, y)) {
-				Tile tile = s0.getTileByCoor(x, y);
-				s0.getUi().setSelectedTile(tile);
-				if (tile != null) {
-					tile.select();
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				// Left click
+				if (!s0.getUi().above(x, y)) {
+					Tile tile = s0.getTileByCoor(x, y);
+					s0.getUi().setSelectedTile(tile);
 				}
+			} else if (e.getButton() == MouseEvent.BUTTON3) {
+				// Right click
+				Tile curr = s0.getUi().getSelectedTile();
+				if (!curr.getObjects().isEmpty()) {
+					Tile dest = s0.getTileByCoor(x, y);
+
+					if (curr.getPoint().equals(dest.getPoint()) || s0.getUi().above(x,y))
+						break;
+
+					// FIXME make and add path to unit and move immidiatley when unit has movement
+					// points to spare, but checking if possible to move to next tile. if not then
+					// abort movement.
+					Unit unit = ((Unit) curr.getObject(0));
+					try {
+						unit.setMovepoints(1);
+						dest = Main.CLIENT.getServerMethods().move(unit, curr, dest);
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
+
+					curr.getObjects().clear();
+
+					s0.getUi().setSelectedTile(dest);
+				}
+
 			}
 			break;
 
