@@ -133,7 +133,7 @@ public class WorldScene implements GameSceneADT {
 
 		ui.render(g);
 	}
-
+//FIXME
 	private boolean visible(int x, int y) {
 		return !(myLand.containsKey(new Point(x, y)) || myLand.containsKey(new Point(x - 1, y))
 				|| myLand.containsKey(new Point(x - 1, y - 1)) || myLand.containsKey(new Point(x - 1, y + 1))
