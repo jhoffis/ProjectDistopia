@@ -90,7 +90,6 @@ public class GameHandler extends GameVisualADT implements Runnable {
 	@Override
 	public void tick() {
 		sh.getCurrent().tick();
-		frame.requestFocus();
 	}
 
 	@Override

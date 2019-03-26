@@ -37,7 +37,7 @@ public class OptionsScene implements GameSceneADT {
 		buttons.add(new StdBtn(mid, b0y, btnWidth, btnHeight, Color.BLACK, "Main menu", font,
 				() -> SceneAndMouseHandler.changeScene(2)));
 		buttons.add(new StdBtn(mid, b1y, btnWidth, btnHeight, Color.BLACK, "Fullscreen", font,
-				() -> System.out.println("DO STUFF")));
+				() -> Main.setWindowed(Main.SETTINGS_PROPERTIES.getFullscreen())));
 		buttons.add(new StdBtn(mid, b2y, btnWidth, btnHeight, Color.BLACK, "No music", font,
 				() -> System.out.println("DO STUFF")));
 		buttons.add(new StdBtn(mid, b3y, btnWidth, btnHeight, Color.BLACK, "No sfx", font,

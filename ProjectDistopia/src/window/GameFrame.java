@@ -1,7 +1,11 @@
 package window;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.DisplayMode;
+import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -14,9 +18,18 @@ import startup.Main;
 
 public class GameFrame extends JFrame {
 
+	int width, height;
+	GraphicsDevice[] devices;
+	DisplayMode oldDisplayMode;
+
 	public GameFrame(int width, int height, String title) {
 
-		setBounds(0, 0, width, height);
+		this.width = width;
+		this.height = height;
+
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		devices = ge.getScreenDevices();
+		oldDisplayMode = devices[0].getDisplayMode();
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -28,8 +41,66 @@ public class GameFrame extends JFrame {
 		setResizable(false);
 
 		if (Main.SETTINGS_PROPERTIES.getFullscreen()) {
-			setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+			fullscreen();
+		} else {
+			windowed();
+		}
+
+	}
+
+	public void windowed() {
+		 dispose();
+         setUndecorated(false);
+         setVisible(true);
+         devices[0].setFullScreenWindow(null);
+	}
+
+	private void mainScreenTurnOff() {
+		devices[0].setFullScreenWindow(null);
+//		devices[0].setDisplayMode(oldDisplayMode);
+		// Fix window size here or whatever etc etc.
+	}
+
+	public void fullscreen() {
+		setVisible(false);
+		oldDisplayMode = devices[0].getDisplayMode();
+		boolean result = devices[0].isFullScreenSupported();
+
+		if (result) {
+			dispose();
 			setUndecorated(true);
+			setResizable(true);
+
+			addFocusListener(new FocusListener() {
+
+				@Override
+				public void focusGained(FocusEvent arg0) {
+					setAlwaysOnTop(true);
+				}
+
+				@Override
+				public void focusLost(FocusEvent arg0) {
+					setAlwaysOnTop(false);
+				}
+			});
+
+			pack();
+
+			devices[0].setFullScreenWindow(this);
+		} else {
+			setPreferredSize(getGraphicsConfiguration().getBounds().getSize());
+
+			pack();
+
+			setResizable(true);
+
+			setExtendedState(Frame.MAXIMIZED_BOTH);
+			boolean successful = getExtendedState() == Frame.MAXIMIZED_BOTH;
+
+			setVisible(true);
+
+			if (!successful)
+				setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 	}
 

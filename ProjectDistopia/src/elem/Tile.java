@@ -22,14 +22,14 @@ public class Tile implements GameSceneADT, Serializable {
 	private static final long serialVersionUID = 136420646496997209L;
 	private int type;
 	private int state;
-	private int x,y;
+	private int x, y;
 	private Color color;
 	private Color textColor;
 	private ArrayList<GameObject> objects;
 	private String unitSelectedText;
 	private Font font;
 	private String province;
-	//Who controls this tile
+	// Who controls this tile
 	private String faction;
 	private int uiY;
 	private int weight;
@@ -53,15 +53,16 @@ public class Tile implements GameSceneADT, Serializable {
 		uiY = (int) (Main.HEIGHT - (Main.HEIGHT / 8f));
 		Echo.println("I am selected");
 
-		if (objects.get(0).getClass().equals(Unit.class)) {
+		if (objects.size() == 0) {
+			unitSelectedText = "No unit selected";
+		} else if (objects.get(0).getClass().equals(Unit.class)) {
 			unitSelectedText = objects.get(0).toString();
 		} else if (objects.get(0).getClass().equals(GreatLeader.class)) {
 			unitSelectedText = objects.get(0).toString();
-		} else {
-			unitSelectedText = "No unit selected";
 		}
+
 	}
-	
+
 	public void setStats(int state, ArrayList<GameObject> objects, String faction) {
 		this.state = state;
 		this.objects = objects;
@@ -170,8 +171,6 @@ public class Tile implements GameSceneADT, Serializable {
 		this.province = province;
 	}
 
-
-
 	public GameObject getObject(int i) {
 		return objects.get(i);
 	}
@@ -200,32 +199,32 @@ public class Tile implements GameSceneADT, Serializable {
 
 			switch (color.getGreen()) {
 			case 255:
-				//Desert
+				// Desert
 				res = 4;
 				setWeight(1);
 				break;
 			case 148:
-				//Deserthill
+				// Deserthill
 				setWeight(2);
 				res = 5;
 				break;
 			case 117:
-				//hill
+				// hill
 				setWeight(2);
 				res = 6;
 				break;
 			case 80:
-				//mountain
+				// mountain
 				setWeight(2);
 				res = 7;
 				break;
 			case 65:
-				//highmountain
+				// highmountain
 				setWeight(3);
 				res = 8;
 				break;
 			case 0:
-				//Player
+				// Player
 				res = 9;
 				setWeight(1);
 				switch (color.getBlue()) {

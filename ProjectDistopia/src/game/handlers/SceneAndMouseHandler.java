@@ -123,7 +123,7 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 				if (!curr.getObjects().isEmpty()) {
 					Tile dest = s0.getTileByCoor(x, y);
 
-					if (curr.getPoint().equals(dest.getPoint()) || s0.getUi().above(x,y))
+					if (dest == null || curr.getPoint().equals(dest.getPoint()) || s0.getUi().above(x,y))
 						break;
 
 					// FIXME make and add path to unit and move immidiatley when unit has movement

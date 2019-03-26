@@ -31,5 +31,6 @@ public class AnimationVis {
 			return null;
 		return frames[values.getCurrentFrame()];
 	}
+
 	
 }

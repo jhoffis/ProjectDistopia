@@ -71,9 +71,18 @@ public class Main {
 	}
 
 	public static boolean setWindowed(boolean val) {
-		SETTINGS_PROPERTIES.setFullscreen(val);
+		SETTINGS_PROPERTIES.setFullscreen(!val);
 		HEIGHT = SETTINGS_PROPERTIES.getWindowedHeight();
 		WIDTH = SETTINGS_PROPERTIES.getWindowedWidth();
+
+		if (GAME_FRAME != null) {
+			if (val) {
+				GAME_FRAME.windowed();
+			} else {
+				GAME_FRAME.fullscreen();
+			}
+		}
+
 		return val;
 	}
 
@@ -88,7 +97,7 @@ public class Main {
 	}
 
 	public static void openGameFrame() {
-		setWindowed(SETTINGS_PROPERTIES.getFullscreen());
+		setWindowed(!SETTINGS_PROPERTIES.getFullscreen());
 		GAME_FRAME = new GameFrame(WIDTH, HEIGHT, NAME);
 		GameHandler gm = new GameHandler(GAME_FRAME);
 		new Thread(gm).start();

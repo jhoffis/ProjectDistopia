@@ -89,7 +89,7 @@ public class WorldScene implements GameSceneADT {
 		BufferedImage bufferedImage = new BufferedImage(Main.WIDTH, Main.HEIGHT, BufferedImage.TYPE_INT_RGB);
 
 		// Create a graphics which can be used to draw into the buffered image
-		Graphics2D g2d = bufferedImage.createGraphics();
+		Graphics2D g2d = (Graphics2D) g;
 		// create the offscreen buffer and associated Graphics
 		// clear the exposed area
 		// Size with height (of camera)
@@ -101,6 +101,7 @@ public class WorldScene implements GameSceneADT {
 		camY = cam.getY();
 		// do normal redraw
 		g2d.setBackground(Color.BLACK);
+		g2d.clearRect(0, 0, Main.WIDTH, Main.HEIGHT);
 
 		renderTilesFromX = getClosestTileXByCoor(0);
 		renderTilesFromY = getClosestTileYByCoor(0);
@@ -112,8 +113,6 @@ public class WorldScene implements GameSceneADT {
 
 				Tile tile = world.getTile(x, y);
 
-				g2d.setColor(tile.getColor());
-
 				// legg til som Tiles i stedet og ha en eller annen type tabell som holder
 				// referanser til hver sin x,y koordinat : px.
 
@@ -121,25 +120,14 @@ public class WorldScene implements GameSceneADT {
 				calcX = (int) (((x * sizeWH) + camX) - zoom);
 				calcY = (int) (((y * sizeWH) + camY) - zoom);
 
-				visual.getTile(x, y).render(g2d, calcX, calcY, sizeWH, sizeWH);
-
-				g2d.setColor(Color.white);
-				g2d.drawString("Turn: " + turn, 100, 100);
+				visual.getTile(x, y).render(g2d, calcX, calcY, sizeWH);
 
 			}
 		}
-
-		g.drawImage(bufferedImage, 0, 0, Main.WIDTH, Main.HEIGHT, null);
+		g2d.setColor(Color.white);
+		g2d.drawString("Turn: " + turn, 100, 100);
 
 		ui.render(g);
-	}
-//FIXME
-	private boolean visible(int x, int y) {
-		return !(myLand.containsKey(new Point(x, y)) || myLand.containsKey(new Point(x - 1, y))
-				|| myLand.containsKey(new Point(x - 1, y - 1)) || myLand.containsKey(new Point(x - 1, y + 1))
-				|| myLand.containsKey(new Point(x + 1, y)) || myLand.containsKey(new Point(x + 1, y - 1))
-				|| myLand.containsKey(new Point(x + 1, y + 1)) || myLand.containsKey(new Point(x, y - 1))
-				|| myLand.containsKey(new Point(x, y + 1)));
 	}
 
 	@Override
@@ -182,22 +170,31 @@ public class WorldScene implements GameSceneADT {
 			Point xy = new Point(x, y);
 			if (tile.getFaction().equals(Main.USER.getFaction())) {
 				// MINE!!!
-				
+
 				if (!myLand.containsKey(xy)) {
 					myLand.put(xy, world.getTile(x, y));
 				}
-				//Gå igjennom og fjern fog of war hvor det trengs.
-				visual.getTile(x, y).update(visible(x, y));
+				// Gå igjennom og fjern fog of war hvor det trengs.
+//				visual.getTile(x, y).update(visible(x, y));
+				for(int xa = -1; xa < 2; xa++) {
+					for(int yb = -1; yb < 2; yb++) {
+						visual.getTile(x + xa, y +yb).update(false);
+					}
+				}
 			} else if (myLand.containsKey(xy)) {
 				// NOT mine.... ;(
 				myLand.remove(xy);
-				//Gå igjennom og legg til fog of war hvor det trengs. FIXME
-				visual.getTile(x, y).update(
+
+				// Gå igjennom og legg til fog of war hvor det trengs. FIXME
+//				visual.getTile(x, y).update(visible(x, y));
+				visual.getTile(x, y).update(true);
 			} else {
+//				visual.getTile(x, y).update(true);
+
 				visual.getTile(x, y).update(true);
 			}
 
-			
+
 		}
 
 	}
