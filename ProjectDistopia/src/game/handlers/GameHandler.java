@@ -128,7 +128,7 @@ public class GameHandler extends GameVisualADT implements Runnable {
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 //				System.out.println("FPS: " + frames);
-				Echo.println("FPS: " + frames);
+//				Echo.println("FPS: " + frames);
 				frames = 0;
 			}
 //			try {

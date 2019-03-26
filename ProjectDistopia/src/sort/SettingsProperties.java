@@ -252,7 +252,7 @@ public class SettingsProperties implements PropertiesADT {
 			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 			return dim.height;
 		}
-		return 500;
+		return 720;
 	}
 
 	public int getWindowedWidth() {
@@ -260,7 +260,7 @@ public class SettingsProperties implements PropertiesADT {
 			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 			return dim.width;
 		}
-		return 600;
+		return 1280;
 	}
 	
 

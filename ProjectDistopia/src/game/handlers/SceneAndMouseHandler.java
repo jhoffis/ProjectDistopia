@@ -68,6 +68,7 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 					s0.getCam().setX(s0.getMouseClickxCam() + (e.getX() - s0.getMouseClickx()));
 					s0.getCam().setY(s0.getMouseClickyCam() + (e.getY() - s0.getMouseClicky()));
 					s0.setMouseSelect(false);
+//					Echo.println("Cam X: " + x + ", Y: " + y + ", Z: " + s0.getCam().getZ());
 				}
 			}
 			break;
@@ -92,12 +93,19 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 			int direction = unitsToScroll < 0 ? 1 : -1;
 
 			s0.getCam().translateZ(direction * s0.getSizeWH() / 4);
-			int x = direction * ((Main.WIDTH / 2) - e.getX()) / 4;
-			int y = direction * ((Main.HEIGHT / 2) - e.getY()) / 4;
-			s0.getCam().translateX(x);
-			s0.getCam().translateY(y);
-
-			Echo.println("Cam X: " + x + ", Y: " + y + ", Z: " + s0.getCam().getZ());
+			
+			double x = ((Main.WIDTH / 2) - s0.getCam().getX() + s0.getZoomX()) / s0.getSizeWH();
+			double y = ((Main.HEIGHT / 2) - s0.getCam().getY() + s0.getZoomY()) / s0.getSizeWH();
+			
+			Echo.println("X: " + x + " Y: " +y );
+			
+			s0.setRaycastMiddleOfScreenX(x);
+			s0.setRaycastMiddleOfScreenY(y);
+			
+			double xr = 3.975 * x + 1.2;
+			double yr = 3.975 * y + 1.2;
+//			Echo.println("XR: " + xr + " YR: " +yr );
+			
 			break;
 		}
 	}
@@ -123,7 +131,7 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 				if (!curr.getObjects().isEmpty()) {
 					Tile dest = s0.getTileByCoor(x, y);
 
-					if (dest == null || curr.getPoint().equals(dest.getPoint()) || s0.getUi().above(x,y))
+					if (dest == null || curr.getPoint().equals(dest.getPoint()) || s0.getUi().above(x, y))
 						break;
 
 					// FIXME make and add path to unit and move immidiatley when unit has movement

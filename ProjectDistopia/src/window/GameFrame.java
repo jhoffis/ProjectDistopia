@@ -36,7 +36,6 @@ public class GameFrame extends JFrame {
 				close();
 			}
 		});
-		setLocationRelativeTo(null);
 		setTitle(title);
 		setResizable(false);
 
@@ -51,12 +50,13 @@ public class GameFrame extends JFrame {
 	public void windowed() {
 		 dispose();
          setUndecorated(false);
-         setVisible(true);
+         setBounds(10, 10, width, height);
+         setLocationRelativeTo(null);
          devices[0].setFullScreenWindow(null);
+         setVisible(true);
 	}
 
 	private void mainScreenTurnOff() {
-		devices[0].setFullScreenWindow(null);
 //		devices[0].setDisplayMode(oldDisplayMode);
 		// Fix window size here or whatever etc etc.
 	}

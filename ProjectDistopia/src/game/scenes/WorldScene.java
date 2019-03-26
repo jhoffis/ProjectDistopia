@@ -37,7 +37,7 @@ public class WorldScene implements GameSceneADT {
 	private Client client;
 	private int size = 4;
 	private int incVecSize;
-	private int sizeWH;
+	private float sizeWH;
 	private int mouseClickxCam = 0;
 	private int mouseClickyCam = 0;
 	private int mouseClickx = 0;
@@ -46,7 +46,6 @@ public class WorldScene implements GameSceneADT {
 	private int calcY;
 	private int userID;
 	private int turn;
-	private float zoom;
 	private boolean mouseSelect;
 	private int renderTilesFromX;
 	private int renderTilesFromY;
@@ -54,6 +53,10 @@ public class WorldScene implements GameSceneADT {
 	private int renderTilesToY;
 	private int camX;
 	private int camY;
+	private double zoomX;
+	private double zoomY;
+	private double raycastMiddleOfScreenX;
+	private double raycastMiddleOfScreenY;
 	public static Font font;
 
 	public WorldScene(JFrame frame) {
@@ -72,6 +75,12 @@ public class WorldScene implements GameSceneADT {
 		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
 		ui = new WorldUI(Main.USER.getFaction(), font);
 		myLand = new HashMap<Point, Tile>();
+		
+		
+		raycastMiddleOfScreenX = 47f;
+		raycastMiddleOfScreenY = 47f;
+		
+		
 		try {
 			GreatLeader aifrohm = new GreatLeader("aiazom/greatleader", 1, Main.USER.getFaction(), "Aifrohm");
 			// FIXME
@@ -95,7 +104,9 @@ public class WorldScene implements GameSceneADT {
 		// Size with height (of camera)
 		sizeWH = size + cam.getZ();
 		// Midpoint of the map.
-		zoom = (sizeWH / 2f * world.getWidth());
+		zoomX = (getSizeWH() * raycastMiddleOfScreenX);
+		zoomY = (getSizeWH() * raycastMiddleOfScreenY);
+		
 		// No updates from camera while rendering
 		camX = cam.getX();
 		camY = cam.getY();
@@ -117,13 +128,14 @@ public class WorldScene implements GameSceneADT {
 				// referanser til hver sin x,y koordinat : px.
 
 				// x, y respecively. zoom plasserer kartet i midten...
-				calcX = (int) (((x * sizeWH) + camX) - zoom);
-				calcY = (int) (((y * sizeWH) + camY) - zoom);
+				calcX = (int) ((x * sizeWH) + camX - zoomX);
+				calcY = (int) ((y * sizeWH) + camY - zoomY);
 
-				visual.getTile(x, y).render(g2d, calcX, calcY, sizeWH);
+				visual.getTile(x, y).render(g2d, calcX, calcY, (int) sizeWH);
 
 			}
 		}
+		
 		g2d.setColor(Color.white);
 		g2d.drawString("Turn: " + turn, 100, 100);
 
@@ -176,9 +188,9 @@ public class WorldScene implements GameSceneADT {
 				}
 				// Gå igjennom og fjern fog of war hvor det trengs.
 //				visual.getTile(x, y).update(visible(x, y));
-				for(int xa = -1; xa < 2; xa++) {
-					for(int yb = -1; yb < 2; yb++) {
-						visual.getTile(x + xa, y +yb).update(false);
+				for (int xa = -1; xa < 2; xa++) {
+					for (int yb = -1; yb < 2; yb++) {
+						visual.getTile(x + xa, y + yb).update(false);
 					}
 				}
 			} else if (myLand.containsKey(xy)) {
@@ -193,7 +205,6 @@ public class WorldScene implements GameSceneADT {
 
 				visual.getTile(x, y).update(true);
 			}
-
 
 		}
 
@@ -246,14 +257,14 @@ public class WorldScene implements GameSceneADT {
 	}
 
 	public int getTileXByCoor(int mx) {
-		return (int) (world.getWidth() - (zoom - (mx - cam.getX())) / sizeWH);
+		return (int) ((mx - camX + zoomX) / sizeWH);
 	}
 
 	public int getTileYByCoor(int my) {
-		return (int) (world.getHeight() - (zoom - (my - cam.getY())) / sizeWH);
+		return (int) ((my - camY + zoomY) / sizeWH);
 	}
 
-	private int getClosestTileYByCoor(int my) {
+	public int getClosestTileYByCoor(int my) {
 		int res = getTileYByCoor(my);
 		if (my <= 0 && res < 0) {
 			res = 0;
@@ -263,7 +274,7 @@ public class WorldScene implements GameSceneADT {
 		return res;
 	}
 
-	private int getClosestTileXByCoor(int mx) {
+	public int getClosestTileXByCoor(int mx) {
 		int res = getTileXByCoor(mx);
 		if (mx <= 0 && res < 0) {
 			res = 0;
@@ -294,7 +305,7 @@ public class WorldScene implements GameSceneADT {
 	}
 
 	public int getSizeWH() {
-		return sizeWH;
+		return (int) sizeWH;
 	}
 
 	public void setSizeWH(int sizeWH) {
@@ -381,12 +392,9 @@ public class WorldScene implements GameSceneADT {
 		this.calcY = calcY;
 	}
 
-	public float getZoom() {
-		return zoom;
-	}
 
 	public void setZoom(float zoom) {
-		this.zoom = zoom;
+		this.zoomX = zoom;
 	}
 
 	public boolean isMouseSelect() {
@@ -403,6 +411,38 @@ public class WorldScene implements GameSceneADT {
 
 	public static void setFont(Font font) {
 		WorldScene.font = font;
+	}
+
+	public double getRaycastMiddleOfScreenX() {
+		return raycastMiddleOfScreenX;
+	}
+
+	public void setRaycastMiddleOfScreenX(double xr) {
+		this.raycastMiddleOfScreenX = xr;
+	}
+
+	public double getRaycastMiddleOfScreenY() {
+		return raycastMiddleOfScreenY;
+	}
+
+	public void setRaycastMiddleOfScreenY(double yr) {
+		this.raycastMiddleOfScreenY = yr;
+	}
+
+	public double getZoomX() {
+		return zoomX;
+	}
+
+	public void setZoomX(double zoomX) {
+		this.zoomX = zoomX;
+	}
+
+	public double getZoomY() {
+		return zoomY;
+	}
+
+	public void setZoomY(double zoomY) {
+		this.zoomY = zoomY;
 	}
 
 }

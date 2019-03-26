@@ -5,11 +5,15 @@ public class Camera {
 	private int x;
 	private int y;
 	private int z;
+	private int zoomX;
+	private int zoomY;
 
 	public Camera(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		zoomX = 0;
+		zoomY = 0;
 	}
 
 	public void translateX(int x) {
@@ -31,7 +35,7 @@ public class Camera {
 	}
 
 	public int getX() {
-		return x;
+		return x - zoomX;
 	}
 
 	public void setX(int x) {
@@ -39,7 +43,7 @@ public class Camera {
 	}
 
 	public int getY() {
-		return y;
+		return y - zoomY;
 	}
 
 	public void setY(int y) {
@@ -52,5 +56,13 @@ public class Camera {
 
 	public void setZ(int z) {
 		this.z = z;
+	}
+
+	public void setZoomX(int zoomX) {
+		this.zoomX = zoomX;
+	}
+
+	public void setZoomY(int zoomY) {
+		this.zoomY = zoomY;
 	}
 }
