@@ -3,7 +3,7 @@ package elem;
 public class BackStoryStrings {
 
 	private String aiazom = "Aiazom:\n"
-			+ "Created nearly four million years by the Ancient Humans, the beautiful Aiazom were created for one single purpose"
+			+ "Created nearly four million years ago by the Ancient Humans, the beautiful Aiazom were created for one single purpose"
 			+ "– to please their creators and realize their sexual fantasies.  Through a miracle, the immortal leader and goddess "
 			+ "of the Aiazom, Aifrohm, gained the ability to think independently and used this to unite all the Aiazom under "
 			+ "a single banner in order to exact revenge on their cruel masters. "
