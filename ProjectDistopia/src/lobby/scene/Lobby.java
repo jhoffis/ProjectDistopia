@@ -132,17 +132,13 @@ public class Lobby extends LobbySceneADT implements Runnable {
 					Main.USER = user;
 					if (user.getFaction().equals(facNames[0])) {
 						Main.MUSIC_TYPE = 5;
-					} else if (user.getFaction().equals(facNames[1]) || user.getFaction().equals(facNames[4])) {
-						Main.MUSIC_TYPE = 3;
+					} else if (user.getFaction().equals(facNames[1]) || user.getFaction().equals(facNames[2])) {
+						Main.MUSIC_TYPE = 1;
 					} else if (user.getFaction().equals(facNames[2])) {
 						Main.MUSIC_TYPE = 4;
-					} else if (user.getFaction().equals(facNames[3])) {
-						Main.MUSIC_TYPE = 1;
-					} else if (user.getFaction().equals(facNames[5])) {
+					} else if (user.getFaction().equals(facNames[4]) || user.getFaction().equals(facNames[5])) {
 						Main.MUSIC_TYPE = 2;
-					} else {
-
-					}
+					} 
 					Platform.runLater(() -> Main.openGameFrame());
 //					Platform.runLater(() -> LobbyFrame.forceShutdownLobby());
 					running = false;
