@@ -138,7 +138,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 						Main.MUSIC_TYPE = 4;
 					} else if (user.getFaction().equals(facNames[4]) || user.getFaction().equals(facNames[5])) {
 						Main.MUSIC_TYPE = 2;
-					} 
+					}
 					Platform.runLater(() -> Main.openGameFrame());
 //					Platform.runLater(() -> LobbyFrame.forceShutdownLobby());
 					running = false;
@@ -172,7 +172,6 @@ public class Lobby extends LobbySceneADT implements Runnable {
 								utxt += "No faction, ";
 							} else {
 								utxt += uinput[i] + ", ";
-								user.setFaction(uinput[i]);
 							}
 							break;
 						case 2:
@@ -215,7 +214,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				System.out.println("FPS: " + frames);
 				frames = 0;
 			}
-			
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -267,11 +266,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 			start.setTranslateY(300);
 			add(start);
 		}
-
-		ready.setOnAction((ActionEvent e) -> {
-			client.sendStringRequest("READY#" + user.getId());
-			Main.lbtn();
-		});
+		ready.setDisable(true);
 
 		options.setOnAction((ActionEvent e) -> {
 			LobbyFrame.setScene("OPTIONS");
@@ -331,14 +326,12 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				changeFac(clicked);
 			});
 
-
 			HoveringTooltip ht = new HoveringTooltip(100);
 			ht.setMaxWidth(200);
 			ht.setWrapText(true);
 			ht.setText(backstory.getStory(i));
 			ht.addHoveringTarget(facPics[i]);
 			Tooltip.install(facPics[i], ht);
-			
 
 		}
 
@@ -348,6 +341,17 @@ public class Lobby extends LobbySceneADT implements Runnable {
 		if (!facChosen[clicked]) {
 			client.sendStringRequest("CHSFAC#" + facNames[clicked] + "#" + user.getId());
 			lobbybtn = new MediaAudio("/sfx/" + facNames[clicked] + "/lobbybtn");
+			user.setFaction(facNames[clicked]);
+
+			if (ready.isDisable()) {
+				ready.setDisable(false);
+				ready.setOnAction((ActionEvent e) -> {
+
+					client.sendStringRequest("READY#" + user.getId());
+					Main.lbtn();
+
+				});
+			} 
 		}
 	}
 

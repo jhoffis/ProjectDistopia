@@ -62,7 +62,7 @@ public class GameHandler extends GameVisualADT implements Runnable {
 			break;
 		case 5:
 			//Aiazom
-			Main.BACKGROUNDMUSIC = new BgMusicListener(5, "type5");
+			Main.BACKGROUNDMUSIC = new BgMusicListener(6, "type5");
 			break;
 		};
 
