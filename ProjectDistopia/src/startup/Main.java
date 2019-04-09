@@ -109,7 +109,8 @@ public class Main {
 
 	public static void updateVolume() {
 		for (int i = 0; i < SOUNDS.size(); i++) {
-			SOUNDS.get(i).setVolume();
+			SOUNDS.get(i).setVolume(1);
+			
 		}
 	}
 

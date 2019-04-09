@@ -15,6 +15,7 @@ public class Echo implements GameSceneADT {
 	private Font font;
 	private Color color;
 	private int y;
+	private static String pos = "Position";
 
 	public Echo(Font font, int y) {
 		this.y = y;
@@ -43,6 +44,7 @@ public class Echo implements GameSceneADT {
 
 	@Override
 	public void render(Graphics g) {
+		
 		if (!q.isEmpty()) {
 
 			@SuppressWarnings("unchecked")
@@ -55,7 +57,11 @@ public class Echo implements GameSceneADT {
 				if (str != null)
 					g.drawString(str, 10, (int) (y + (font.getSize() * (i + 1))));
 			}
+			
 		}
+		g.setFont(font);
+		g.setColor(color);
+		g.drawString(pos, 200, 200);
 	}
 
 	@Override
@@ -82,6 +88,14 @@ public class Echo implements GameSceneADT {
 
 	public static void println(int i) {
 		println(String.valueOf(i));
+	}
+
+	public String getPos() {
+		return pos;
+	}
+
+	public static void setPos(String poss) {
+		pos = poss;
 	}
 
 }

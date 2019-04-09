@@ -10,6 +10,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import adt.GameSceneADT;
 import adt.Unit;
+import elem.Camera;
 import elem.Tile;
 import game.scenes.GovScene;
 import game.scenes.MenuScene;
@@ -23,6 +24,13 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 
 	private GameSceneADT[] scenes;
 	private static int currentScene;
+	private double x, y;
+	private double mcxcam;
+	private double mcycam;
+	private double mcx;
+	private double mcy;
+	private double posLastX;
+	private double posLastY;
 
 	public SceneAndMouseHandler(JFrame frame) {
 		scenes = new GameSceneADT[5];
@@ -64,12 +72,38 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 		case (0):
 			if (SwingUtilities.isLeftMouseButton(e)) {
 				WorldScene s0 = ((WorldScene) scenes[0]);
-				if (!s0.getUi().above(s0.getMouseClickx(), s0.getMouseClicky())) {
-					s0.getCam().setX(s0.getMouseClickxCam() + (e.getX() - s0.getMouseClickx()));
-					s0.getCam().setY(s0.getMouseClickyCam() + (e.getY() - s0.getMouseClicky()));
-					s0.setMouseSelect(false);
+//				if (!s0.getUi().above(s0.getMouseClickx(), s0.getMouseClicky())) {
+
+//					Echo.println("X: " + x + " Y: " +y );
+
+				Camera cam = s0.getCam();
+
+				posLastX = e.getX() / s0.getSizeWH();
+				posLastY = e.getY() / s0.getSizeWH();
+
+				double cx = mcxcam + (e.getX() - mcx);
+				double cy = mcycam + (e.getY() - mcy);
+//					double cx2 = ((Main.WIDTH / 2) - cx + s0.getZoomX()) / s0.getSizeWH();
+//					double cy2 = ((Main.HEIGHT / 2) - cy + s0.getZoomY()) / s0.getSizeWH();
+
+				s0.getCam().setX(cx);
+//					} else {
+//						s0.setMouseClickxCam(s0.getCam().getX());
+//						s0.setMouseClickx(e.getX());
+//					}
+//					if (cy2 >= 0 && cy2 <= s0.getWorld().getHeight()) {
+				s0.getCam().setY(cy);
+//					} else {
+//						s0.setMouseClickyCam(s0.getCam().getY());
+//						s0.setMouseClicky(e.getY());
+//					}
+
+				s0.setMouseSelect(false);
+
+				Echo.setPos("MCXCam: " + s0.getCam().getX() + " MCYCam: " + s0.getCam().getY() + " MCX: " + mcx
+						+ " MCY: " + mcy + " middleX: " + x + " middleY: " + y);
 //					Echo.println("Cam X: " + x + ", Y: " + y + ", Z: " + s0.getCam().getZ());
-				}
+
 			}
 			break;
 		}
@@ -92,20 +126,10 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 			int unitsToScroll = e.getUnitsToScroll();
 			int direction = unitsToScroll < 0 ? 1 : -1;
 
-			s0.getCam().translateZ(direction * s0.getSizeWH() / 4);
-			
-			double x = ((Main.WIDTH / 2) - s0.getCam().getX() + s0.getZoomX()) / s0.getSizeWH();
-			double y = ((Main.HEIGHT / 2) - s0.getCam().getY() + s0.getZoomY()) / s0.getSizeWH();
-			
-			Echo.println("X: " + x + " Y: " +y );
-			
-			s0.setRaycastMiddleOfScreenX(x);
-			s0.setRaycastMiddleOfScreenY(y);
-			
-			double xr = 3.975 * x + 1.2;
-			double yr = 3.975 * y + 1.2;
-//			Echo.println("XR: " + xr + " YR: " +yr );
-			
+			s0.getCam().translateZ(direction * (s0.getCam().getZ() / 10.0));
+			s0.setZoomX(s0.getWorld().getWidth() / (double) Main.WIDTH * e.getX());
+			s0.setZoomY(s0.getWorld().getHeight() / (double) Main.HEIGHT * e.getY());
+//			Echo.println("ZoomX: " + s0.getZoomX() + " ZoomY: " + s0.getZoomY());
 			break;
 		}
 	}
@@ -188,10 +212,15 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 
 		case (0):
 			WorldScene s0 = ((WorldScene) scenes[0]);
-			s0.setMouseClickxCam(s0.getCam().getX());
-			s0.setMouseClickyCam(s0.getCam().getY());
-			s0.setMouseClickx(e.getX());
-			s0.setMouseClicky(e.getY());
+
+			mcxcam = s0.getCam().getX();
+			mcycam = s0.getCam().getY();
+			mcx = e.getX();
+			mcy = e.getY();
+
+			// FIXME start posisjon til dragging av verden er feil for den baserer jeg mot
+			// 0,0 i stedet for å basere seg på der en er.
+
 			s0.setMouseSelect(true);
 			break;
 		}
@@ -216,6 +245,7 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 				}
 			}
 			s0.setMouseSelect(false);
+
 			break;
 		}
 	}

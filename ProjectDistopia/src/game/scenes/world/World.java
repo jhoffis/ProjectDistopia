@@ -14,8 +14,8 @@ public class World implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 4694723104357277257L;
-	private int width;
-	private int height;
+	private double width;
+	private double height;
 	private int turn;
 	private Tile[] tiles;
 
@@ -55,22 +55,22 @@ public class World implements Serializable{
 
 	public Tile getTile(int x, int y) {
 //		System.out.println("x " + x + " y " + y);
-		return tiles[x + width * y];
+		return tiles[(int) (x + width * y)];
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(double width) {
 		this.width = width;
 	}
 
-	public int getHeight() {
+	public double getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(double height) {
 		this.height = height;
 	}
 
@@ -83,7 +83,7 @@ public class World implements Serializable{
 	}
 
 	public void setTile(Tile tile, int x, int y) {
-		tiles[x + width * y] = tile;
+		tiles[(int) (x + width * y)] = tile;
 	}
 
 	public int getTurn() {

@@ -13,12 +13,12 @@ public class MediaAudio {
 	public MediaAudio(String file) {
 		hit = new Media(MediaAudio.class.getResource(file + ".mp3").toString());
 		mediaPlayer = new MediaPlayer(hit);
-		setVolume();
+		setVolume(1);
 		mediaPlayer.play();
 	}
 	
-	public void setVolume() {
-		mediaPlayer.setVolume(Main.SETTINGS_PROPERTIES.getVolume() / 100.0);
+	public void setVolume(double i) {
+		mediaPlayer.setVolume((Main.SETTINGS_PROPERTIES.getVolume() / i) / 100.0);
 	}
 
 	public void play() {

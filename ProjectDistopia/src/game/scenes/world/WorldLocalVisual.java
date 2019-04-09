@@ -65,6 +65,6 @@ public class WorldLocalVisual {
 	}
 
 	public TileLocalVisual getTile(int x, int y) {
-		return tiles[x + world.getWidth() * y];
+		return tiles[(int) (x + world.getWidth() * y)];
 	}
 }

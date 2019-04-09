@@ -31,7 +31,7 @@ public class BgMusicListener {
 	}
 
 	public void updateVolume() {
-		media.setVolume();
+		media.setVolume(1);
 	}
 
 	private int findSong() {

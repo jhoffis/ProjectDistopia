@@ -45,18 +45,23 @@ public class GameHandler extends GameVisualADT implements Runnable {
 
 		switch (Main.MUSIC_TYPE) {
 		case 1:
-			Main.BACKGROUNDMUSIC = new BgMusicListener(2, "type1");
+			//Jotnatium & gazellia
+			Main.BACKGROUNDMUSIC = new BgMusicListener(3, "type1");
 			break;
 		case 2:
-			Main.BACKGROUNDMUSIC = new BgMusicListener(9, "type2");
+			//Theilron hills
+			Main.BACKGROUNDMUSIC = new BgMusicListener(10, "type2");
 			break;
 		case 3:
-			Main.BACKGROUNDMUSIC = new BgMusicListener(1, "type3");
+			//Nothing
+			Main.BACKGROUNDMUSIC = new BgMusicListener(0, "type3");
 			break;
 		case 4:
+			//Solar Empire
 			Main.BACKGROUNDMUSIC = new BgMusicListener(1, "type4");
 			break;
 		case 5:
+			//Aiazom
 			Main.BACKGROUNDMUSIC = new BgMusicListener(5, "type5");
 			break;
 		};

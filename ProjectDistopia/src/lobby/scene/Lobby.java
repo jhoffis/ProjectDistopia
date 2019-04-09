@@ -43,7 +43,7 @@ public class Lobby extends LobbySceneADT implements Runnable {
 	private Button options;
 	private Button start;
 	private Image[] facImgs;
-	private String[] facNames = { "Aiazom", "Gazellia", "Jotnatium", "Republic of Wessland", "Empire of Anglia",
+	private String[] facNames = { "Aiazom", "Gazellia", "Jotnatium", "Solaris Imperium", "Druunaland",
 			"Theilron Hills" };
 	private boolean[] facChosen;
 	private ImageView[] facPics;
@@ -130,15 +130,15 @@ public class Lobby extends LobbySceneADT implements Runnable {
 				if (Integer.valueOf(client.sendStringRequest("STARTED")) == 1) {
 					System.err.println("--STARTED--");
 					Main.USER = user;
-					if (user.getFaction().equals("Aiazom")) {
+					if (user.getFaction().equals(facNames[0])) {
 						Main.MUSIC_TYPE = 5;
-					} else if (user.getFaction().equals("Gazellia") || user.getFaction().equals("Empire of Anglia")) {
+					} else if (user.getFaction().equals(facNames[1]) || user.getFaction().equals(facNames[4])) {
 						Main.MUSIC_TYPE = 3;
-					} else if (user.getFaction().equals("Republic of Wessland")) {
+					} else if (user.getFaction().equals(facNames[2])) {
 						Main.MUSIC_TYPE = 4;
-					} else if (user.getFaction().equals("Jotnatium")) {
+					} else if (user.getFaction().equals(facNames[3])) {
 						Main.MUSIC_TYPE = 1;
-					} else if (user.getFaction().equals("Theilron Hills")) {
+					} else if (user.getFaction().equals(facNames[5])) {
 						Main.MUSIC_TYPE = 2;
 					} else {
 

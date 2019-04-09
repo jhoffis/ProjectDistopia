@@ -51,8 +51,8 @@ public class WorldScene implements GameSceneADT {
 	private int renderTilesFromY;
 	private int renderTilesToX;
 	private int renderTilesToY;
-	private int camX;
-	private int camY;
+	private double camX;
+	private double camY;
 	private double zoomX;
 	private double zoomY;
 	private double raycastMiddleOfScreenX;
@@ -72,15 +72,13 @@ public class WorldScene implements GameSceneADT {
 			e.printStackTrace();
 		}
 		visual = new WorldLocalVisual(world);
-		cam = new Camera((Main.WIDTH / 2), (Main.HEIGHT / 2), 0);
+		cam = new Camera(0, 0, 1);
 		ui = new WorldUI(Main.USER.getFaction(), font);
 		myLand = new HashMap<Point, Tile>();
-		
-		
-		raycastMiddleOfScreenX = 47f;
-		raycastMiddleOfScreenY = 47f;
-		
-		
+
+		raycastMiddleOfScreenX = 47.8f;
+		raycastMiddleOfScreenY = 19.232f;
+
 		try {
 			GreatLeader aifrohm = new GreatLeader("aiazom/greatleader", 1, Main.USER.getFaction(), "Aifrohm");
 			// FIXME
@@ -102,11 +100,9 @@ public class WorldScene implements GameSceneADT {
 		// create the offscreen buffer and associated Graphics
 		// clear the exposed area
 		// Size with height (of camera)
-		sizeWH = size + cam.getZ();
+		sizeWH = (float) (size * cam.getZ());
 		// Midpoint of the map.
-		zoomX = (getSizeWH() * raycastMiddleOfScreenX);
-		zoomY = (getSizeWH() * raycastMiddleOfScreenY);
-		
+
 		// No updates from camera while rendering
 		camX = cam.getX();
 		camY = cam.getY();
@@ -119,8 +115,8 @@ public class WorldScene implements GameSceneADT {
 		renderTilesToX = getClosestTileXByCoor(Main.WIDTH) + 1;
 		renderTilesToY = getClosestTileYByCoor(Main.HEIGHT) + 1;
 
-		for (int x = renderTilesFromX; x < renderTilesToX; x++) {
-			for (int y = renderTilesFromY; y < renderTilesToY; y++) {
+		for (int x = 0; x < 64; x++) {
+			for (int y = 0; y < 64; y++) {
 
 				Tile tile = world.getTile(x, y);
 
@@ -128,17 +124,16 @@ public class WorldScene implements GameSceneADT {
 				// referanser til hver sin x,y koordinat : px.
 
 				// x, y respecively. zoom plasserer kartet i midten...
-				calcX = (int) ((x * sizeWH) + camX - zoomX);
-				calcY = (int) ((y * sizeWH) + camY - zoomY);
+				calcX = (int) ((x * sizeWH) + camX - (sizeWH * zoomX));
+				calcY = (int) ((y * sizeWH) + camY - (sizeWH * zoomY));
 
 				visual.getTile(x, y).render(g2d, calcX, calcY, (int) sizeWH);
 
 			}
 		}
-		
+
 		g2d.setColor(Color.white);
 		g2d.drawString("Turn: " + turn, 100, 100);
-
 		ui.render(g);
 	}
 
@@ -212,7 +207,7 @@ public class WorldScene implements GameSceneADT {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		incVecSize = (2 * cam.getZ() / 10) + 8;
+		incVecSize = (int) ((2 * cam.getZ() / 10) + 8);
 //		System.out.println("X " + cam.getX() + " Y " + cam.getY());
 
 		if (e.getKeyCode() == 37) {
@@ -243,7 +238,7 @@ public class WorldScene implements GameSceneADT {
 	}
 
 	public Tile getTileByCoor(int mx, int my) {
-		int size = world.getWidth();
+		int size = (int) world.getWidth();
 		Tile res = null;
 
 		int x = getTileXByCoor(mx);
@@ -257,11 +252,11 @@ public class WorldScene implements GameSceneADT {
 	}
 
 	public int getTileXByCoor(int mx) {
-		return (int) ((mx - camX + zoomX) / sizeWH);
+		return (int) ((mx + (sizeWH * zoomX) - camX) / sizeWH);
 	}
 
 	public int getTileYByCoor(int my) {
-		return (int) ((my - camY + zoomY) / sizeWH);
+		return (int) ((my + (sizeWH * zoomY) - camY) / sizeWH);
 	}
 
 	public int getClosestTileYByCoor(int my) {
@@ -269,7 +264,7 @@ public class WorldScene implements GameSceneADT {
 		if (my <= 0 && res < 0) {
 			res = 0;
 		} else if (my >= Main.HEIGHT && res >= world.getHeight()) {
-			res = world.getHeight() - 1;
+			res = (int) (world.getHeight() - 1);
 		}
 		return res;
 	}
@@ -279,7 +274,7 @@ public class WorldScene implements GameSceneADT {
 		if (mx <= 0 && res < 0) {
 			res = 0;
 		} else if (mx >= Main.WIDTH && res >= world.getWidth()) {
-			res = world.getWidth() - 1;
+			res = (int) (world.getWidth() - 1);
 		}
 		return res;
 	}
@@ -391,7 +386,6 @@ public class WorldScene implements GameSceneADT {
 	public void setCalcY(int calcY) {
 		this.calcY = calcY;
 	}
-
 
 	public void setZoom(float zoom) {
 		this.zoomX = zoom;

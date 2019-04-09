@@ -31,8 +31,8 @@ public class ServerInfo {
 		faction.put("Aiazom", 0);
 		faction.put("Gazellia", 1);
 		faction.put("Jotnatium", 2);
-		faction.put("Republic of Wessland", 3);
-		faction.put("Empire of Anglia", 4);
+		faction.put("Solaris Imperium", 3);
+		faction.put("Druunaland", 4);
 		faction.put("Theilron Hills", 5);
 	}
 

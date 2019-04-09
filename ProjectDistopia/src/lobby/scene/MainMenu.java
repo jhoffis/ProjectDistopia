@@ -28,7 +28,7 @@ public class MainMenu extends LobbySceneADT {
 		options = new Button("Options");
 		exit = new Button("Exit Game");
 		
-		Main.SOUNDS.add(0, new MediaAudio("/sfx/ambience"));
+		Main.SOUNDS.add(0, new MediaAudio("/sfx/hover"));
 		
 		super.numBtn = LobbyFrame.HEIGHT / (5 + 2);
 

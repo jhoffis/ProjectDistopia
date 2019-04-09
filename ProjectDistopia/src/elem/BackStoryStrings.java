@@ -1,4 +1,4 @@
-package elem;
+﻿package elem;
 
 public class BackStoryStrings {
 
@@ -19,7 +19,9 @@ public class BackStoryStrings {
 			+ "    The nobility of the Jotne was satisfied with their conquests and decided to suppress their warlike traditions in favor for peace, which many Jotne disagreed with. One of these was Gronkur, the bastard child of Tor, who led an insurgency, toppling the nobility and positioning himself as the leader of the newly founded Jotnatium. Their conquest throughout the galaxy has finally led them to Authragard, where they now face the remnants of the Midgardians who fled all those years ago.";
 	private String wessland = "";
 	private String anglia = "";
-	private String theilron = "";
+	private String theilron = "The Thelronans were originally natives of this terrible planet, but when the humans came their existence was threatened. The humans do not like what they do not understand, and Thelronans are not" + 
+			" to be understood by outsiders. So the people Theilron Hills decided to interbreed with the colonising humans who at the time came from the Solar Empire. Now the race is all but gone, however the absolute rule" +
+			" has managed to stay pure Thelronan. This includes queen Xothine IV the Faceless and her everglorious rule! And now the pathetic Jotne want to fight? Bring it.";
 
 	public String getAiazom() {
 		return aiazom;
