@@ -127,9 +127,8 @@ public class SceneAndMouseHandler extends MouseInputAdapter {
 			int direction = unitsToScroll < 0 ? 1 : -1;
 
 			s0.getCam().translateZ(direction * (s0.getCam().getZ() / 10.0));
-			s0.setZoomX(s0.getWorld().getWidth() / (double) Main.WIDTH * e.getX());
-			s0.setZoomY(s0.getWorld().getHeight() / (double) Main.HEIGHT * e.getY());
-//			Echo.println("ZoomX: " + s0.getZoomX() + " ZoomY: " + s0.getZoomY());
+
+			Echo.println("Z: " + (direction * (s0.getCam().getZ() / 10.0)));
 			break;
 		}
 	}

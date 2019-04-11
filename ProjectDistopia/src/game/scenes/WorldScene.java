@@ -37,7 +37,7 @@ public class WorldScene implements GameSceneADT {
 	private Client client;
 	private int size = 4;
 	private int incVecSize;
-	private float sizeWH;
+	private int sizeWH;
 	private int mouseClickxCam = 0;
 	private int mouseClickyCam = 0;
 	private int mouseClickx = 0;
@@ -47,16 +47,14 @@ public class WorldScene implements GameSceneADT {
 	private int userID;
 	private int turn;
 	private boolean mouseSelect;
-	private int renderTilesFromX;
-	private int renderTilesFromY;
-	private int renderTilesToX;
-	private int renderTilesToY;
 	private double camX;
 	private double camY;
 	private double zoomX;
 	private double zoomY;
 	private double raycastMiddleOfScreenX;
 	private double raycastMiddleOfScreenY;
+	private double mapWidth;
+	private double mapHeight;
 	public static Font font;
 
 	public WorldScene(JFrame frame) {
@@ -90,30 +88,57 @@ public class WorldScene implements GameSceneADT {
 		}
 	}
 
+//	private BufferedImage renderMap() {
+//		sizeWH = (float) (size * cam.getZ());
+//		mapWidth = world.getWidth() * sizeWH;
+//		mapHeight = world.getHeight() * sizeWH;
+//		BufferedImage bufferedImage = new BufferedImage((int) (mapWidth), (int) (mapHeight),
+//				BufferedImage.TYPE_INT_RGB);
+//		Graphics2D g2d = bufferedImage.createGraphics();
+//
+//		for (int x = 0; x < 64; x++) {
+//			for (int y = 0; y < 64; y++) {
+//
+//				Tile tile = world.getTile(x, y);
+//
+//				// legg til som Tiles i stedet og ha en eller annen type tabell som holder
+//				// referanser til hver sin x,y koordinat : px.
+//
+//				calcX = (int) (x * sizeWH);
+//				calcY = (int) (y * sizeWH);
+//
+//				visual.getTile(x, y).render(g2d, calcX, calcY, (int) sizeWH);
+//
+//			}
+//		}
+//
+//		return bufferedImage;
+//	}
+
 	@Override
 	public void render(Graphics g) {
-
-		BufferedImage bufferedImage = new BufferedImage(Main.WIDTH, Main.HEIGHT, BufferedImage.TYPE_INT_RGB);
-
-		// Create a graphics which can be used to draw into the buffered image
-		Graphics2D g2d = (Graphics2D) g;
-		// create the offscreen buffer and associated Graphics
-		// clear the exposed area
-		// Size with height (of camera)
-		sizeWH = (float) (size * cam.getZ());
-		// Midpoint of the map.
+		// Hva om du lager et buffered image av tilesa og så endrer størrelse og xy på
+		// den etter alle tilsa
+		// har blitt tegnet inn i stedet for å blande inn plassering av kamera i tegning
+		// av tiles.
+		// Da kan man også ha varierende tegning av tiles basert på størrelse i forhold
+		// til skjermstørrelse + pos_xy.
 
 		// No updates from camera while rendering
+		sizeWH = (int) (size + cam.getZ());
+		mapWidth = world.getWidth() * sizeWH;
+		mapHeight = world.getHeight() * sizeWH;
+
 		camX = cam.getX();
 		camY = cam.getY();
-		// do normal redraw
+		int xm = (int) (-(mapWidth / 2) + camX);
+		int ym = (int) (-(mapHeight / 2) + camY);
+
+		BufferedImage bufferedImage = new BufferedImage((int) (mapWidth), (int) (mapHeight),
+				BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2d = (Graphics2D) g;
 		g2d.setBackground(Color.BLACK);
 		g2d.clearRect(0, 0, Main.WIDTH, Main.HEIGHT);
-
-		renderTilesFromX = getClosestTileXByCoor(0);
-		renderTilesFromY = getClosestTileYByCoor(0);
-		renderTilesToX = getClosestTileXByCoor(Main.WIDTH) + 1;
-		renderTilesToY = getClosestTileYByCoor(Main.HEIGHT) + 1;
 
 		for (int x = 0; x < 64; x++) {
 			for (int y = 0; y < 64; y++) {
@@ -123,17 +148,17 @@ public class WorldScene implements GameSceneADT {
 				// legg til som Tiles i stedet og ha en eller annen type tabell som holder
 				// referanser til hver sin x,y koordinat : px.
 
-				// x, y respecively. zoom plasserer kartet i midten...
-				calcX = (int) ((x * sizeWH) + camX - (sizeWH * zoomX));
-				calcY = (int) ((y * sizeWH) + camY - (sizeWH * zoomY));
+				calcX = (int) (x * sizeWH) + xm;
+				calcY = (int) (y * sizeWH) + ym;
 
 				visual.getTile(x, y).render(g2d, calcX, calcY, (int) sizeWH);
 
 			}
 		}
 
-		g2d.setColor(Color.white);
-		g2d.drawString("Turn: " + turn, 100, 100);
+
+		g.setColor(Color.white);
+		g.drawString("Turn: " + turn, 100, 100);
 		ui.render(g);
 	}
 
@@ -175,6 +200,8 @@ public class WorldScene implements GameSceneADT {
 			int y = tile.getY();
 			world.getTile(x, y).setStats(tile.getState(), tile.getObjects(), tile.getFaction());
 			Point xy = new Point(x, y);
+
+			// Fow
 			if (tile.getFaction().equals(Main.USER.getFaction())) {
 				// MINE!!!
 
