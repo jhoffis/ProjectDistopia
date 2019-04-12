@@ -55,6 +55,8 @@ public class WorldScene implements GameSceneADT {
 	private double raycastMiddleOfScreenY;
 	private double mapWidth;
 	private double mapHeight;
+	private int xm;
+	private int ym;
 	public static Font font;
 
 	public WorldScene(JFrame frame) {
@@ -131,8 +133,9 @@ public class WorldScene implements GameSceneADT {
 
 		camX = cam.getX();
 		camY = cam.getY();
-		int xm = (int) (-(mapWidth / 2) + camX);
-		int ym = (int) (-(mapHeight / 2) + camY);
+		xm = (int) (-(mapWidth / 2) + camX);
+		ym = (int) (-(mapHeight / 2)  + camY);
+		
 
 		BufferedImage bufferedImage = new BufferedImage((int) (mapWidth), (int) (mapHeight),
 				BufferedImage.TYPE_INT_RGB);
@@ -140,8 +143,10 @@ public class WorldScene implements GameSceneADT {
 		g2d.setBackground(Color.BLACK);
 		g2d.clearRect(0, 0, Main.WIDTH, Main.HEIGHT);
 
-		for (int x = 0; x < 64; x++) {
-			for (int y = 0; y < 64; y++) {
+		int maxX = getClosestTileXByCoor(Main.WIDTH);
+		
+		for (int x = getClosestTileXByCoor(0); x < getClosestTileXByCoor(Main.WIDTH); x++) {
+			for (int y = getClosestTileYByCoor(0); y < getClosestTileYByCoor(Main.HEIGHT); y++) {
 
 				Tile tile = world.getTile(x, y);
 
@@ -279,11 +284,11 @@ public class WorldScene implements GameSceneADT {
 	}
 
 	public int getTileXByCoor(int mx) {
-		return (int) ((mx + (sizeWH * zoomX) - camX) / sizeWH);
+		return (int) ((mx - xm) / sizeWH);
 	}
 
 	public int getTileYByCoor(int my) {
-		return (int) ((my + (sizeWH * zoomY) - camY) / sizeWH);
+		return (int) ((my - ym) / sizeWH);
 	}
 
 	public int getClosestTileYByCoor(int my) {
